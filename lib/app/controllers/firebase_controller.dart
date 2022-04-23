@@ -15,6 +15,7 @@ class FirebaseController extends GetxController {
   static FirebaseController firebaseController = Get.find();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   Rxn<User> user = Rxn<User>();
+  DateTime dateTime = DateTime.now();
   var userModel = UserModel().obs;
 
   Stream<User?> get userStream => firebaseAuth.authStateChanges();
@@ -55,7 +56,6 @@ class FirebaseController extends GetxController {
         'Uh Oh!',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
       );
     }
   }

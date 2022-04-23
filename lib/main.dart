@@ -1,4 +1,5 @@
 import 'package:chomu/firebase_options.dart';
+import 'package:chomu/pages/home/controller/home_controller.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -27,7 +28,7 @@ void main() async {
       FirebaseAnalyticsObserver(analytics: firebaseAnalytics);
   Get.put<FirebaseController>(
       FirebaseController(firebaseAnalytics: firebaseAnalytics));
-
+  Get.put<HomeController>(HomeController());
   // put controllers
   putControllers();
 
