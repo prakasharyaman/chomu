@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "285288682772",
+    "project_id": "chomu-18fee",
+    "storage_bucket": "chomu-18fee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285288682772:android:1d38d6c989fd2eb6a6de01",
+        "android_client_info": {
+          "package_name": "com.android.chomu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285288682772-0bdja5bvq7cktusohcpcr8o006snngr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtLfHq6kSZTU_u-FiZkDa7Q4rMHQyvPdA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285288682772-0bdja5bvq7cktusohcpcr8o006snngr7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
