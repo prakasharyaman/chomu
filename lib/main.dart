@@ -14,6 +14,7 @@ import 'pages/home/tabs/hot/controller/hot_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   //Get Storage init
   await GetStorage.init();
 

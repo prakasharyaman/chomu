@@ -1,9 +1,10 @@
 class Meme {
-  String author, postLink, subReddit, title, url;
+  String author, postLink, subReddit, title, url, id;
   List<dynamic> preview;
   bool nsfw, spoiler;
   int ups;
   Meme({
+    required this.id,
     required this.author,
     required this.postLink,
     required this.subReddit,
@@ -16,6 +17,7 @@ class Meme {
   });
   factory Meme.fromJson(Map<String, dynamic> json) {
     return Meme(
+      id: json['id'] as String,
       author: json['author'] as String,
       postLink: json['postLink'] as String,
       subReddit: json['subreddit'] as String,

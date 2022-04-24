@@ -49,6 +49,8 @@ dependencies:
   simple_animations: ^4.0.1
   visibility_detector: ^0.2.2
   flashy_tab_bar2: ^0.0.4
+  dropdown_button2: ^1.4.0
+  image_downloader: ^0.31.0
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chomu/repository/meme_repository.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../models/meme_model.dart';
 import '../../pages/home/tabs/hot/controller/hot_controller.dart';
+import '../../pages/stories/widget/story_page.dart';
 
 class MemeWidget extends StatefulWidget {
   const MemeWidget({Key? key, required this.meme, required this.height})
@@ -21,6 +24,7 @@ class _MemeWidgetState extends State<MemeWidget> {
   bool isPostLiked = false;
   HotController hotController = Get.find();
   bool isPostBookMarked = false;
+  bool watched = false;
   @override
   void initState() {
     super.initState();
@@ -35,8 +39,11 @@ class _MemeWidgetState extends State<MemeWidget> {
       child: VisibilityDetector(
         key: Key(meme.url),
         onVisibilityChanged: (VisibilityInfo info) {
-          if (info.visibleFraction == 1) {
-            hotController.saveMemeAsWatched(url: meme.url);
+          if (info.visibleFraction > 0.9) {
+            if (watched == false) {
+              watched = true;
+              hotController.saveMemeAsWatched(url: meme.url);
+            }
           }
         },
         child: GestureDetector(
@@ -74,12 +81,68 @@ class _MemeWidgetState extends State<MemeWidget> {
                       setState(() {
                         isPostBookMarked = !isPostBookMarked;
                       });
-                      // TODO : implement bookmark
+                      hotController.bookmarkMeme(meme: meme);
                     },
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.more_vert_rounded),
-                    onPressed: () {},
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton2(
+                      customButton: const Padding(
+                        padding: EdgeInsets.only(right: 8.0, left: 5.0),
+                        child: Icon(Icons.more_vert_rounded),
+                      ),
+                      openWithLongPress: true,
+                      customItemsIndexes: const [3],
+                      customItemsHeight: 8,
+                      items: [
+                        ...MenuItems.firstItems.map(
+                          (item) => DropdownMenuItem<MenuItem>(
+                            value: item,
+                            child: MenuItems.buildItem(item),
+                          ),
+                        ),
+                        const DropdownMenuItem<Divider>(
+                            enabled: false, child: Divider()),
+                        ...MenuItems.secondItems.map(
+                          (item) => DropdownMenuItem<MenuItem>(
+                            value: item,
+                            child: MenuItems.buildItem(item),
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        switch (value) {
+                          case MenuItems.remove:
+                            //Do something
+                            hotController.saveMemeAsWatched(url: meme.url);
+                            Get.snackbar(
+                              'Refresh ',
+                              'We have removed this meme',
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+
+                            break;
+                          case MenuItems.report:
+                            hotController.reportMeme(meme: meme);
+                            break;
+                          case MenuItems.download:
+                            hotController.downloadMemeUrl(
+                                url: meme.url, fileName: meme.title);
+                            break;
+                          case MenuItems.cancel:
+                            //Do something
+                            break;
+                        }
+                      },
+                      itemHeight: 48,
+                      itemPadding: const EdgeInsets.only(left: 16, right: 16),
+                      dropdownWidth: 160,
+                      dropdownPadding: const EdgeInsets.symmetric(vertical: 6),
+                      dropdownDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      dropdownElevation: 8,
+                      offset: const Offset(40, -4),
+                    ),
                   ),
                 ],
               ),
@@ -98,7 +161,7 @@ class _MemeWidgetState extends State<MemeWidget> {
                 child: Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: CachedNetworkImage(
-                    filterQuality: FilterQuality.low,
+                    filterQuality: FilterQuality.none,
                     fit: BoxFit.contain,
                     width: double.infinity,
                     imageUrl: meme.url,

@@ -2,9 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
+import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../models/meme_model.dart';
 
 class StoryPage extends StatefulWidget {
@@ -106,25 +105,81 @@ class _StoryPageState extends State<StoryPage> {
                       ),
                     ),
                     // dropdown
-                    GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? Colors.white12
-                                : Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(Icons.more_vert_rounded),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        customButton: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Get.isDarkMode
+                                  ? Colors.white12
+                                  : Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.only(
+                                  top: 8.0,
+                                  bottom: 8.0,
+                                  left: 15.0,
+                                  right: 15.0),
+                              child: Icon(Icons.more_vert_rounded),
+                            ),
                           ),
                         ),
+                        openWithLongPress: true,
+                        customItemsIndexes: const [3],
+                        customItemsHeight: 8,
+                        items: [
+                          ...MenuItems.firstItems.map(
+                            (item) => DropdownMenuItem<MenuItem>(
+                              value: item,
+                              child: MenuItems.buildItem(item),
+                            ),
+                          ),
+                          const DropdownMenuItem<Divider>(
+                              enabled: false, child: Divider()),
+                          ...MenuItems.secondItems.map(
+                            (item) => DropdownMenuItem<MenuItem>(
+                              value: item,
+                              child: MenuItems.buildItem(item),
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          switch (value) {
+                            case MenuItems.remove:
+                              //Do something
+                              storiesController.saveMemeAsWatched(
+                                  url: meme.url);
+                              Get.snackbar(
+                                'Refresh ',
+                                'We have removed this meme',
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+
+                              break;
+                            case MenuItems.report:
+                              storiesController.reportMeme(meme: meme);
+                              break;
+                            case MenuItems.download:
+                              storiesController.downloadMemeUrl(
+                                  url: meme.url, fileName: meme.title);
+                              break;
+                            case MenuItems.cancel:
+                              //Do something
+                              break;
+                          }
+                        },
+                        itemHeight: 48,
+                        itemPadding: const EdgeInsets.only(left: 16, right: 16),
+                        dropdownWidth: 160,
+                        dropdownPadding:
+                            const EdgeInsets.symmetric(vertical: 6),
+                        dropdownDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        dropdownElevation: 8,
+                        offset: const Offset(40, -4),
                       ),
                     ),
                   ],
@@ -165,6 +220,7 @@ class _StoryPageState extends State<StoryPage> {
                     //book mark
                     GestureDetector(
                       onTap: () {
+                        storiesController.bookmarkMeme(meme: meme);
                         setState(() {
                           isPostBookMarked = !isPostBookMarked;
                         });
@@ -246,5 +302,68 @@ class _StoryPageState extends State<StoryPage> {
         ],
       ),
     );
+  }
+}
+
+// menu item
+class MenuItem {
+  final String text;
+  final IconData icon;
+
+  const MenuItem({
+    required this.text,
+    required this.icon,
+  });
+}
+
+class MenuItems {
+  final Meme meme;
+  static const List<MenuItem> firstItems = [report, download, remove];
+  static const List<MenuItem> secondItems = [cancel];
+
+  static const report =
+      MenuItem(text: 'Report', icon: Icons.report_gmailerrorred_rounded);
+  static const remove = MenuItem(text: 'Remove', icon: Icons.delete);
+  static const download = MenuItem(text: 'Download', icon: Icons.download);
+  static const cancel = MenuItem(text: 'Cancel', icon: Icons.cancel);
+
+  MenuItems({required this.meme});
+
+  static Widget buildItem(MenuItem item) {
+    return Row(
+      children: [
+        Icon(
+          item.icon,
+          color: Get.isDarkMode ? Colors.white : Colors.black,
+          size: 22,
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(
+          item.text,
+          style: TextStyle(
+            color: Get.isDarkMode ? Colors.white : Colors.black,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static onChanged(BuildContext context, MenuItem item) {
+    switch (item) {
+      case MenuItems.remove:
+        //Do something
+        break;
+      case MenuItems.report:
+        //Do something
+        break;
+      case MenuItems.download:
+        //Do something
+        break;
+      case MenuItems.cancel:
+        //Do something
+        break;
+    }
   }
 }

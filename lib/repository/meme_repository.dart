@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_downloader/image_downloader.dart';
 import '../models/meme_model.dart';
 
 class MemeRepository {
@@ -48,6 +51,7 @@ class MemeRepository {
         List<Meme> memesList = [];
         for (var memeSnapshot in memesSnapshot.docs) {
           var memeJson = memeSnapshot.data();
+          var memeSnapshotId = memeSnapshot.id;
 
           if (memeJson['author'] != null &&
               memeJson['postLink'] != null &&
@@ -57,8 +61,9 @@ class MemeRepository {
               memeJson['preview'] != null &&
               memeJson['nsfw'] != null &&
               memeJson['spoiler'] != null &&
-              memeJson['ups'] != null) {
+              memeJson['ups'] != nullptr) {
             Meme meme = Meme(
+                id: memeSnapshotId,
                 author: memeJson['author'],
                 postLink: memeJson['postLink'],
                 subReddit: memeJson['subreddit'],
@@ -78,6 +83,49 @@ class MemeRepository {
         }
       } else {
         throw Exception('No memes found');
+      }
+    } else {
+      throw Exception('No user found');
+    }
+  }
+
+  //download a meme
+
+  downloadMeme({required String url, required String fileName}) async {
+    // Saved with this method.
+    var imageId = await ImageDownloader.downloadImage(url);
+    if (imageId == null) {
+      throw Exception('Error Downloading Meme');
+    }
+  }
+
+  // report meme
+  reportMeme({required String id, required Meme meme}) async {
+    // check if user is logged in
+    if (1 == 1) {
+      var date = await getDate();
+      var reportRef = FirebaseFirestore.instance
+          .collection('memes')
+          .doc(date)
+          .collection('reports');
+      var meme = await FirebaseFirestore.instance
+          .collection('memes')
+          .doc(date)
+          .collection('memes')
+          .doc(id)
+          .get();
+      var memeJson = meme.data();
+      if (memeJson != null) {
+        reportRef.doc(id).set(memeJson);
+        await FirebaseFirestore.instance
+            .collection('memes')
+            .doc(date)
+            .collection('memes')
+            .doc(id)
+            .delete();
+        print('removed meme');
+      } else {
+        throw Exception('Could Not Report Meme');
       }
     } else {
       throw Exception('No user found');

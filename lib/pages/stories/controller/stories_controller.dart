@@ -91,4 +91,70 @@ class StoriesController extends GetxController {
       throw Exception('Error Saving Meme');
     }
   }
+
+// download meme
+  downloadMemeUrl({required String url, required String fileName}) async {
+    try {
+      await memeRepository.downloadMeme(url: url, fileName: fileName);
+      Get.snackbar(
+        'Download Complete',
+        'The file has been saved to your Downloads folder',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      errorMessage = e.toString();
+      Get.snackbar(
+        'Uh Oh!',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  // report meme
+  reportMeme({required Meme meme}) async {
+    try {
+      await memeRepository.reportMeme(id: meme.id, meme: meme);
+      Get.snackbar(
+        'Meme Reported',
+        'Thank you for reporting this meme',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      errorMessage = e.toString();
+      Get.snackbar(
+        'Uh Oh!',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+// same meme as bookmark
+  bookmarkMeme({required Meme meme}) async {
+    var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
+
+    if (bookMarkMemesList == null) {
+      bookMarkMemesList = [];
+    } else {
+      bookMarkMemesList = bookMarkMemesList as List<dynamic>;
+    }
+    // trying to add a meme that is watched
+    try {
+      bookMarkMemesList.add(meme.toString());
+      await getStorage.write('bookMarkMemesList', bookMarkMemesList);
+      Get.snackbar(
+        'Meme Bookmarked',
+        'Thank you for bookmarking this meme',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      errorMessage = e.toString();
+      Get.snackbar(
+        'Error Saving Meme!',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
 }
