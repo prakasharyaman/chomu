@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../models/meme_model.dart';
+import '../../../services/share_service.dart';
 
 class StoryPage extends StatefulWidget {
   const StoryPage({Key? key, required this.meme}) : super(key: key);
@@ -28,6 +29,7 @@ class _StoryPageState extends State<StoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey _cardKey = GlobalKey();
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return VisibilityDetector(
@@ -47,25 +49,28 @@ class _StoryPageState extends State<StoryPage> {
               color: Get.isDarkMode ? Colors.black38 : Colors.grey.shade100,
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
-                child: CachedNetworkImage(
-                  filterQuality: FilterQuality.low,
-                  fit: BoxFit.contain,
-                  width: double.infinity,
-                  imageUrl: meme.url,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      SizedBox(
-                    height: height * 0.4,
-                    child: Center(
-                        child: CircularProgressIndicator(
-                      value: downloadProgress.progress,
-                    )),
-                  ),
-                  errorWidget: (context, url, error) => SizedBox(
-                    height: height * 0.3,
+                child: RepaintBoundary(
+                  key: _cardKey,
+                  child: CachedNetworkImage(
+                    filterQuality: FilterQuality.low,
+                    fit: BoxFit.contain,
                     width: double.infinity,
-                    child: const Center(
-                      child: Icon(
-                        Icons.error,
+                    imageUrl: meme.url,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => SizedBox(
+                      height: height * 0.4,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        value: downloadProgress.progress,
+                      )),
+                    ),
+                    errorWidget: (context, url, error) => SizedBox(
+                      height: height * 0.3,
+                      width: double.infinity,
+                      child: const Center(
+                        child: Icon(
+                          Icons.error,
+                        ),
                       ),
                     ),
                   ),
@@ -277,7 +282,10 @@ class _StoryPageState extends State<StoryPage> {
                     // share button
                     GestureDetector(
                       onTap: () {
-                        // TODO : share button
+                        Future.delayed(
+                            const Duration(milliseconds: 200),
+                            () => convertWidgetToImageAndShare(
+                                context, _cardKey, meme.title));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),

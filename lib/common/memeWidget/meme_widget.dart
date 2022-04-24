@@ -8,6 +8,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 import '../../models/meme_model.dart';
 import '../../pages/home/tabs/hot/controller/hot_controller.dart';
 import '../../pages/stories/widget/story_page.dart';
+import '../../services/share_service.dart';
 
 class MemeWidget extends StatefulWidget {
   const MemeWidget({Key? key, required this.meme, required this.height})
@@ -34,24 +35,20 @@ class _MemeWidgetState extends State<MemeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey _cardKey = GlobalKey();
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0),
-      child: VisibilityDetector(
-        key: Key(meme.url),
-        onVisibilityChanged: (VisibilityInfo info) {
-          if (info.visibleFraction > 0.9) {
-            if (watched == false) {
-              watched = true;
-              hotController.saveMemeAsWatched(url: meme.url);
+      child: RepaintBoundary(
+        key: _cardKey,
+        child: VisibilityDetector(
+          key: Key(meme.url),
+          onVisibilityChanged: (VisibilityInfo info) {
+            if (info.visibleFraction > 0.9) {
+              if (watched == false) {
+                watched = true;
+                hotController.saveMemeAsWatched(url: meme.url);
+              }
             }
-          }
-        },
-        child: GestureDetector(
-          onDoubleTap: () {
-            setState(() {
-              isPostLiked = !isPostLiked;
-              meme.ups += isPostLiked ? 1 : -1;
-            });
           },
           child: Card(
               child: Column(
@@ -156,36 +153,44 @@ class _MemeWidgetState extends State<MemeWidget> {
               ),
 
               // Image
-              Container(
-                color: Get.isDarkMode ? Colors.black38 : Colors.grey.shade100,
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: CachedNetworkImage(
-                    filterQuality: FilterQuality.none,
-                    fit: BoxFit.contain,
-                    width: double.infinity,
-                    imageUrl: meme.url,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => SizedBox(
-                      height: height * 0.4,
-                      child: Center(
-                          child: CircularProgressIndicator(
-                        value: downloadProgress.progress,
-                      )),
-                    ),
-                    errorWidget: (context, url, error) => SizedBox(
-                      height: height * 0.3,
+              GestureDetector(
+                onDoubleTap: () {
+                  setState(() {
+                    isPostLiked = !isPostLiked;
+                    meme.ups += isPostLiked ? 1 : -1;
+                  });
+                },
+                child: Container(
+                  color: Get.isDarkMode ? Colors.black38 : Colors.grey.shade100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: CachedNetworkImage(
+                      filterQuality: FilterQuality.none,
+                      fit: BoxFit.contain,
                       width: double.infinity,
-                      child: const Center(
-                        child: Icon(
-                          Icons.error,
+                      imageUrl: meme.url,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) => SizedBox(
+                        height: height * 0.4,
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          value: downloadProgress.progress,
+                        )),
+                      ),
+                      errorWidget: (context, url, error) => SizedBox(
+                        height: height * 0.3,
+                        width: double.infinity,
+                        child: const Center(
+                          child: Icon(
+                            Icons.error,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-              // upvote
+              // upvote and share
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -207,7 +212,11 @@ class _MemeWidgetState extends State<MemeWidget> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.comment),
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.snackbar('Sorry !',
+                            'Comments have been diabled due to some issues',
+                            snackPosition: SnackPosition.BOTTOM);
+                      },
                     ),
                     const Text(
                       '',
@@ -216,7 +225,12 @@ class _MemeWidgetState extends State<MemeWidget> {
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.share),
-                      onPressed: () {},
+                      onPressed: () {
+                        Future.delayed(
+                            const Duration(milliseconds: 200),
+                            () => convertWidgetToImageAndShare(
+                                context, _cardKey, meme.title));
+                      },
                     ),
                   ],
                 ),
