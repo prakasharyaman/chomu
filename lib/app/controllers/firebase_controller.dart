@@ -24,6 +24,7 @@ class FirebaseController extends GetxController {
   void onReady() {
     //log app open
     firebaseAnalytics.logAppOpen();
+
     //run every time auth state changes
     ever(user, handleAuthChanged);
 

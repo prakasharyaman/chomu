@@ -2,11 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:simple_animations/stateless_animation/play_animation.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
-import '../../../models/meme_model.dart';
-import '../controller/home_controller.dart';
+import '../../models/meme_model.dart';
+import '../../pages/home/tabs/hot/controller/hot_controller.dart';
 
 class MemeWidget extends StatefulWidget {
   const MemeWidget({Key? key, required this.meme, required this.height})
@@ -21,7 +19,7 @@ class _MemeWidgetState extends State<MemeWidget> {
   late Meme meme;
   late double height;
   bool isPostLiked = false;
-  HomeController homeController = Get.find();
+  HotController hotController = Get.find();
   bool isPostBookMarked = false;
   @override
   void initState() {
@@ -38,7 +36,7 @@ class _MemeWidgetState extends State<MemeWidget> {
         key: Key(meme.url),
         onVisibilityChanged: (VisibilityInfo info) {
           if (info.visibleFraction == 1) {
-            homeController.saveMemeAsWatched(url: meme.url);
+            hotController.saveMemeAsWatched(url: meme.url);
           }
         },
         child: GestureDetector(
@@ -96,24 +94,29 @@ class _MemeWidgetState extends State<MemeWidget> {
 
               // Image
               Container(
-                height: height * 0.5,
-                width: double.infinity,
                 color: Get.isDarkMode ? Colors.black38 : Colors.grey.shade100,
                 child: Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: CachedNetworkImage(
+                    filterQuality: FilterQuality.low,
                     fit: BoxFit.contain,
                     width: double.infinity,
                     imageUrl: meme.url,
-                    height: height * 0.45,
                     progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Center(
-                            child: CircularProgressIndicator(
-                      value: downloadProgress.progress,
-                    )),
-                    errorWidget: (context, url, error) => const Center(
-                      child: Icon(
-                        Icons.error,
+                        (context, url, downloadProgress) => SizedBox(
+                      height: height * 0.4,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        value: downloadProgress.progress,
+                      )),
+                    ),
+                    errorWidget: (context, url, error) => SizedBox(
+                      height: height * 0.3,
+                      width: double.infinity,
+                      child: const Center(
+                        child: Icon(
+                          Icons.error,
+                        ),
                       ),
                     ),
                   ),

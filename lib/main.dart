@@ -10,8 +10,10 @@ import 'package:get_storage/get_storage.dart';
 import 'app/app.dart';
 
 import 'app/controllers/firebase_controller.dart';
+import 'pages/home/tabs/hot/controller/hot_controller.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   //Get Storage init
   await GetStorage.init();
 
@@ -26,10 +28,12 @@ void main() async {
   FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver firebaseAnalyticsObserver =
       FirebaseAnalyticsObserver(analytics: firebaseAnalytics);
+
+  // put controllers
   Get.put<FirebaseController>(
       FirebaseController(firebaseAnalytics: firebaseAnalytics));
   Get.put<HomeController>(HomeController());
-  // put controllers
+  Get.put<HotController>(HotController());
   putControllers();
 
   runApp(GetMaterialApp(

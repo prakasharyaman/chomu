@@ -232,6 +232,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.13"
+  flashy_tab_bar2:
+    dependency: "direct main"
+    description:
+      name: flashy_tab_bar2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4"
   flex_color_scheme:
     dependency: "direct main"
     description:

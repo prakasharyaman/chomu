@@ -48,6 +48,7 @@ dependencies:
   cached_network_image: ^3.2.0
   simple_animations: ^4.0.1
   visibility_detector: ^0.2.2
+  flashy_tab_bar2: ^0.0.4
 
 dev_dependencies:
   flutter_test:
