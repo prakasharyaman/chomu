@@ -43,7 +43,7 @@ class _MemeWidgetState extends State<MemeWidget> {
         child: VisibilityDetector(
           key: Key(meme.url),
           onVisibilityChanged: (VisibilityInfo info) {
-            if (info.visibleFraction > 0.9) {
+            if (info.visibleFraction > 0.8) {
               if (watched == false) {
                 watched = true;
                 hotController.saveMemeAsWatched(url: meme.url);
@@ -75,10 +75,14 @@ class _MemeWidgetState extends State<MemeWidget> {
                           : Icons.bookmark_add_outlined,
                     ),
                     onPressed: () {
+                      if (!isPostBookMarked) {
+                        hotController.bookmarkMeme(meme: meme);
+                      } else {
+                        hotController.removeBookmarkMeme(meme: meme);
+                      }
                       setState(() {
                         isPostBookMarked = !isPostBookMarked;
                       });
-                      hotController.bookmarkMeme(meme: meme);
                     },
                   ),
                   DropdownButtonHideUnderline(

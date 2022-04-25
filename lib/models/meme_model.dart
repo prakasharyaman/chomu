@@ -23,10 +23,22 @@ class Meme {
       subReddit: json['subreddit'] as String,
       title: json['title'] as String,
       url: json['url'] as String,
-      preview: json['preview'] as List<String>,
+      preview: json['preview'] as List<dynamic>,
       nsfw: json['nsfw'] as bool,
       spoiler: json['spoiler'] as bool,
       ups: json['ups'] as int,
     );
   }
+  static Map<String, dynamic> toJson(Meme meme) => {
+        'id': meme.id,
+        'author': meme.author,
+        'postLink': meme.postLink,
+        'subreddit': meme.subReddit,
+        'title': meme.title,
+        'url': meme.url,
+        'preview': meme.preview,
+        'nsfw': meme.nsfw,
+        'spoiler': meme.spoiler,
+        'ups': meme.ups,
+      };
 }

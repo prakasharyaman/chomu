@@ -1,26 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chomu/pages/stories/controller/stories_controller.dart';
+import 'package:chomu/models/meme_model.dart';
+import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-import '../../../models/meme_model.dart';
+
 import '../../../services/share_service.dart';
 
-class StoryPage extends StatefulWidget {
-  const StoryPage({Key? key, required this.meme}) : super(key: key);
+class BookMarkMemePage extends StatefulWidget {
+  const BookMarkMemePage({Key? key, required this.meme}) : super(key: key);
   final Meme meme;
   @override
-  State<StoryPage> createState() => _StoryPageState();
+  State<BookMarkMemePage> createState() => _BookMarkMemePageState();
 }
 
-class _StoryPageState extends State<StoryPage> {
+class _BookMarkMemePageState extends State<BookMarkMemePage> {
   late Meme meme;
   bool watched = false;
   bool isPostLiked = false;
 
-  bool isPostBookMarked = false;
-  StoriesController storiesController = Get.find();
+  bool isPostBookMarked = true;
+  HotController hotController = Get.find();
   @override
   void initState() {
     super.initState();
@@ -32,17 +33,8 @@ class _StoryPageState extends State<StoryPage> {
     GlobalKey _cardKey = GlobalKey();
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return VisibilityDetector(
-      key: Key(meme.url),
-      onVisibilityChanged: (VisibilityInfo info) {
-        if (info.visibleFraction > 0.9) {
-          if (watched != true) {
-            storiesController.saveMemeAsWatched(url: meme.url);
-            watched = true;
-          }
-        }
-      },
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
           // Image
           Align(
@@ -157,8 +149,7 @@ class _StoryPageState extends State<StoryPage> {
                           switch (value) {
                             case MenuItems.remove:
                               //Do something
-                              storiesController.saveMemeAsWatched(
-                                  url: meme.url);
+                              hotController.saveMemeAsWatched(url: meme.url);
                               Get.snackbar(
                                 'Refresh ',
                                 'We have removed this meme',
@@ -167,10 +158,10 @@ class _StoryPageState extends State<StoryPage> {
 
                               break;
                             case MenuItems.report:
-                              storiesController.reportMeme(meme: meme);
+                              hotController.reportMeme(meme: meme);
                               break;
                             case MenuItems.download:
-                              storiesController.downloadMemeUrl(
+                              hotController.downloadMemeUrl(
                                   url: meme.url, fileName: meme.title);
                               break;
                             case MenuItems.cancel:
@@ -229,9 +220,9 @@ class _StoryPageState extends State<StoryPage> {
                     GestureDetector(
                       onTap: () {
                         if (!isPostBookMarked) {
-                          storiesController.bookmarkMeme(meme: meme);
+                          hotController.bookmarkMeme(meme: meme);
                         } else {
-                          storiesController.removeBookmarkMeme(meme: meme);
+                          hotController.removeBookmarkMeme(meme: meme);
                         }
                         setState(() {
                           isPostBookMarked = !isPostBookMarked;

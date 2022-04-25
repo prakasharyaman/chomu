@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -85,10 +87,13 @@ class StoriesController extends GetxController {
     }
     // trying to add a meme that is watched
     try {
-      watchedMemeList.add(url);
-      await getStorage.write('watchedMemesList', watchedMemeList);
+      // check to see if it already exists
+      if (!watchedMemeList.contains(url)) {
+        watchedMemeList.add(url);
+        await getStorage.write('watchedMemesList', watchedMemeList);
+      }
     } catch (e) {
-      throw Exception('Error Saving Meme');
+      // throw Exception('Error Saving Meme');
     }
   }
 
@@ -141,17 +146,55 @@ class StoriesController extends GetxController {
     }
     // trying to add a meme that is watched
     try {
-      bookMarkMemesList.add(meme.toString());
+      String json = jsonEncode(meme,
+          toEncodable: (meme) => meme is Meme
+              ? Meme.toJson(meme)
+              : throw UnsupportedError('Cannot save the meme'));
+      bookMarkMemesList.add(json);
       await getStorage.write('bookMarkMemesList', bookMarkMemesList);
       Get.snackbar(
-        'Meme Bookmarked',
-        'Thank you for bookmarking this meme',
+        'Post Bookmarked',
+        'You can view your bookmarks in the Profiles tab',
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
       errorMessage = e.toString();
       Get.snackbar(
         'Error Saving Meme!',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+// remove meme as bookmark
+  removeBookmarkMeme({required Meme meme}) async {
+    var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
+
+    if (bookMarkMemesList == null) {
+      bookMarkMemesList = [];
+    } else {
+      bookMarkMemesList = bookMarkMemesList as List<dynamic>;
+    }
+    // trying to add a meme that is watched
+    try {
+      String json = jsonEncode(meme,
+          toEncodable: (meme) => meme is Meme
+              ? Meme.toJson(meme)
+              : throw UnsupportedError('Cannot remove the post'));
+      if (bookMarkMemesList.contains(json)) {
+        bookMarkMemesList.remove(json);
+        await getStorage.write('bookMarkMemesList', bookMarkMemesList);
+        Get.snackbar(
+          'Post Bookmarked Removed',
+          'We have removed the post from your bookmarks',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      errorMessage = e.toString();
+      Get.snackbar(
+        'Error Removing Meme!',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
