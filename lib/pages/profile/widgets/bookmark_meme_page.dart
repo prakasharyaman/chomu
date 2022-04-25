@@ -4,7 +4,6 @@ import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../services/share_service.dart';
 

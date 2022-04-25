@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chomu/repository/meme_repository.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -152,7 +151,8 @@ class _MemeWidgetState extends State<MemeWidget> {
                 padding: const EdgeInsets.only(bottom: 8.0, left: 8),
                 child: Text(
                   meme.title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
 

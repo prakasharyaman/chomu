@@ -37,10 +37,9 @@ void convertWidgetToImageAndShare(
     imgFile.writeAsBytes(pngBytes).then((value) async {
       await Share.shareFiles(imagePaths,
           subject: 'CHOMU',
-          text: 'Hey check out this *MEME* from *CHOMU*.\n\n' +
-              'https://play.google.com/store/apps/details?id=android.chomu' +
-              '\n' +
-              title,
+          text:
+              'Hey check out this *MEME* from *CHOMU*.\n\n https://play.google.com/store/apps/details?id=android.chomu \n' +
+                  title,
           sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
     }).catchError((onError) {
       print(onError);
