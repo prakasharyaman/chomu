@@ -1,8 +1,13 @@
+import 'dart:math';
+
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chomu/app/controllers/theme_controller.dart';
+import 'package:chomu/app/notificationHandler/notification_handler.dart';
 import 'package:chomu/firebase_options.dart';
 import 'package:chomu/pages/home/controller/home_controller.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +28,25 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // awesome notifications
+  AwesomeNotifications().initialize(
+    'resource://drawable/ic_notification',
+    [
+      NotificationChannel(
+          channelGroupKey: 'meme',
+          channelKey: 'meme',
+          channelName: 'Memes',
+          channelDescription: 'Just a random reminder to be happy',
+          defaultColor: Colors.purpleAccent,
+          importance: NotificationImportance.High),
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+          channelGroupkey: 'meme', channelGroupName: 'Memes'),
+    ],
+  );
+
   //TODO : uncomment crashlytics
 
 // // Pass all uncaught errors from the framework to Crashlytics.
@@ -33,6 +57,8 @@ void main() async {
   FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver firebaseAnalyticsObserver =
       FirebaseAnalyticsObserver(analytics: firebaseAnalytics);
+  // firebase messaging
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // put controllers
   Get.put<FirebaseController>(
@@ -40,7 +66,6 @@ void main() async {
   Get.put<HomeController>(HomeController());
   Get.put<HotController>(HotController());
   Get.put<ThemeController>(ThemeController());
-  putControllers();
 
   runApp(GetMaterialApp(
     title: "Chomu",
@@ -48,11 +73,44 @@ void main() async {
     darkTheme: FlexThemeData.dark(scheme: FlexScheme.deepPurple),
     themeMode: ThemeMode.system,
     navigatorObservers: [firebaseAnalyticsObserver],
-    home: const App(),
-    getPages: [
-      GetPage(name: "/", page: () => const App()),
-    ],
+    home: const NotificationMessageHandler(child: App()),
   ));
 }
 
-putControllers() {}
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+
+  print('Handling a background message: ${message.messageId}');
+
+  if (!AwesomeStringUtils.isNullOrEmpty(message.notification?.title,
+          considerWhiteSpaceAsEmpty: true) ||
+      !AwesomeStringUtils.isNullOrEmpty(message.notification?.body,
+          considerWhiteSpaceAsEmpty: true)) {
+    print('message also contained a notification: ${message.notification}');
+
+    String? imageUrl;
+    imageUrl ??= message.notification!.android?.imageUrl;
+    imageUrl ??= message.notification!.apple?.imageUrl;
+
+    Map<String, dynamic> notificationAdapter = {
+      NOTIFICATION_CHANNEL_KEY: 'basic_channel',
+      NOTIFICATION_ID: message.data[NOTIFICATION_CONTENT]?[NOTIFICATION_ID] ??
+          message.messageId ??
+          Random().nextInt(2147483647),
+      NOTIFICATION_TITLE: message.data[NOTIFICATION_CONTENT]
+              ?[NOTIFICATION_TITLE] ??
+          message.notification?.title,
+      NOTIFICATION_BODY: message.data[NOTIFICATION_CONTENT]
+              ?[NOTIFICATION_BODY] ??
+          message.notification?.body,
+      NOTIFICATION_LAYOUT:
+          AwesomeStringUtils.isNullOrEmpty(imageUrl) ? 'Default' : 'BigPicture',
+      NOTIFICATION_BIG_PICTURE: imageUrl
+    };
+
+    AwesomeNotifications().createNotificationFromJsonData(notificationAdapter);
+  } else {
+    AwesomeNotifications().createNotificationFromJsonData(message.data);
+  }
+}

@@ -55,6 +55,7 @@ dependencies:
   share_plus: ^4.0.4
   settings_ui: ^2.0.2  
   url_launcher: ^6.1.0
+  awesome_notifications: 0.6.20
 
 
 dev_dependencies:

@@ -2,6 +2,7 @@
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -32,6 +33,8 @@ class FirebaseController extends GetxController {
     user.bindStream(userStream);
 
     super.onReady();
+
+    FirebaseMessaging.instance.subscribeToTopic('meme');
   }
 
   getUid() {

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../../../common/enum/status.dart';
@@ -21,6 +23,17 @@ class HotController extends GetxController {
     // deleteBookMarksList();
   }
 
+// // request to show local notifications
+//   requestLocalNotification() {
+//     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+//       if (!isAllowed) {
+//         // This is just a basic example. For real apps, you must show some
+//         // friendly dialog box before call the request method.
+//         // This is very important to not harm the user experience
+//         AwesomeNotifications().requestPermissionToSendNotifications();
+//       }
+//     });
+//   }
 // delete bookmarks
   // deleteBookMarksList() {
   //   getStorage.remove('bookMarkMemesList');

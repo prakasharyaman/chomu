@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -37,10 +38,17 @@ class Hot extends StatelessWidget {
                         // icon
                         GestureDetector(
                           onTap: () {
-                            var key = homeController.drawerOpenKey;
-                            if (key.currentState != null) {
-                              key.currentState!.openDrawer();
-                            }
+                            print('tapped');
+                            AwesomeNotifications().createNotification(
+                                content: NotificationContent(
+                                    id: 10,
+                                    channelKey: 'meme',
+                                    title: 'Meme',
+                                    body: 'Create'));
+                            // var key = homeController.drawerOpenKey;
+                            // if (key.currentState != null) {
+                            //   key.currentState!.openDrawer();
+                            // }
                           },
                           child: const CircleAvatar(
                             backgroundImage: CachedNetworkImageProvider(
