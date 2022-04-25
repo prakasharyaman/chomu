@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../../models/user_model.dart';
 
 class FirebaseController extends GetxController {
@@ -42,6 +43,7 @@ class FirebaseController extends GetxController {
     if (_firebaseUser?.uid != null) {
       userModel.value = UserModel(id: _firebaseUser.uid);
       firebaseAnalytics.setUserId(id: _firebaseUser.uid);
+      FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);
       print(userModel.value.id);
     } else if (_firebaseUser == null) {
       await signIn();

@@ -6,7 +6,6 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
 import 'app/app.dart';
 
 import 'app/controllers/firebase_controller.dart';
@@ -23,6 +22,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  //TODO : uncomment crashlytics
+
+// // Pass all uncaught errors from the framework to Crashlytics.
+//   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
   //firebase analytics
 

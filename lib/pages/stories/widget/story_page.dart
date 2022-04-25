@@ -16,7 +16,7 @@ class StoryPage extends StatefulWidget {
 
 class _StoryPageState extends State<StoryPage> {
   late Meme meme;
-
+  bool watched = false;
   bool isPostLiked = false;
 
   bool isPostBookMarked = false;
@@ -36,7 +36,10 @@ class _StoryPageState extends State<StoryPage> {
       key: Key(meme.url),
       onVisibilityChanged: (VisibilityInfo info) {
         if (info.visibleFraction > 0.9) {
-          storiesController.saveMemeAsWatched(url: meme.url);
+          if (watched != true) {
+            storiesController.saveMemeAsWatched(url: meme.url);
+            watched = true;
+          }
         }
       },
       child: Stack(
