@@ -5,12 +5,13 @@ import 'package:get/get.dart';
 import '../../../../common/enum/status.dart';
 import '../../../../common/memeWidget/meme_widget.dart';
 import '../../../splash/splash.dart';
+import '../../controller/home_controller.dart';
 import 'controller/hot_controller.dart';
 
 class Hot extends StatelessWidget {
   Hot({Key? key}) : super(key: key);
   final hotController = Get.find<HotController>();
-
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -27,16 +28,25 @@ class Hot extends StatelessWidget {
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
+                    automaticallyImplyLeading: false,
                     centerTitle: false,
                     floating: true,
                     title: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // icon
-                        const CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                              'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
-                          radius: 15,
+                        GestureDetector(
+                          onTap: () {
+                            var key = homeController.drawerOpenKey;
+                            if (key.currentState != null) {
+                              key.currentState!.openDrawer();
+                            }
+                          },
+                          child: const CircleAvatar(
+                            backgroundImage: CachedNetworkImageProvider(
+                                'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
+                            radius: 15,
+                          ),
                         ),
                         const SizedBox(width: 5),
                         //app Title

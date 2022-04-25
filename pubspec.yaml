@@ -53,6 +53,8 @@ dependencies:
   dropdown_button2: ^1.4.0
   image_downloader: ^0.31.0
   share_plus: ^4.0.4
+  settings_ui: ^2.0.2  
+  url_launcher: ^6.1.0
 
 
 dev_dependencies:

@@ -1,10 +1,13 @@
 import 'package:chomu/pages/profile/bindings/profile_bindings.dart';
 import 'package:chomu/pages/profile/profile.dart';
 import 'package:chomu/pages/stories/stories_player.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   static HomeController homeController = Get.find();
+  GlobalKey<ScaffoldState> drawerOpenKey = GlobalKey<ScaffoldState>();
+
   var currentPage = 0;
 
   void changeCurrentPage(int index) {

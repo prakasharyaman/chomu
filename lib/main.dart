@@ -1,3 +1,4 @@
+import 'package:chomu/app/controllers/theme_controller.dart';
 import 'package:chomu/firebase_options.dart';
 import 'package:chomu/pages/home/controller/home_controller.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -38,6 +39,7 @@ void main() async {
       FirebaseController(firebaseAnalytics: firebaseAnalytics));
   Get.put<HomeController>(HomeController());
   Get.put<HotController>(HotController());
+  Get.put<ThemeController>(ThemeController());
   putControllers();
 
   runApp(GetMaterialApp(
