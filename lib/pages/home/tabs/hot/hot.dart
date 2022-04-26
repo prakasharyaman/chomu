@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/pages/error/error.dart';
@@ -94,8 +93,27 @@ class Hot extends StatelessWidget {
                   child: ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: false,
-                      itemCount: controller.memes.length,
+                      itemCount: controller.memes.length + 1,
                       itemBuilder: (BuildContext context, int index) {
+                        if (index == controller.memes.length) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Hit refresh or click on Stories to see more posts',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 8.0, bottom: 1),
+                                child: Icon(Icons.arrow_downward_rounded),
+                              )
+                            ],
+                          );
+                        }
                         return MemeWidget(
                           meme: controller.memes[index],
                           height: height,

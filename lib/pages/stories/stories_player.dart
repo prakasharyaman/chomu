@@ -1,4 +1,5 @@
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
+import 'package:chomu/pages/stories/widget/story_finished.dart';
 import 'package:chomu/pages/stories/widget/story_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,8 +27,11 @@ class StoryPlayer extends GetView<StoriesController> {
               return const Splash();
             case Status.loaded:
               return PageView.builder(
-                itemCount: controller.memes.length,
+                itemCount: controller.memes.length + 1,
                 itemBuilder: (context, index) {
+                  if (index == controller.memes.length) {
+                    return const StoriesFinished();
+                  }
                   return StoryPage(meme: controller.memes[index]);
                 },
                 scrollDirection: Axis.vertical,

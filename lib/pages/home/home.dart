@@ -127,7 +127,9 @@ class Home extends StatelessWidget {
     );
   }
 
-  void _launchUrl(_url) async {
+  void _launchUrl(url) async {
+    var _url = Uri.parse(url);
+
     if (!await launchUrl(_url)) throw 'Could not launch $_url';
   }
 }

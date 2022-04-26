@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/pages/profile/widgets/bookmark_meme_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,17 +16,41 @@ class BookMarkGridWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: GestureDetector(
-        onTap: () {
-          Get.to(BookMarkMemePage(meme: meme));
-        },
-        child: CachedNetworkImage(
-          imageUrl: meme.url,
-          placeholder: (context, url) =>
-              const Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) =>
-              const Center(child: Icon(Icons.error)),
-        ),
-      ),
+          onTap: () {
+            Get.to(BookMarkMemePage(meme: meme));
+          },
+          child: Image(
+            image: NetworkImage(meme.url),
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent? loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                  child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                    : null,
+              ));
+            },
+            errorBuilder:
+                (BuildContext context, Object object, StackTrace? stackTrace) {
+              return const Center(
+                child: Icon(
+                  Icons.error,
+                ),
+              );
+            },
+          )),
     );
   }
 }
+// no need to cache this image
+// CachedNetworkImage(
+//           imageUrl: meme.url,
+//           placeholder: (context, url) =>
+//               const Center(child: CircularProgressIndicator()),
+//           errorWidget: (context, url, error) =>
+//               const Center(child: Icon(Icons.error)),
+//         ),

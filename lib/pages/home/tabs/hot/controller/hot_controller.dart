@@ -1,7 +1,4 @@
 import 'dart:convert';
-
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../../../common/enum/status.dart';
@@ -57,7 +54,7 @@ class HotController extends GetxController {
       }
       if (memes.length > 3) {
         if (memes.length > 50) {
-          memes = memes.sublist(0, 50);
+          memes = memes.sublist(0, 31);
         }
         status.value = Status.loaded;
       } else {

@@ -39,7 +39,7 @@ class StoriesController extends GetxController {
       }
       if (memes.length > 3) {
         if (memes.length > 50) {
-          memes = memes.sublist(0, 50);
+          memes = memes.sublist(0, 31);
         }
         status.value = Status.loaded;
       } else {

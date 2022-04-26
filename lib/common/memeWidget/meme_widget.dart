@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -158,7 +157,6 @@ class _MemeWidgetState extends State<MemeWidget> {
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
-
               // Image
               GestureDetector(
                 onDoubleTap: () {
@@ -171,28 +169,39 @@ class _MemeWidgetState extends State<MemeWidget> {
                   color: Get.isDarkMode ? Colors.black38 : Colors.grey.shade100,
                   child: Padding(
                     padding: const EdgeInsets.all(3.0),
-                    child: CachedNetworkImage(
+                    child: Image(
                       filterQuality: FilterQuality.none,
                       fit: BoxFit.contain,
                       width: double.infinity,
-                      imageUrl: meme.url,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => SizedBox(
-                        height: height * 0.4,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          value: downloadProgress.progress,
-                        )),
-                      ),
-                      errorWidget: (context, url, error) => SizedBox(
-                        height: height * 0.3,
-                        width: double.infinity,
-                        child: const Center(
-                          child: Icon(
-                            Icons.error,
+                      image: NetworkImage(meme.url),
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return SizedBox(
+                          height: height * 0.4,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          )),
+                        );
+                      },
+                      errorBuilder: (BuildContext context, Object object,
+                          StackTrace? stackTrace) {
+                        return SizedBox(
+                          height: height * 0.3,
+                          width: double.infinity,
+                          child: const Center(
+                            child: Icon(
+                              Icons.error,
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
                 ),

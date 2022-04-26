@@ -1,8 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chomu/models/meme_model.dart';
 import 'package:chomu/pages/profile/controller/profile_controller.dart';
-import 'package:chomu/pages/stories/widget/story_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

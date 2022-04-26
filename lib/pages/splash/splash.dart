@@ -6,7 +6,7 @@ class Splash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var colorizeColors = [Colors.purple, Colors.purpleAccent];
+    var colorizeColors = [Colors.white54, Colors.white38];
     var width = MediaQuery.of(context).size.width;
 
     var colorizeTextStyle = const TextStyle(
@@ -14,44 +14,53 @@ class Splash extends StatelessWidget {
       fontWeight: FontWeight.bold,
     );
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: width / 2.5,
-            backgroundColor: Colors.purple,
-            child: CircleAvatar(
-              radius: width / 2.52,
-              backgroundImage: const AssetImage('assets/images/loading.gif'),
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/splashbackground.png'),
+            fit: BoxFit.fill,
           ),
-          const SizedBox(height: 20),
-          Center(
-            child: AnimatedTextKit(
-              animatedTexts: [
-                ColorizeAnimatedText(
-                  'Just A Moment ...',
-                  textStyle: colorizeTextStyle,
-                  colors: colorizeColors,
-                ),
-                ColorizeAnimatedText(
-                  'Your Content is Loading ...',
-                  textStyle: colorizeTextStyle,
-                  colors: colorizeColors,
-                ),
-                ColorizeAnimatedText(
-                  'Please Wait ...',
-                  textStyle: colorizeTextStyle,
-                  colors: colorizeColors,
-                ),
-              ],
-              isRepeatingAnimation: true,
-              onTap: () {
-                // print("Tap Event");
-              },
+        ),
+        child: Stack(
+          children: [
+            Align(
+              child: Center(
+                child:
+                    Image.asset('assets/images/logo.png', width: width * 0.5),
+              ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 30,
+              right: 0,
+              left: 0,
+              child: Center(
+                child: AnimatedTextKit(
+                  animatedTexts: [
+                    ColorizeAnimatedText(
+                      'Just A Moment ...',
+                      textStyle: colorizeTextStyle,
+                      colors: colorizeColors,
+                    ),
+                    ColorizeAnimatedText(
+                      'Your Content is Loading ...',
+                      textStyle: colorizeTextStyle,
+                      colors: colorizeColors,
+                    ),
+                    ColorizeAnimatedText(
+                      'Please Wait ...',
+                      textStyle: colorizeTextStyle,
+                      colors: colorizeColors,
+                    ),
+                  ],
+                  isRepeatingAnimation: true,
+                  onTap: () {
+                    // print("Tap Event");
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
