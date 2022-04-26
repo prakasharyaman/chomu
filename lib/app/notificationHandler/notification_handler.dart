@@ -5,6 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controllers/firebase_controller.dart';
+
 class NotificationMessageHandler extends StatefulWidget {
   final Widget child;
   const NotificationMessageHandler({Key? key, required this.child})
@@ -22,6 +24,8 @@ class _NotificationMessageHandlerState
       if (message.channelKey == "meme") {
         if (message.id != null) {
           if (message.payload != null) {
+            FirebaseController firebaseController = Get.find();
+            firebaseController.logFirebaseEvent(eventName: 'Notification');
             Get.dialog(Padding(
               padding: const EdgeInsets.all(15.0),
               child: Center(

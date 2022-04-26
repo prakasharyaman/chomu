@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';
 import '../../../services/share_service.dart';
 
@@ -25,6 +26,8 @@ class _StoryPageState extends State<StoryPage> {
   void initState() {
     super.initState();
     meme = widget.meme;
+    FirebaseController firebaseController = Get.find();
+    firebaseController.logFirebaseEvent(eventName: 'StoryView');
   }
 
   @override

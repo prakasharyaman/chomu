@@ -6,7 +6,10 @@ import 'package:chomu/pages/stories/widget/story_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/app.dart';
+import '../../app/controllers/firebase_controller.dart';
 import '../../common/enum/status.dart';
+import '../error/error.dart';
 import '../splash/splash.dart';
 import 'widgets/book_mark_grid_widget.dart';
 
@@ -15,6 +18,9 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseController firebaseController = Get.find();
+    firebaseController.logCurrentScreen(
+        screenClass: 'Profile', screenName: 'Profile Player');
     return Scaffold(
       body: GetBuilder<ProfileController>(
         init: ProfileController(),
@@ -25,7 +31,12 @@ class Profile extends StatelessWidget {
             case Status.loaded:
               return ProfilePage();
             case Status.error:
-              return const Splash();
+              return ErrorScreen(
+                error: 'There was a problem while showing the profile',
+                onTap: () {
+                  Get.offAll(const App());
+                },
+              );
           }
         }),
       ),

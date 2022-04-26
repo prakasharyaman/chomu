@@ -27,7 +27,9 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    firebaseController.logCurrentScreen(screenName: 'Settings Screen');
+    FirebaseController firebaseController = Get.find();
+    firebaseController.logCurrentScreen(
+        screenClass: 'Settings', screenName: 'Settings');
   }
 
   @override

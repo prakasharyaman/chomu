@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import '../../app/controllers/firebase_controller.dart';
 import '../../models/meme_model.dart';
 import '../../pages/home/tabs/hot/controller/hot_controller.dart';
 import '../../pages/stories/widget/story_page.dart';
@@ -30,6 +31,8 @@ class _MemeWidgetState extends State<MemeWidget> {
     super.initState();
     meme = widget.meme;
     height = widget.height;
+    FirebaseController firebaseController = Get.find();
+    firebaseController.logFirebaseEvent(eventName: 'MemeView');
   }
 
   @override

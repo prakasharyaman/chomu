@@ -45,7 +45,8 @@ class FirebaseController extends GetxController {
     //get user data from firestore
     if (_firebaseUser?.uid != null) {
       userModel.value = UserModel(id: _firebaseUser.uid);
-      firebaseAnalytics.setUserId(id: _firebaseUser.uid);
+      await firebaseAnalytics.logLogin();
+      await firebaseAnalytics.setUserId(id: _firebaseUser.uid);
       FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);
       print(userModel.value.id);
     } else if (_firebaseUser == null) {
@@ -75,14 +76,17 @@ class FirebaseController extends GetxController {
         'Uh Oh!',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.purpleAccent,
       );
     }
   }
 
-  logCurrentScreen({required String screenName}) async {
+  logCurrentScreen(
+      {required String screenClass, required String screenName}) async {
     try {
       await firebaseAnalytics.setCurrentScreen(screenName: screenName);
+      await firebaseAnalytics.logScreenView(
+          screenClass: screenClass, screenName: screenName);
     } catch (e) {
       print(e);
     }
@@ -95,4 +99,12 @@ class FirebaseController extends GetxController {
       print(e);
     }
   }
+
+  // logInAnalytics() async {
+  //   try {
+  //     await firebaseAnalytics.
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 }

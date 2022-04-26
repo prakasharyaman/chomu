@@ -1,8 +1,11 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chomu/app/controllers/firebase_controller.dart';
+import 'package:chomu/pages/error/error.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../app/app.dart';
 import '../../../../common/enum/status.dart';
 import '../../../../common/memeWidget/meme_widget.dart';
 import '../../../splash/splash.dart';
@@ -16,7 +19,8 @@ class Hot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
-
+    FirebaseController firebaseController = Get.find();
+    firebaseController.logCurrentScreen(screenClass: 'Hot', screenName: 'Hot');
     return GetBuilder<HotController>(
       init: HotController(),
       builder: (controller) => Obx(() {
@@ -38,17 +42,10 @@ class Hot extends StatelessWidget {
                         // icon
                         GestureDetector(
                           onTap: () {
-                            print('tapped');
-                            AwesomeNotifications().createNotification(
-                                content: NotificationContent(
-                                    id: 10,
-                                    channelKey: 'meme',
-                                    title: 'Meme',
-                                    body: 'Create'));
-                            // var key = homeController.drawerOpenKey;
-                            // if (key.currentState != null) {
-                            //   key.currentState!.openDrawer();
-                            // }
+                            var key = homeController.drawerOpenKey;
+                            if (key.currentState != null) {
+                              key.currentState!.openDrawer();
+                            }
                           },
                           child: const CircleAvatar(
                             backgroundImage: CachedNetworkImageProvider(
@@ -109,8 +106,11 @@ class Hot extends StatelessWidget {
             );
 
           case Status.error:
-            return Center(
-              child: Text('Error'),
+            return ErrorScreen(
+              error: 'There was a problem loading the posts',
+              onTap: () {
+                Get.offAll(const App());
+              },
             );
         }
       }),

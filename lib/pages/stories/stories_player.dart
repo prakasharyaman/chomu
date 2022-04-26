@@ -3,7 +3,10 @@ import 'package:chomu/pages/stories/widget/story_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/app.dart';
+import '../../app/controllers/firebase_controller.dart';
 import '../../common/enum/status.dart';
+import '../error/error.dart';
 import '../splash/splash.dart';
 
 class StoryPlayer extends GetView<StoriesController> {
@@ -11,6 +14,9 @@ class StoryPlayer extends GetView<StoriesController> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseController firebaseController = Get.find();
+    firebaseController.logCurrentScreen(
+        screenClass: 'Story Player', screenName: 'Story Player');
     return Scaffold(
       body: GetBuilder<StoriesController>(
         init: StoriesController(),
@@ -27,8 +33,11 @@ class StoryPlayer extends GetView<StoriesController> {
                 scrollDirection: Axis.vertical,
               );
             case Status.error:
-              return Center(
-                child: Text('Error'),
+              return ErrorScreen(
+                error: 'There was a problem while showing the stories',
+                onTap: () {
+                  Get.offAll(const App());
+                },
               );
           }
         }),

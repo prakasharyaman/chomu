@@ -2,6 +2,7 @@ import 'package:chomu/pages/splash/splash.dart';
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../profile/bindings/profile_bindings.dart';
 import '../profile/profile.dart';
@@ -74,7 +75,7 @@ class Home extends StatelessWidget {
                     Get.to(const Profile(), binding: ProfileBindings());
                   },
                   leading: const Icon(Icons.person_rounded),
-                  title: const Text('Profile'),
+                  title: const Text('Account'),
                 ),
                 //settings
                 ListTile(
@@ -93,6 +94,16 @@ class Home extends StatelessWidget {
                   },
                   leading: const Icon(Icons.contact_mail),
                   title: const Text('Contact'),
+                ),
+                // contact , website
+                ListTile(
+                  onTap: () {
+                    Share.share(
+                        'Check Out This App Chomu \n https://play.google.com/store/apps/details?id=com.android.chomu',
+                        subject: 'Download Chomu 😂');
+                  },
+                  leading: const Icon(Icons.share_rounded),
+                  title: const Text('Share App'),
                 ),
 
                 const Spacer(),
