@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:285288682772:android:1d38d6c989fd2eb6a6de01",
+        "mobilesdk_app_id": "1:285288682772:android:a46aa3dc93a4d7c7a6de01",
         "android_client_info": {
-          "package_name": "com.android.chomu"
+          "package_name": "com.otft.chomu"
         }
       },
       "oauth_client": [
