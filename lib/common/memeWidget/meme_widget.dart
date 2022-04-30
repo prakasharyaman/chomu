@@ -192,6 +192,10 @@ class _MemeWidgetState extends State<MemeWidget> {
                       },
                       errorBuilder: (BuildContext context, Object object,
                           StackTrace? stackTrace) {
+                        print(
+                            'Image threw an error \n Reporting to the developer');
+                        hotController.reportMeme(meme: meme, hideSnack: true);
+
                         return SizedBox(
                           height: height * 0.3,
                           width: double.infinity,

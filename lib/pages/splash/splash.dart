@@ -26,7 +26,7 @@ class Splash extends StatelessWidget {
             Align(
               child: Center(
                 child:
-                    Image.asset('assets/images/logo.png', width: width * 0.5),
+                    Image.asset('assets/images/logo.png', width: width * 0.4),
               ),
             ),
             Positioned(

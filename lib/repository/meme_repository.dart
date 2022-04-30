@@ -9,6 +9,7 @@ class MemeRepository {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   DateTime dateTime = DateTime.now();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
 // get Date in format of server
   getDate() {
     var date = '';
@@ -38,7 +39,7 @@ class MemeRepository {
 // fetch memes we got Today
   getMemes() async {
     // check if user is logged in
-    if (1 == 1) {
+    if (firebaseAuth.currentUser != null) {
       var date = await getDate();
       var memesSnapshot = await FirebaseFirestore.instance
           .collection('memes')
@@ -84,7 +85,8 @@ class MemeRepository {
         throw Exception('No memes found');
       }
     } else {
-      throw Exception('No user found');
+      getMemes();
+      throw Exception('No user found try Reloading the page');
     }
   }
 

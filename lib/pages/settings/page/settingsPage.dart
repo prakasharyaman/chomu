@@ -47,8 +47,8 @@ class _SettingsPageState extends State<SettingsPage> {
               title: const Text('Language'),
               description: const Text('English'),
               onPressed: (i) {
-                Get.snackbar('Language',
-                    'We are currenlty supporting English and Hindi only !',
+                Get.snackbar(
+                    'Language', 'We are currenlty supporting English only !',
                     snackPosition: SnackPosition.BOTTOM);
               },
             ),
@@ -98,7 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Text(firebaseController.getUid() ?? 'Not Logged In'),
                 onPressed: (i) {
                   Get.snackbar('Id ?',
-                      'This id is crucial to provide you with news and give you the best experience.',
+                      'This id is crucial to provide you with posts and give you the best experience.',
                       snackPosition: SnackPosition.BOTTOM);
                 },
               ),

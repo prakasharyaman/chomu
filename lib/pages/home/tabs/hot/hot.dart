@@ -93,6 +93,7 @@ class Hot extends StatelessWidget {
                   child: ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: false,
+                      cacheExtent: height,
                       itemCount: controller.memes.length + 1,
                       itemBuilder: (BuildContext context, int index) {
                         if (index == controller.memes.length) {

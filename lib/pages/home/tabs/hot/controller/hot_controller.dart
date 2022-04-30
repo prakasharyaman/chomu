@@ -6,7 +6,7 @@ import '../../../../../models/meme_model.dart';
 import '../../../../../repository/meme_repository.dart';
 
 class HotController extends GetxController {
-  static HotController freshController = Get.find();
+  static HotController hotController = Get.find();
   Rx<Status> status = Status.loading.obs;
   MemeRepository memeRepository = MemeRepository();
   final getStorage = GetStorage();
@@ -132,21 +132,26 @@ class HotController extends GetxController {
   }
 
   // report meme
-  reportMeme({required Meme meme}) async {
+  reportMeme({required Meme meme, bool hideSnack = false}) async {
     try {
       await memeRepository.reportMeme(id: meme.id, meme: meme);
-      Get.snackbar(
-        'Meme Reported',
-        'Thank you for reporting this meme',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (!hideSnack) {
+        Get.snackbar(
+          'Meme Reported',
+          'Thank you for reporting this meme',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } catch (e) {
       errorMessage = e.toString();
-      Get.snackbar(
-        'Uh Oh!',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (!hideSnack) {
+        Get.snackbar(
+          'Uh Oh!',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+      print(e);
     }
   }
 
