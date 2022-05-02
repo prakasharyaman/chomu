@@ -64,7 +64,6 @@ void main() async {
   Get.put<FirebaseController>(
       FirebaseController(firebaseAnalytics: firebaseAnalytics));
   Get.put<HomeController>(HomeController());
-  Get.put<HotController>(HotController());
   Get.put<ThemeController>(ThemeController());
 
   runApp(GetMaterialApp(

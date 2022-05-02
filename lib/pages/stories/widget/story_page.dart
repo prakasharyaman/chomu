@@ -56,39 +56,47 @@ class _StoryPageState extends State<StoryPage> {
                 padding: const EdgeInsets.all(3.0),
                 child: RepaintBoundary(
                   key: _cardKey,
-                  child: Image(
-                    filterQuality: FilterQuality.none,
-                    fit: BoxFit.contain,
-                    width: double.infinity,
-                    image: NetworkImage(meme.url),
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return SizedBox(
-                        height: height * 0.4,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                        )),
-                      );
+                  child: GestureDetector(
+                    onDoubleTap: () {
+                      setState(() {
+                        isPostLiked = !isPostLiked;
+                        meme.ups += isPostLiked ? 1 : -1;
+                      });
                     },
-                    errorBuilder: (BuildContext context, Object object,
-                        StackTrace? stackTrace) {
-                      return SizedBox(
-                        height: height * 0.3,
-                        width: double.infinity,
-                        child: const Center(
-                          child: Icon(
-                            Icons.error,
+                    child: Image(
+                      filterQuality: FilterQuality.none,
+                      fit: BoxFit.contain,
+                      width: double.infinity,
+                      image: NetworkImage(meme.url),
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return SizedBox(
+                          height: height * 0.4,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          )),
+                        );
+                      },
+                      errorBuilder: (BuildContext context, Object object,
+                          StackTrace? stackTrace) {
+                        return SizedBox(
+                          height: height * 0.3,
+                          width: double.infinity,
+                          child: const Center(
+                            child: Icon(
+                              Icons.error,
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

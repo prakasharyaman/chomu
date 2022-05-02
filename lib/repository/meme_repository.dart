@@ -85,51 +85,7 @@ class MemeRepository {
         throw Exception('No memes found');
       }
     } else {
-      await firebaseAuth.signInAnonymously();
-      var date = await getDate();
-      var memesSnapshot = await FirebaseFirestore.instance
-          .collection('memes')
-          .doc(date)
-          .collection('memes')
-          .get();
-
-      if (memesSnapshot.docs.isNotEmpty) {
-        List<Meme> memesList = [];
-        for (var memeSnapshot in memesSnapshot.docs) {
-          var memeJson = memeSnapshot.data();
-          var memeSnapshotId = memeSnapshot.id;
-
-          if (memeJson['author'] != null &&
-              memeJson['postLink'] != null &&
-              memeJson['subreddit'] != null &&
-              memeJson['title'] != null &&
-              memeJson['url'] != null &&
-              memeJson['preview'] != null &&
-              memeJson['nsfw'] != null &&
-              memeJson['spoiler'] != null &&
-              memeJson['ups'] != nullptr) {
-            Meme meme = Meme(
-                id: memeSnapshotId,
-                author: memeJson['author'],
-                postLink: memeJson['postLink'],
-                subReddit: memeJson['subreddit'],
-                title: memeJson['title'],
-                url: memeJson['url'],
-                preview: memeJson['preview'],
-                nsfw: memeJson['nsfw'],
-                spoiler: memeJson['spoiler'],
-                ups: memeJson['ups']);
-            memesList.add(meme);
-          }
-        }
-        if (memesList.length > 2) {
-          return memesList;
-        } else {
-          throw Exception('Not Enough Memes Found');
-        }
-      } else {
-        throw Exception('No memes found');
-      }
+      throw Exception('User not logged in try opening app again');
     }
   }
 

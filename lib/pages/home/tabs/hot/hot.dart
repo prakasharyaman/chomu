@@ -11,9 +11,9 @@ import '../../../splash/splash.dart';
 import '../../controller/home_controller.dart';
 import 'controller/hot_controller.dart';
 
-class Hot extends StatelessWidget {
+class Hot extends GetView<HotController> {
   Hot({Key? key}) : super(key: key);
-  final hotController = Get.find<HotController>();
+
   final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../../models/user_model.dart';
+import '../../pages/home/tabs/hot/controller/hot_controller.dart';
 
 class FirebaseController extends GetxController {
   //analytics variables

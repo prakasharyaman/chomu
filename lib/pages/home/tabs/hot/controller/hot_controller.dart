@@ -16,6 +16,7 @@ class HotController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     getMemes();
     // deleteBookMarksList();
   }

@@ -25,7 +25,8 @@ class _NotificationMessageHandlerState
         if (message.id != null) {
           if (message.payload != null) {
             FirebaseController firebaseController = Get.find();
-            firebaseController.logFirebaseEvent(eventName: 'Notification');
+            firebaseController.logFirebaseEvent(
+                eventName: 'Notification Click');
             Get.dialog(Padding(
               padding: const EdgeInsets.all(15.0),
               child: Center(
@@ -84,14 +85,11 @@ class _NotificationMessageHandlerState
                               padding: const EdgeInsets.all(5.0),
                               child: IconButton(
                                   onPressed: () {
+                                    Get.back();
                                     Get.snackbar('Thanks For FeedBack',
                                         'We will show more posts like this',
                                         snackPosition: SnackPosition.BOTTOM,
                                         duration: const Duration(seconds: 2));
-                                    Future.delayed(
-                                        const Duration(milliseconds: 2100), () {
-                                      Navigator.pop(context);
-                                    });
                                   },
                                   icon: const Icon(Icons.thumb_up)),
                             ),
