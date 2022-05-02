@@ -1,0 +1,5 @@
+<resources>
+    <!-- Example: Sets all  notification's accent color to purple by default.  -->
+    <!-- Color format is in ARGB. -->
+    <string name="default_notification_accent_color">844dd1ff</string>
+</resources>

@@ -38,10 +38,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-              <!-- setting notification icon-->
+              <!-- setting notification icon -->
               <meta-data
               android:name = "com.google.firebase.messaging.default_notification_icon"
-              android:resource = "@drawable/ic_stat_name"/>
+              android:resource = "@drawable/ic_notification"/>
 
               <meta-data
     android:name="com.google.firebase.messaging.default_notification_color"

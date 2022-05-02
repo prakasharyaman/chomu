@@ -39,7 +39,8 @@ void main() async {
           channelKey: 'meme',
           channelName: 'Memes',
           channelDescription: 'Just a random reminder to be happy',
-          defaultColor: Colors.purpleAccent,
+          defaultColor: const Color.fromARGB(132, 62, 94, 239),
+          ledColor: const Color.fromARGB(132, 62, 94, 239),
           importance: NotificationImportance.High),
     ],
     channelGroups: [
