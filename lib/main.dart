@@ -1,8 +1,11 @@
 import 'dart:math';
-
+import 'package:chomu/services/download_service.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chomu/app/controllers/theme_controller.dart';
+import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/app/notificationHandler/notification_handler.dart';
+import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
 import 'package:chomu/firebase_options.dart';
 import 'package:chomu/pages/home/controller/home_controller.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -14,9 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'app/app.dart';
-
 import 'app/controllers/firebase_controller.dart';
-import 'pages/home/tabs/hot/controller/hot_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,16 +43,40 @@ void main() async {
           defaultColor: const Color.fromARGB(132, 62, 94, 239),
           ledColor: const Color.fromARGB(132, 62, 94, 239),
           importance: NotificationImportance.High),
+      NotificationChannel(
+          channelGroupKey: 'updates',
+          channelKey: 'updates',
+          channelName: 'Updates',
+          channelDescription: 'Crucial App Update Notifications',
+          defaultColor: const Color.fromARGB(132, 62, 94, 239),
+          ledColor: const Color.fromARGB(132, 62, 94, 239),
+          importance: NotificationImportance.High),
+      NotificationChannel(
+          channelGroupKey: 'general',
+          channelKey: 'general',
+          channelName: 'General',
+          channelDescription: 'General Notifications',
+          defaultColor: const Color.fromARGB(132, 62, 94, 239),
+          ledColor: const Color.fromARGB(132, 62, 94, 239),
+          importance: NotificationImportance.High),
     ],
     channelGroups: [
       NotificationChannelGroup(
           channelGroupkey: 'meme', channelGroupName: 'Memes'),
+      NotificationChannelGroup(
+          channelGroupkey: 'updates', channelGroupName: 'Updates'),
+      NotificationChannelGroup(
+          channelGroupkey: 'general', channelGroupName: 'General'),
     ],
   );
 
 // Pass all uncaught errors from the framework to Crashlytics.
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
+// downloader initialize
+  await FlutterDownloader.initialize(
+      debug: true // optional: set false to disable printing logs to console
+      );
+  FlutterDownloader.registerCallback(downloadCallback);
   //firebase analytics
 
   FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
@@ -65,6 +90,7 @@ void main() async {
       FirebaseController(firebaseAnalytics: firebaseAnalytics));
   Get.put<HomeController>(HomeController());
   Get.put<ThemeController>(ThemeController());
+  Get.put<VolumeController>(VolumeController());
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,

@@ -72,10 +72,16 @@ class MemeRepository {
                 preview: memeJson['preview'],
                 nsfw: memeJson['nsfw'],
                 spoiler: memeJson['spoiler'],
-                ups: memeJson['ups']);
+                ups: memeJson['ups'],
+                source: 'reddit',
+                image460: '',
+                length: null,
+                type: '',
+                videoUrl: '');
             memesList.add(meme);
           }
         }
+
         if (memesList.length > 2) {
           return memesList;
         } else {
@@ -129,6 +135,63 @@ class MemeRepository {
       }
     } else {
       throw Exception('No user found');
+    }
+  }
+
+  getNinePosts() async {
+    // check if user is logged in
+    if (firebaseAuth.currentUser != null) {
+      print('getting nine posts');
+      var date = await getDate();
+      var memesSnapshot = await FirebaseFirestore.instance
+          .collection('memes')
+          .doc(date)
+          .collection('nineposts')
+          .get();
+
+      if (memesSnapshot.docs.isNotEmpty) {
+        List<Meme> memesList = [];
+        for (var memeSnapshot in memesSnapshot.docs) {
+          var memeJson = memeSnapshot.data();
+          var memeSnapshotId = memeSnapshot.id;
+
+          if (memeJson['images']['image460']['url'] != null &&
+              memeJson['type'] != null &&
+              memeJson['upVoteCount'] != null &&
+              memeJson['promoted'] == 0 &&
+              memeJson['nsfw'] != null &&
+              memeJson['nsfw'] == 0) {
+            Meme meme = Meme(
+                author: 'Trending',
+                id: memeSnapshotId,
+                image460: memeJson['images']['image460']['url'],
+                length: null,
+                nsfw: false,
+                postLink: '',
+                preview: [],
+                source: 'nine',
+                spoiler: false,
+                subReddit: 'Hot',
+                title: memeJson['title'],
+                type: memeJson['type'],
+                ups: memeJson['upVoteCount'],
+                url: memeJson['images']['image460']['url'],
+                videoUrl: memeJson['images']['image460sv'] != null
+                    ? memeJson['images']['image460sv']['url']
+                    : null);
+            memesList.add(meme);
+          }
+        }
+        if (memesList.length > 2) {
+          return memesList;
+        } else {
+          throw Exception('Not Enough Memes Found');
+        }
+      } else {
+        throw Exception('No memes found');
+      }
+    } else {
+      throw Exception('User not logged in try opening app again');
     }
   }
 }

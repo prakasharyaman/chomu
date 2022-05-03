@@ -1,12 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
+import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
 import 'package:chomu/pages/error/error.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 
 import '../../../../app/app.dart';
 import '../../../../common/enum/status.dart';
 import '../../../../common/memeWidget/meme_widget.dart';
+import '../../../../common/menu/dropdown_menu.dart';
+import '../../../../models/meme_model.dart';
 import '../../../splash/splash.dart';
 import '../../controller/home_controller.dart';
 import 'controller/hot_controller.dart';
@@ -14,7 +18,6 @@ import 'controller/hot_controller.dart';
 class Hot extends GetView<HotController> {
   Hot({Key? key}) : super(key: key);
 
-  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -27,103 +30,8 @@ class Hot extends GetView<HotController> {
           case Status.loading:
             return const Splash();
           case Status.loaded:
-            return NestedScrollView(
-              floatHeaderSlivers: true,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    automaticallyImplyLeading: false,
-                    centerTitle: false,
-                    floating: true,
-                    title: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // icon
-                        GestureDetector(
-                          onTap: () {
-                            var key = homeController.drawerOpenKey;
-                            if (key.currentState != null) {
-                              key.currentState!.openDrawer();
-                            }
-                          },
-                          child: const CircleAvatar(
-                            backgroundImage: CachedNetworkImageProvider(
-                                'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
-                            radius: 15,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        //app Title
-                        Text(
-                          "CHOMU",
-                          style: TextStyle(
-                              color: Get.isDarkMode
-                                  ? Colors.white
-                                  : Colors.deepPurple,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        //spacer
-                        const Spacer(),
-                        // icon search
-                        IconButton(
-                            onPressed: () {
-                              controller.getMemes();
-                            },
-                            iconSize: 25,
-                            icon: Icon(
-                              Icons.replay_rounded,
-                              color: Get.isDarkMode
-                                  ? Colors.white
-                                  : Colors.deepPurple,
-                            )),
-                      ],
-                    ),
-                    backgroundColor: Colors.transparent,
-                  ),
-                ];
-              },
-              body: Container(
-                decoration: kHomeBoxDecoration(),
-                margin: const EdgeInsets.only(left: 1, right: 1),
-                child: RefreshIndicator(
-                  displacement: 80,
-                  onRefresh: () async {
-                    controller.getMemes();
-                  },
-                  child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      shrinkWrap: false,
-                      cacheExtent: height,
-                      itemCount: controller.memes.length + 1,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index == controller.memes.length) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Hit refresh or click on Stories to see more posts',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 8.0, bottom: 1),
-                                child: Icon(Icons.arrow_downward_rounded),
-                              )
-                            ],
-                          );
-                        }
-                        return MemeWidget(
-                          meme: controller.memes[index],
-                          height: height,
-                        );
-                      }),
-                ),
-              ),
-            );
-
+            // Get.to(MyHomePage(title: 'sb'));
+            return HotPage();
           case Status.error:
             return ErrorScreen(
               error: 'There was a problem loading the posts',
@@ -133,6 +41,183 @@ class Hot extends GetView<HotController> {
             );
         }
       }),
+    );
+  }
+}
+
+class HotPage extends StatefulWidget {
+  const HotPage({Key? key}) : super(key: key);
+
+  @override
+  State<HotPage> createState() => _HotPageState();
+}
+
+class _HotPageState extends State<HotPage> {
+  final homeController = Get.find<HomeController>();
+  HotController controller = Get.find<HotController>();
+  bool showReport = false;
+  Meme? menuMeme;
+  @override
+  Widget build(BuildContext context) {
+    var height = Get.height;
+    var memes = controller.memes;
+    return Stack(
+      children: [
+        //content
+        NestedScrollView(
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                centerTitle: false,
+                floating: true,
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // icon
+                    GestureDetector(
+                      onTap: () {
+                        var key = homeController.drawerOpenKey;
+                        if (key.currentState != null) {
+                          key.currentState!.openDrawer();
+                        }
+                      },
+                      child: const CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(
+                            'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
+                        radius: 15,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    //app Title
+                    Text(
+                      "CHOMU",
+                      style: TextStyle(
+                          color:
+                              Get.isDarkMode ? Colors.white : Colors.deepPurple,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    //spacer
+                    const Spacer(),
+                    // icon search
+                    IconButton(
+                        onPressed: () {
+                          controller.getMemes();
+                        },
+                        iconSize: 25,
+                        icon: Icon(
+                          Icons.replay_rounded,
+                          color:
+                              Get.isDarkMode ? Colors.white : Colors.deepPurple,
+                        )),
+                  ],
+                ),
+                backgroundColor: Colors.transparent,
+              ),
+            ];
+          },
+          body: Container(
+            decoration: kHomeBoxDecoration(),
+            margin: const EdgeInsets.only(left: 1, right: 1),
+            child: RefreshIndicator(
+              displacement: 80,
+              onRefresh: () async {
+                controller.getMemes();
+              },
+              child: InViewNotifierList(
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  initialInViewIds: ['0'],
+                  isInViewPortCondition: (double deltaTop, double deltaBottom,
+                      double viewPortDimension) {
+                    return deltaTop < (0.5 * viewPortDimension) &&
+                        deltaBottom > (0.5 * viewPortDimension);
+                  },
+                  itemCount: memes.length + 1,
+                  builder: (BuildContext context, int index) {
+                    if (index == memes.length) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          // end of content
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Hit refresh or click on Stories to see more posts',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8.0, bottom: 1),
+                            child: Icon(Icons.arrow_downward_rounded),
+                          )
+                        ],
+                      );
+                    } else {
+                      if (memes[index].type == 'Animated') {
+                        // animated meme
+                        return LayoutBuilder(
+                          builder: (BuildContext context,
+                              BoxConstraints constraints) {
+                            return InViewNotifierWidget(
+                              id: '$index',
+                              builder: (BuildContext context, bool isInView,
+                                  Widget? child) {
+                                return VideoPostWidget(
+                                  play: isInView,
+                                  url: memes[index].videoUrl ?? '',
+                                  post: memes[index],
+                                  height: Get.height,
+                                  menuFunction: () {
+                                    setState(() {
+                                      menuMeme = memes[index];
+                                      showReport = !showReport;
+                                    });
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        );
+                      } else {
+                        // image meme
+                        return MemeWidget(
+                          height: Get.height,
+                          menuFunction: () {
+                            setState(() {
+                              menuMeme = memes[index];
+                              showReport = !showReport;
+                            });
+                          },
+                          meme: memes[index],
+                        );
+                      }
+                    }
+                  }),
+            ),
+          ),
+        ),
+        // menu
+        AnimatedPositioned(
+            top: showReport == false
+                ? MediaQuery.of(context).size.height * 1.5
+                : 150,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: DropDownMenu(
+                onClose: () {
+                  setState(() {
+                    showReport = !showReport;
+                  });
+                },
+                meme: menuMeme,
+              ),
+            ),
+            duration: const Duration(milliseconds: 500)),
+      ],
     );
   }
 
@@ -157,3 +242,59 @@ class Hot extends GetView<HotController> {
               ));
   }
 }
+// NestedScrollView(
+
+//               body: Container(
+//                 decoration: kHomeBoxDecoration(),
+//                 margin: const EdgeInsets.only(left: 1, right: 1),
+//                 child: RefreshIndicator(
+//                   displacement: 80,
+//                   onRefresh: () async {
+//                     controller.getMemes();
+//                   },
+//                   child: ListView.builder(
+//                       physics: const BouncingScrollPhysics(),
+//                       shrinkWrap: false,
+//                       cacheExtent: height,
+//                       itemCount: controller.memes.length + 1,
+//                       itemBuilder: (BuildContext context, int index) {
+//                         if (index == controller.memes.length) {
+//                         }
+//                         return MemeWidget(
+//                           meme: controller.memes[index],
+//                           height: height,
+//                         );
+//                       }),
+//                 ),
+//               ),
+//             );
+// ListView.builder(
+//                 physics: const BouncingScrollPhysics(),
+//                 shrinkWrap: false,
+//                 cacheExtent: Get.height,
+//                 itemCount: controller.memes.length + 1,
+//                 itemBuilder: (BuildContext context, int index) {
+//                   if (index == controller.memes.length) {
+//                     return Column(
+//                       crossAxisAlignment: CrossAxisAlignment.center,
+//                       children: const [
+//                         Padding(
+//                           padding: EdgeInsets.all(8.0),
+//                           child: Text(
+//                             'Hit refresh or click on Stories to see more posts',
+//                             textAlign: TextAlign.center,
+//                             style: TextStyle(fontWeight: FontWeight.bold),
+//                           ),
+//                         ),
+//                         Padding(
+//                           padding: EdgeInsets.only(top: 8.0, bottom: 1),
+//                           child: Icon(Icons.arrow_downward_rounded),
+//                         )
+//                       ],
+//                     );
+//                   }
+//                   return MemeWidget(
+//                     meme: controller.memes[index],
+//                     height: height,
+//                   );
+//                 }),

@@ -1,6 +1,7 @@
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/pages/stories/widget/story_finished.dart';
 import 'package:chomu/pages/stories/widget/story_page.dart';
+import 'package:chomu/pages/stories/widget/video_story_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,8 +32,18 @@ class StoryPlayer extends GetView<StoriesController> {
                 itemBuilder: (context, index) {
                   if (index == controller.memes.length) {
                     return const StoriesFinished();
+                  } else {
+                    var post = controller.memes[index];
+                    if (post.type == 'Animated') {
+                      return VideoStoryPage(meme: controller.memes[index]);
+                    } else if (post.type == 'Photo') {
+                      return StoryPage(meme: post);
+                    } else {
+                      return StoryPage(
+                        meme: post,
+                      );
+                    }
                   }
-                  return StoryPage(meme: controller.memes[index]);
                 },
                 scrollDirection: Axis.vertical,
               );

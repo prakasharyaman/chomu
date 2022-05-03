@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chomu/pages/profile/controller/profile_controller.dart';
+import 'package:chomu/pages/profile/widgets/blocked_users.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -89,7 +90,29 @@ class ProfilePage extends StatelessWidget {
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
-                    const Spacer()
+                    const Spacer(),
+                    // refresh button
+                    GestureDetector(
+                      onTap: () {
+                        profileController.prepareProfile();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Get.isDarkMode
+                                ? Colors.white12
+                                : Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.only(
+                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+                            child: Icon(Icons.refresh),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -123,6 +146,39 @@ class ProfilePage extends StatelessWidget {
                       '☝️ Total Post Watched 👍',
                       style: Theme.of(context).textTheme.headline6,
                     ),
+                  ),
+                ),
+                const Divider(),
+              ],
+            ),
+          ),
+        ),
+        //blocked Users
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Get.to(BlockedUsers());
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        'Blocked Users',
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.person_off_rounded),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          profileController.blockedUsers.length.toString(),
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const Divider(),

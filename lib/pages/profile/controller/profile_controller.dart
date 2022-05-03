@@ -14,6 +14,7 @@ class ProfileController extends GetxController {
   final getStorage = GetStorage();
   var totalWatchedMemesLength = 0;
   List<Meme> bookmarksList = [];
+  var blockedUsers = [];
   @override
   void onInit() {
     super.onInit();
@@ -27,7 +28,8 @@ class ProfileController extends GetxController {
     try {
       totalWatchedMemesLength = await getTotalWatchedMemes();
       bookmarksList = await getBookmarks();
-      print('total book marks length: ${bookmarksList.length}');
+      await getBlockedUsers();
+
       status.value = Status.loaded;
     } catch (e) {
       Get.snackbar(
@@ -36,6 +38,56 @@ class ProfileController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
       status.value = Status.error;
+    }
+  }
+
+//blockedUsers
+  getBlockedUsers() async {
+    var blockedUserList = await getStorage.read('blockedUserList');
+
+    if (blockedUserList == null) {
+      blockedUserList = [];
+    } else {
+      blockedUserList = blockedUserList as List<dynamic>;
+    }
+    // trying to add a meme that is watched
+    try {
+      blockedUsers = blockedUserList;
+    } catch (e) {
+      Get.snackbar(
+        'Error Getting Blocked Users !',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  //unblock user
+  unblockUser({required String userName}) async {
+    var blockedUserList = await getStorage.read('blockedUserList');
+
+    if (blockedUserList == null) {
+      blockedUserList = [];
+    } else {
+      blockedUserList = blockedUserList as List<dynamic>;
+    }
+    // trying to add a meme that is watched
+    try {
+      if (blockedUserList.contains(userName)) {
+        blockedUserList.remove(userName);
+        await getStorage.write('blockedUserList', blockedUserList);
+        Get.snackbar(
+          'User Un-Blocked',
+          'You will see posts from $userName \n you can block him again from the posts',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error Unblocking User !',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 

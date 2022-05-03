@@ -35,11 +35,17 @@ class StoriesController extends GetxController {
             watchedmemesList.add(meme);
           }
         }
+        // check if the user has been blocked
+        for (var meme in memes) {
+          if (await checkifUserBlocked(username: meme.subReddit)) {
+            watchedmemesList.add(meme);
+          }
+        }
         memes.removeWhere((element) => watchedmemesList.contains(element));
       }
       if (memes.length > 3) {
         if (memes.length > 50) {
-          memes = memes.sublist(0, 31);
+          memes = memes.sublist(0, 40);
         }
         status.value = Status.loaded;
       } else {
@@ -74,6 +80,93 @@ class StoriesController extends GetxController {
       }
     } catch (e) {
       return false;
+    }
+  }
+
+// check if user has blocked other user
+  checkifUserBlocked({required String username}) async {
+    var blockedUserList = await getStorage.read('blockedUserList');
+    if (blockedUserList == null) {
+      blockedUserList = [];
+    } else {
+      blockedUserList = blockedUserList as List<dynamic>;
+    }
+
+    // check if the meme is watched
+    try {
+      if (blockedUserList.contains(username)) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //block user
+  blockUser({required String userName}) async {
+    var blockedUserList = await getStorage.read('blockedUserList');
+
+    if (blockedUserList == null) {
+      blockedUserList = [];
+    } else {
+      blockedUserList = blockedUserList as List<dynamic>;
+    }
+    // trying to add a meme that is watched
+    try {
+      if (!blockedUserList.contains(userName)) {
+        blockedUserList.add(userName);
+        await getStorage.write('blockedUserList', blockedUserList);
+        Get.snackbar(
+          'User Blocked',
+          'You won\'t see posts from $userName \n you can unblock him from the profile page',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'User Already Blocked',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      errorMessage = e.toString();
+      Get.snackbar(
+        'Error Blocking User',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  //unblock user
+  unblockUser({required String userName}) async {
+    var blockedUserList = await getStorage.read('blockedUserList');
+
+    if (blockedUserList == null) {
+      blockedUserList = [];
+    } else {
+      blockedUserList = blockedUserList as List<dynamic>;
+    }
+    // trying to add a meme that is watched
+    try {
+      if (blockedUserList.contains(userName)) {
+        blockedUserList.remove(userName);
+        await getStorage.write('blockedUserList', blockedUserList);
+        Get.snackbar(
+          'User Ubnlocked',
+          'You will see posts from $userName \n you can block him again from the posts',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      errorMessage = e.toString();
+      Get.snackbar(
+        'Error Unblocking User !',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 

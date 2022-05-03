@@ -1,6 +1,8 @@
+import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../app/app.dart';
@@ -8,26 +10,47 @@ import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';
 import '../../../services/share_service.dart';
 
-class StoryPage extends StatefulWidget {
-  const StoryPage({Key? key, required this.meme}) : super(key: key);
+class VideoStoryPage extends StatefulWidget {
+  const VideoStoryPage({Key? key, required this.meme}) : super(key: key);
   final Meme meme;
   @override
-  State<StoryPage> createState() => _StoryPageState();
+  State<VideoStoryPage> createState() => _VideoStoryPageState();
 }
 
-class _StoryPageState extends State<StoryPage> {
+class _VideoStoryPageState extends State<VideoStoryPage> {
+  VolumeController volumeController = Get.find();
+  late VideoPlayerController _controller;
   late Meme meme;
   bool watched = false;
   bool isPostLiked = false;
-
+  bool videoLoaded = false;
   bool isPostBookMarked = false;
+  late bool isMute;
+  late double volume;
   StoriesController storiesController = Get.find();
   @override
   void initState() {
-    meme = widget.meme;
     super.initState();
+    meme = widget.meme;
+    volume = volumeController.volume;
     FirebaseController firebaseController = Get.find();
-    firebaseController.logFirebaseEvent(eventName: 'StoryView');
+    firebaseController.logFirebaseEvent(eventName: 'videoview');
+
+    _controller = VideoPlayerController.network(
+      meme.videoUrl ?? '',
+    )..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {
+          videoLoaded = true;
+          _controller.value.isPlaying
+              ? _controller.pause()
+              : _controller.play();
+        });
+      });
+
+    volume > 0 ? isMute = false : isMute = true;
+    _controller.setVolume(volume);
+    _controller.setLooping(true);
   }
 
   @override
@@ -47,63 +70,35 @@ class _StoryPageState extends State<StoryPage> {
       },
       child: Stack(
         children: [
-          // Image
+          // video player
           Align(
-            child: Container(
-              height: height,
+            alignment: Alignment.center,
+            child: videoLoaded
+                ? AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  )
+                : const Center(child: CircularProgressIndicator()),
+          ),
+          // gesture detector to mute video
+          Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              height: height * 0.6,
               width: width,
-              color: Get.isDarkMode ? Colors.black38 : Colors.grey.shade100,
-              child: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: RepaintBoundary(
-                  key: _cardKey,
-                  child: GestureDetector(
-                    onDoubleTap: () {
-                      setState(() {
-                        isPostLiked = !isPostLiked;
-                        meme.ups += isPostLiked ? 1 : -1;
-                      });
-                    },
-                    child: Image(
-                      filterQuality: FilterQuality.none,
-                      fit: BoxFit.contain,
-                      width: double.infinity,
-                      image: NetworkImage(meme.url),
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return SizedBox(
-                          height: height * 0.4,
-                          child: Center(
-                              child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                          )),
-                        );
-                      },
-                      errorBuilder: (BuildContext context, Object object,
-                          StackTrace? stackTrace) {
-                        return SizedBox(
-                          height: height * 0.3,
-                          width: double.infinity,
-                          child: const Center(
-                            child: Icon(
-                              Icons.error,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
+              child: GestureDetector(
+                onTap: () {
+                  isMute
+                      ? _controller.setVolume(100)
+                      : _controller.setVolume(0);
+                  isMute
+                      ? volumeController.setVolume(value: 100)
+                      : volumeController.setVolume(value: 0);
+                  isMute = !isMute;
+                },
               ),
             ),
-          ),
-          // back button and dropdown
+          ), // back button and dropdown
           Positioned(
               top: 10,
               left: 0,
@@ -192,15 +187,16 @@ class _StoryPageState extends State<StoryPage> {
                               // block user
                               if (meme.url != '') {
                                 Get.defaultDialog(
-                                    title: "Block User ${meme.author} ?",
+                                    title: "Block User ${meme.author}",
                                     middleText:
-                                        "Are You Sure You Want To Block ${meme.author} . This will block all posts from this user \n and will not show them in your feed",
+                                        "Are You Sure You Want To Block ${meme.author} \n This will block all posts from this user \n and will not show them in your feed",
                                     radius: 30,
                                     onConfirm: () {
                                       storiesController.blockUser(
                                           userName: meme.author);
-                                      storiesController.getMemes();
-                                      Get.back();
+                                      Future.delayed(const Duration(
+                                              milliseconds: 2100))
+                                          .then((_) => Get.offAll(const App()));
                                     },
                                     onCancel: () {
                                       Get.back();
@@ -213,12 +209,11 @@ class _StoryPageState extends State<StoryPage> {
                               break;
                             case MenuItems.report:
                               storiesController.reportMeme(meme: meme);
-                              storiesController.getMemes();
                               break;
                             case MenuItems.download:
                               Get.snackbar(
                                 'Sorry ',
-                                'You Cannot Download This Story',
+                                'You Cannot Download This Video',
                                 snackPosition: SnackPosition.BOTTOM,
                               );
                               break;
@@ -265,7 +260,7 @@ class _StoryPageState extends State<StoryPage> {
               )),
           // floating buttons
           Positioned(
-              bottom: 10,
+              bottom: 30,
               right: 0,
               left: 0,
               child: Padding(
@@ -336,36 +331,44 @@ class _StoryPageState extends State<StoryPage> {
                       ),
                     ),
                     // share button
-                    GestureDetector(
-                      onTap: () {
-                        Future.delayed(
-                            const Duration(milliseconds: 200),
-                            () => convertWidgetToImageAndShare(
-                                context, _cardKey, meme.title));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? Colors.white38.withOpacity(0.3)
-                                : Colors.grey.shade500.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(Icons.share),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: () {
+
+                    //     Future.delayed(
+                    //         const Duration(milliseconds: 200),
+                    //         () => convertWidgetToImageAndShare(
+                    //             context, _cardKey, meme.title));
+                    //   },
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(8.0),
+                    //     child: Container(
+                    //       decoration: BoxDecoration(
+                    //         color: Get.isDarkMode
+                    //             ? Colors.white38.withOpacity(0.3)
+                    //             : Colors.grey.shade500.withOpacity(0.3),
+                    //         borderRadius: BorderRadius.circular(20),
+                    //       ),
+                    //       child: const Padding(
+                    //         padding: EdgeInsets.only(
+                    //             top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+                    //         child: Icon(Icons.share),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               )),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _controller.dispose();
   }
 }
 

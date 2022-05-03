@@ -21,22 +21,11 @@ class HotController extends GetxController {
     // deleteBookMarksList();
   }
 
-// // request to show local notifications
-//   requestLocalNotification() {
-//     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-//       if (!isAllowed) {
-//         // This is just a basic example. For real apps, you must show some
-//         // friendly dialog box before call the request method.
-//         // This is very important to not harm the user experience
-//         AwesomeNotifications().requestPermissionToSendNotifications();
-//       }
-//     });
-//   }
 // delete bookmarks
-  // deleteBookMarksList() {
-  //   getStorage.remove('bookMarkMemesList');
-  //   print('deleted book marks');
-  // }
+  deleteBookMarksList() {
+    getStorage.remove('bookMarkMemesList');
+    print('deleted book marks');
+  }
 
 // get Memes
   getMemes() async {
@@ -44,10 +33,17 @@ class HotController extends GetxController {
       status.value = Status.loading;
       memes = await memeRepository.getMemes();
       var watchedmemesList = [];
+
       if (memes.length > 2) {
         // check if the meme has been watched
         for (var meme in memes) {
           if (await checkMemesIfWatched(url: meme.url)) {
+            watchedmemesList.add(meme);
+          }
+        }
+        // check if the user has been blocked
+        for (var meme in memes) {
+          if (await checkifUserBlocked(username: meme.author)) {
             watchedmemesList.add(meme);
           }
         }
@@ -90,6 +86,63 @@ class HotController extends GetxController {
       }
     } catch (e) {
       return false;
+    }
+  }
+
+// check if user has blocked other user
+  checkifUserBlocked({required String username}) async {
+    var blockedUserList = await getStorage.read('blockedUserList');
+    if (blockedUserList == null) {
+      blockedUserList = [];
+    } else {
+      blockedUserList = blockedUserList as List<dynamic>;
+    }
+
+    // check if the meme is watched
+    try {
+      if (blockedUserList.contains(username)) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //block user
+  blockUser({required String userName}) async {
+    var blockedUserList = await getStorage.read('blockedUserList');
+
+    if (blockedUserList == null) {
+      blockedUserList = [];
+    } else {
+      blockedUserList = blockedUserList as List<dynamic>;
+    }
+    // trying to add a meme that is watched
+    try {
+      if (!blockedUserList.contains(userName)) {
+        blockedUserList.add(userName);
+        await getStorage.write('blockedUserList', blockedUserList);
+        Get.snackbar(
+          'User Blocked',
+          'You won\'t see posts from $userName \n you can unblock him from the profile page',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'User Already Blocked',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      errorMessage = e.toString();
+      Get.snackbar(
+        'Error Blocking User',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
