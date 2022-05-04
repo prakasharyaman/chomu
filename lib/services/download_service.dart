@@ -22,6 +22,7 @@ class FileDownloadService {
 
       await savedDir.create(recursive: true).then(
         (value) async {
+          // ignore: unused_local_variable
           String? _taskid = await FlutterDownloader.enqueue(
               url: url,
               fileName: name,

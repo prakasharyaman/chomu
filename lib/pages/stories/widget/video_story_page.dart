@@ -8,7 +8,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../app/app.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';
-import '../../../services/share_service.dart';
 
 class VideoStoryPage extends StatefulWidget {
   const VideoStoryPage({Key? key, required this.meme}) : super(key: key);
@@ -55,6 +54,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     GlobalKey _cardKey = GlobalKey();
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;

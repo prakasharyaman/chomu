@@ -1,9 +1,9 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:chomu/pages/profile/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../app/app.dart';
-import '../../../app/controllers/firebase_controller.dart';
 import '../../../common/enum/status.dart';
 import '../../error/error.dart';
 import '../../splash/splash.dart';

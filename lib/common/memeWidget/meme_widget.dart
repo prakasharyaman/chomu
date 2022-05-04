@@ -149,7 +149,7 @@ class _MemeWidgetState extends State<MemeWidget> {
                         },
                         errorBuilder: (BuildContext context, Object object,
                             StackTrace? stackTrace) {
-                          print(
+                          debugPrint(
                               'Image threw an error \n Reporting to the developer');
                           hotController.reportMeme(meme: meme, hideSnack: true);
 

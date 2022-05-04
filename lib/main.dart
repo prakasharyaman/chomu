@@ -1,11 +1,11 @@
 import 'dart:math';
+import 'package:chomu/app/controllers/version_controller.dart';
 import 'package:chomu/services/download_service.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chomu/app/controllers/theme_controller.dart';
 import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/app/notificationHandler/notification_handler.dart';
-import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
 import 'package:chomu/firebase_options.dart';
 import 'package:chomu/pages/home/controller/home_controller.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -86,11 +86,17 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // put controllers
+  // firebase controller to handle login ,analytics ,etc
   Get.put<FirebaseController>(
       FirebaseController(firebaseAnalytics: firebaseAnalytics));
+  // home controller
   Get.put<HomeController>(HomeController());
+  // theme control
   Get.put<ThemeController>(ThemeController());
+  // video volumen control
   Get.put<VolumeController>(VolumeController());
+  // check for latest version
+  Get.put<VersionController>(VersionController());
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
@@ -111,7 +117,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           considerWhiteSpaceAsEmpty: true) ||
       !AwesomeStringUtils.isNullOrEmpty(message.notification?.body,
           considerWhiteSpaceAsEmpty: true)) {
-    print('message also contained a notification: ${message.notification}');
+    debugPrint(
+        'message also contained a notification: ${message.notification}');
 
     String? imageUrl;
     imageUrl ??= message.notification!.android?.imageUrl;

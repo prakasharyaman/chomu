@@ -1,11 +1,9 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
-import 'package:chomu/pages/profile/bindings/profile_bindings.dart';
-import 'package:chomu/pages/profile/profile.dart';
 import 'package:chomu/services/download_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../app/app.dart';
 import '../../models/meme_model.dart';
 
 class DropDownMenu extends StatelessWidget {
@@ -204,7 +202,7 @@ class DropDownMenu extends StatelessWidget {
                                     GestureDetector(
                                       onTap: () {
                                         if (meme != null) {}
-                                        print('Share');
+                                        debugPrint('Share');
                                         Get.snackbar(
                                             'Oops', 'Couldn\'t share the meme',
                                             snackPosition:

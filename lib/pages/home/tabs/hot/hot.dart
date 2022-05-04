@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
@@ -20,7 +22,6 @@ class Hot extends GetView<HotController> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     FirebaseController firebaseController = Get.find();
     firebaseController.logCurrentScreen(screenClass: 'Hot', screenName: 'Hot');
     return GetBuilder<HotController>(
@@ -31,7 +32,7 @@ class Hot extends GetView<HotController> {
             return const Splash();
           case Status.loaded:
             // Get.to(MyHomePage(title: 'sb'));
-            return HotPage();
+            return const HotPage();
           case Status.error:
             return ErrorScreen(
               error: 'There was a problem loading the posts',
@@ -59,7 +60,6 @@ class _HotPageState extends State<HotPage> {
   Meme? menuMeme;
   @override
   Widget build(BuildContext context) {
-    var height = Get.height;
     var memes = controller.memes;
     return Stack(
       children: [
@@ -128,6 +128,7 @@ class _HotPageState extends State<HotPage> {
               child: InViewNotifierList(
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
+                  // ignore: prefer_const_literals_to_create_immutables
                   initialInViewIds: ['0'],
                   isInViewPortCondition: (double deltaTop, double deltaBottom,
                       double viewPortDimension) {

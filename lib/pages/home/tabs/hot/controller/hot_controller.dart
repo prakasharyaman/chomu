@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../../../common/enum/status.dart';
@@ -24,7 +25,7 @@ class HotController extends GetxController {
 // delete bookmarks
   deleteBookMarksList() {
     getStorage.remove('bookMarkMemesList');
-    print('deleted book marks');
+    debugPrint('deleted book marks');
   }
 
 // get Memes
@@ -205,7 +206,7 @@ class HotController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
-      print(e);
+      debugPrint(e.toString());
     }
   }
 

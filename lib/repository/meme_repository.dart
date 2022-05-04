@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:image_downloader/image_downloader.dart';
 import '../models/meme_model.dart';
 
@@ -129,7 +130,7 @@ class MemeRepository {
             .collection('memes')
             .doc(id)
             .delete();
-        print('removed meme');
+        debugPrint('removed meme');
       } else {
         throw Exception('Could Not Report Meme');
       }
@@ -141,7 +142,7 @@ class MemeRepository {
   getNinePosts() async {
     // check if user is logged in
     if (firebaseAuth.currentUser != null) {
-      print('getting nine posts');
+      debugPrint('getting nine posts');
       var date = await getDate();
       var memesSnapshot = await FirebaseFirestore.instance
           .collection('memes')

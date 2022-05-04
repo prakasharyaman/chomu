@@ -99,7 +99,7 @@ class Home extends StatelessWidget {
                 ListTile(
                   onTap: () {
                     Share.share(
-                        'Check Out This App Chomu \n https://play.google.com/store/apps/details?id=com.android.chomu',
+                        'Check Out This App Chomu \n https://play.google.com/store/apps/details?id=com.otft.chomu',
                         subject: 'Download Chomu 😂');
                   },
                   leading: const Icon(Icons.share_rounded),

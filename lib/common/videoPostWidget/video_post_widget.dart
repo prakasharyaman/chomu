@@ -1,14 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/app/controllers/volume_controller.dart';
-import 'package:chomu/common/memeWidget/meme_widget.dart';
-import 'package:chomu/common/menu/dropdown_menu.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -229,7 +223,7 @@ class VideoPostWidget extends StatefulWidget {
 
 class _VideoPostWidgetState extends State<VideoPostWidget> {
   late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
+  // late Future<void> _initializeVideoPlayerFuture;
   VolumeController volumeController = Get.find();
   late Meme meme;
   late double height;
