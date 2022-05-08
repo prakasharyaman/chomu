@@ -63,6 +63,8 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
       onVisibilityChanged: (VisibilityInfo info) {
         if (info.visibleFraction > 0.9) {
           if (watched != true) {
+            debugPrint('watched video');
+
             storiesController.saveMemeAsWatched(url: meme.url);
             watched = true;
           }
@@ -94,7 +96,9 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                   isMute
                       ? volumeController.setVolume(value: 100)
                       : volumeController.setVolume(value: 0);
-                  isMute = !isMute;
+                  setState(() {
+                    isMute = !isMute;
+                  });
                 },
               ),
             ),
@@ -258,6 +262,19 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                   ],
                 ),
               )),
+          // mute button
+          Positioned(
+            bottom: 100,
+            left: 10,
+            child: Visibility(
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.volume_off_rounded),
+              ),
+              visible: isMute,
+            ),
+          ),
+
           // floating buttons
           Positioned(
               bottom: 30,

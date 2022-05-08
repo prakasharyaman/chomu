@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -28,6 +29,12 @@ class StoriesController extends GetxController {
       status.value = Status.loading;
       memes = await memeRepository.getMemes();
       var watchedmemesList = [];
+      List<Meme> nineList = [];
+      List<Meme> watchednineList = [];
+      List<Meme> animatedNineList = [];
+      List<Meme> nonAnimatedNineList = [];
+      nineList = await memeRepository.getNinePosts();
+
       if (memes.length > 2) {
         // check if the meme has been watched
         for (var meme in memes) {
@@ -41,12 +48,48 @@ class StoriesController extends GetxController {
             watchedmemesList.add(meme);
           }
         }
+        // check if the nine post has been watched
+        for (var ninePost in nineList) {
+          if (await checkMemesIfWatched(url: ninePost.url)) {
+            watchednineList.add(ninePost);
+          }
+        }
         memes.removeWhere((element) => watchedmemesList.contains(element));
+        //clearing watched nine posts
+        nineList.removeWhere((element) => watchednineList.contains(element));
       }
-      if (memes.length > 3) {
-        if (memes.length > 50) {
+      // putting animated memes in the temp list
+      for (var ninePost in nineList) {
+        if (ninePost.type == 'Animated') {
+          animatedNineList.add(ninePost);
+        }
+      }
+      // putting non animated memes in the temp list
+      for (var ninePost in nineList) {
+        if (ninePost.type != 'Animated') {
+          nonAnimatedNineList.add(ninePost);
+        }
+      }
+      if (nineList.length > 3 && memes.length > 3) {
+        List<Meme> tempList = animatedNineList;
+        tempList.addAll(nonAnimatedNineList);
+        nineList = tempList;
+        if (memes.length > 20) {
+          memes = memes.sublist(0, 20);
+        }
+        if (nineList.length < 30) {
+          memes.addAll(nineList);
+          memes.shuffle();
+        } else {
+          memes = nineList;
+        }
+        // debugPrint(nineList.length.toString());
+        // debugPrint(memes.length.toString());
+
+        if (memes.length > 40) {
           memes = memes.sublist(0, 40);
         }
+
         status.value = Status.loaded;
       } else {
         throw Exception('No More Memes Found');

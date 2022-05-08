@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:flutter/material.dart';
@@ -8,200 +9,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../app/controllers/firebase_controller.dart';
 import '../../models/meme_model.dart';
-
-// class VideoList extends StatefulWidget {
-//   const VideoList({Key? key}) : super(key: key);
-
-//   @override
-//   State<VideoList> createState() => _VideoListState();
-// }
-
-// class _VideoListState extends State<VideoList> {
-//   HotController hotController = Get.find();
-//   bool showReport = false;
-//   Meme? menuMeme;
-//   @override
-//   Widget build(BuildContext context) {
-//     var memes = hotController.memes;
-//     return Stack(
-//       fit: StackFit.expand,
-//       children: <Widget>[
-//         Container(
-//           decoration: BoxDecoration(
-//               gradient: Get.isDarkMode
-//                   ? const LinearGradient(
-//                       begin: Alignment.topLeft,
-//                       end: Alignment.bottomLeft,
-//                       colors: [
-//                         Color.fromARGB(255, 9, 9, 9),
-//                         Color.fromARGB(255, 8, 8, 8),
-//                       ],
-//                     )
-//                   : const LinearGradient(
-//                       begin: Alignment.topLeft,
-//                       end: Alignment.bottomLeft,
-//                       colors: [
-//                         Color.fromARGB(255, 245, 246, 248),
-//                         Color.fromARGB(255, 244, 247, 250),
-//                       ],
-//                     )),
-//           margin: const EdgeInsets.only(left: 1, right: 1),
-//           child: NestedScrollView(
-//             floatHeaderSlivers: true,
-//             headerSliverBuilder: (context, innerBoxIsScrolled) {
-//               return [
-//                 SliverAppBar(
-//                   automaticallyImplyLeading: false,
-//                   centerTitle: false,
-//                   floating: true,
-//                   title: Row(
-//                     crossAxisAlignment: CrossAxisAlignment.center,
-//                     children: [
-//                       // icon
-//                       GestureDetector(
-//                         onTap: () {
-//                           setState(() {
-//                             showReport = !showReport;
-//                           });
-//                         },
-//                         child: const CircleAvatar(
-//                           backgroundImage: CachedNetworkImageProvider(
-//                               'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
-//                           radius: 15,
-//                         ),
-//                       ),
-//                       const SizedBox(width: 5),
-//                       //app Title
-//                       Text(
-//                         "CHOMU",
-//                         style: TextStyle(
-//                             color: Get.isDarkMode
-//                                 ? Colors.white
-//                                 : Colors.deepPurple,
-//                             fontWeight: FontWeight.bold),
-//                       ),
-//                       //spacer
-//                       const Spacer(),
-//                       // icon search
-//                       IconButton(
-//                           onPressed: () {
-//                             // controller.getMemes();
-//                           },
-//                           iconSize: 25,
-//                           icon: Icon(
-//                             Icons.replay_rounded,
-//                             color: Get.isDarkMode
-//                                 ? Colors.white
-//                                 : Colors.deepPurple,
-//                           )),
-//                     ],
-//                   ),
-//                   backgroundColor: Colors.transparent,
-//                 ),
-//               ];
-//             },
-//             body: RefreshIndicator(
-//               onRefresh: () async {
-//                 print('ji');
-//               },
-//               child: Stack(
-//                 children: [
-//                   InViewNotifierList(
-//                     physics: const BouncingScrollPhysics(),
-//                     scrollDirection: Axis.vertical,
-//                     initialInViewIds: ['0'],
-//                     isInViewPortCondition: (double deltaTop, double deltaBottom,
-//                         double viewPortDimension) {
-//                       return deltaTop < (0.5 * viewPortDimension) &&
-//                           deltaBottom > (0.5 * viewPortDimension);
-//                     },
-//                     itemCount: memes.length,
-//                     builder: (BuildContext context, int index) {
-//                       if (memes[index].type == 'Animated') {
-//                         return SizedBox(
-//                           width: double.infinity,
-//                           child: LayoutBuilder(
-//                             builder: (BuildContext context,
-//                                 BoxConstraints constraints) {
-//                               return InViewNotifierWidget(
-//                                 id: '$index',
-//                                 builder: (BuildContext context, bool isInView,
-//                                     Widget? child) {
-//                                   return VideoPostWidget(
-//                                     play: isInView,
-//                                     url: memes[index].videoUrl ?? '',
-//                                     post: memes[index],
-//                                     height: Get.height,
-//                                     menuFunction: () {
-//                                       setState(() {
-//                                         menuMeme = memes[index];
-//                                         showReport = !showReport;
-//                                       });
-//                                     },
-//                                   );
-//                                 },
-//                               );
-//                             },
-//                           ),
-//                         );
-//                       }
-//                       return MemeWidget(
-//                         height: Get.height,
-//                         meme: memes[index],
-//                       );
-//                     },
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//         Align(
-//           alignment: Alignment.center,
-//           child: Container(
-//             height: 1.0,
-//             color: Colors.redAccent,
-//           ),
-//         ),
-//         AnimatedPositioned(
-//             top: showReport == false
-//                 ? MediaQuery.of(context).size.height * 1.5
-//                 : 150,
-//             child: SizedBox(
-//               height: MediaQuery.of(context).size.height,
-//               width: MediaQuery.of(context).size.width,
-//               child: DropDownMenu(
-//                 onClose: () {
-//                   setState(() {
-//                     showReport = !showReport;
-//                   });
-//                 },
-//                 meme: menuMeme,
-//               ),
-//             ),
-//             duration: Duration(milliseconds: 400)),
-//       ],
-//     );
-//   }
-// }
-
-// class MyHomePage extends StatefulWidget {
-//   MyHomePage({Key? key, required this.title}) : super(key: key);
-
-//   final String title;
-
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: VideoList(),
-//     );
-//   }
-// }
+import '../../pages/stories/stories_player.dart';
 
 class VideoPostWidget extends StatefulWidget {
   const VideoPostWidget(
@@ -235,6 +43,16 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
   late Function menuFunction;
   late bool isMute;
   bool videoLoaded = false;
+  static const colorizeColors = [
+    Colors.white,
+    Colors.white54,
+    Colors.white24,
+  ];
+
+  static const colorizeTextStyle = TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+  );
   @override
   void initState() {
     super.initState();
@@ -252,7 +70,6 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
         videoLoaded = true;
       });
     });
-
     if (widget.play) {
       _controller.play();
       _controller.setLooping(true);
@@ -287,12 +104,12 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
       child: VisibilityDetector(
         key: Key(meme.url),
         onVisibilityChanged: (VisibilityInfo info) {
-          // if (info.visibleFraction > 0.8) {
-          //   if (watched == false) {
-          //     watched = true;
-          //     hotController.saveMemeAsWatched(url: meme.url);
-          //   }
-          // }
+          if (info.visibleFraction > 0.8) {
+            if (watched == false) {
+              watched = true;
+              hotController.saveMemeAsWatched(url: meme.url);
+            }
+          }
         },
         child: Card(
           child: Column(
@@ -365,6 +182,18 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
                               child: VideoPlayer(_controller),
                             ),
                           ),
+                          // mute button
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Visibility(
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.volume_off_rounded),
+                              ),
+                              visible: isMute,
+                            ),
+                          ),
+
                           // gesture detector to mute video
                           Align(
                             alignment: Alignment.center,
@@ -379,7 +208,9 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
                                   isMute
                                       ? volumeController.setVolume(value: 100)
                                       : volumeController.setVolume(value: 0);
-                                  isMute = !isMute;
+                                  setState(() {
+                                    isMute = !isMute;
+                                  });
                                 },
                               ),
                             ),
@@ -421,16 +252,57 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
                       style: TextStyle(fontSize: 10),
                     ),
                     const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.share),
-                      onPressed: () {
-                        Get.snackbar('Sorry !', 'You cannot share videos');
-                      },
-                    ),
+                    _storyPlayerButton(),
                   ],
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding _storyPlayerButton() {
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Get.isDarkMode ? Colors.white : Colors.black,
+              width: 1,
+            ),
+            gradient: const LinearGradient(
+              colors: [
+                Colors.purpleAccent,
+                Colors.purple,
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                offset: const Offset(0, 10),
+                blurRadius: 5,
+                spreadRadius: 2,
+                color: Colors.purpleAccent.withOpacity(0.3),
+              ),
+            ]),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: AnimatedTextKit(
+            animatedTexts: [
+              ColorizeAnimatedText(
+                'Play Stories >',
+                textStyle: colorizeTextStyle,
+                colors: colorizeColors,
+              ),
+            ],
+            isRepeatingAnimation: true,
+            onTap: () {
+              debugPrint("Going to Stories");
+              _controller.setVolume(0);
+              Get.to(const StoryPlayer());
+            },
           ),
         ),
       ),

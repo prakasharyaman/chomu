@@ -34,6 +34,9 @@ class HotController extends GetxController {
       status.value = Status.loading;
       memes = await memeRepository.getMemes();
       var watchedmemesList = [];
+      List<Meme> nineList = [];
+      var watchednineList = [];
+      nineList = await memeRepository.getNinePosts();
 
       if (memes.length > 2) {
         // check if the meme has been watched
@@ -48,11 +51,32 @@ class HotController extends GetxController {
             watchedmemesList.add(meme);
           }
         }
+        // check if the nine post has been watched
+        for (var ninePost in nineList) {
+          if (await checkMemesIfWatched(url: ninePost.url)) {
+            watchednineList.add(ninePost);
+          }
+        }
+        // clearing watched memes
         memes.removeWhere((element) => watchedmemesList.contains(element));
+        //clearing watched nine posts
+
+        nineList.removeWhere((element) => watchednineList.contains(element));
       }
+      if (nineList.length > 5 && memes.length > 15) {
+        if (memes.length > 30) {
+          memes = memes.sublist(0, 25);
+        }
+        if (nineList.length > 10) {
+          nineList = nineList.sublist(0, 10);
+        }
+        memes.addAll(nineList);
+      }
+
       if (memes.length > 3) {
+        memes.shuffle();
         if (memes.length > 50) {
-          memes = memes.sublist(0, 31);
+          memes = memes.sublist(0, 35);
         }
         status.value = Status.loaded;
       } else {

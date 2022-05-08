@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
@@ -7,7 +6,6 @@ import 'package:chomu/pages/error/error.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
-
 import '../../../../app/app.dart';
 import '../../../../common/enum/status.dart';
 import '../../../../common/memeWidget/meme_widget.dart';
@@ -200,7 +198,7 @@ class _HotPageState extends State<HotPage> {
             ),
           ),
         ),
-        // menu
+        // drop down menu
         AnimatedPositioned(
             top: showReport == false
                 ? MediaQuery.of(context).size.height * 1.5

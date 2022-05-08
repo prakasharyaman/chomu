@@ -163,7 +163,7 @@ class MemeRepository {
               memeJson['nsfw'] != null &&
               memeJson['nsfw'] == 0) {
             Meme meme = Meme(
-                author: 'Trending',
+                author: 'ChomuKing',
                 id: memeSnapshotId,
                 image460: memeJson['images']['image460']['url'],
                 length: null,
