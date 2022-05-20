@@ -244,7 +244,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
           // title and author
           Positioned(
               bottom: 10,
-              right: 10,
+              right: 50,
               left: 0,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -252,9 +252,15 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(meme.title,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text(
+                      meme.title,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     Text(meme.author,
                         style: const TextStyle(
                           fontSize: 10,
@@ -267,9 +273,21 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
             bottom: 100,
             left: 10,
             child: Visibility(
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.volume_off_rounded),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                    onTap: () {
+                      isMute
+                          ? _controller.setVolume(100)
+                          : _controller.setVolume(0);
+                      isMute
+                          ? volumeController.setVolume(value: 100)
+                          : volumeController.setVolume(value: 0);
+                      setState(() {
+                        isMute = !isMute;
+                      });
+                    },
+                    child: const Icon(Icons.volume_off_rounded)),
               ),
               visible: isMute,
             ),

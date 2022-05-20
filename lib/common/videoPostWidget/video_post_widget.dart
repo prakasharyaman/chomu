@@ -186,9 +186,24 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
                           Align(
                             alignment: Alignment.bottomLeft,
                             child: Visibility(
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Icon(Icons.volume_off_rounded),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                    onTap: () {
+                                      isMute
+                                          ? _controller.setVolume(100)
+                                          : _controller.setVolume(0);
+                                      isMute
+                                          ? volumeController.setVolume(
+                                              value: 100)
+                                          : volumeController.setVolume(
+                                              value: 0);
+                                      setState(() {
+                                        isMute = !isMute;
+                                      });
+                                    },
+                                    child:
+                                        const Icon(Icons.volume_off_rounded)),
                               ),
                               visible: isMute,
                             ),
