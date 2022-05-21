@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -17,13 +18,16 @@ class VersionController extends GetxController {
     super.onReady();
     // Instantiate NewVersion manager
     checkforUpdate();
+    // reviewRequest();
   }
 
+// create package info
   createPackageInfo() async {
     debugPrint('createPackageInfo');
     packageInfo = await PackageInfo.fromPlatform();
   }
 
+// check for latest app updates
   checkforUpdate() {
     try {
       debugPrint('checking for update');
@@ -46,6 +50,18 @@ class VersionController extends GetxController {
     //   // advancedStatusCheck(newVersion);
     // }
   }
+
+//review request
+  // reviewRequest() async {
+  //   final InAppReview inAppReview = InAppReview.instance;
+  //   Future.delayed(const Duration(seconds: 2), () async {
+  //     if (await inAppReview.isAvailable()) {
+  //       Future.delayed(const Duration(seconds: 2), () {
+  //         inAppReview.requestReview();
+  //       });
+  //     }
+  //   });
+  // }
 }
 
 // basic status check

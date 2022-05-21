@@ -51,6 +51,7 @@ dependencies:
   flutter_file_downloader: ^1.0.14
   open_file: ^3.2.1
   package_info_plus: ^1.4.2
+  in_app_review: ^2.0.4
 
 
 dev_dependencies:
