@@ -1,13 +1,12 @@
 import 'dart:math';
 import 'package:chomu/app/controllers/version_controller.dart';
-import 'package:chomu/services/download_service.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chomu/app/controllers/theme_controller.dart';
 import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/app/notificationHandler/notification_handler.dart';
 import 'package:chomu/firebase_options.dart';
 import 'package:chomu/pages/home/controller/home_controller.dart';
+import 'package:chomu/services/download_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -16,6 +15,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:wakelock/wakelock.dart';
 import 'app/app.dart';
 import 'app/controllers/firebase_controller.dart';
 
@@ -72,11 +72,7 @@ void main() async {
 
 // Pass all uncaught errors from the framework to Crashlytics.
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-// downloader initialize
-  await FlutterDownloader.initialize(
-      debug: true // optional: set false to disable printing logs to console
-      );
-  FlutterDownloader.registerCallback(downloadCallback);
+
   //firebase analytics
 
   FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
@@ -97,7 +93,9 @@ void main() async {
   Get.put<VolumeController>(VolumeController());
   // check for latest version
   Get.put<VersionController>(VersionController());
-
+// download services
+  Get.put<FileDownloadService>(FileDownloadService());
+  Wakelock.enable();
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     title: "Chomu",

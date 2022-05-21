@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../app/controllers/theme_controller.dart';
+import '../../../app/controllers/version_controller.dart';
 import '../model/menuOptions.dart';
 import '../widget/themeSelector.dart';
 
@@ -17,6 +19,8 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   FirebaseController firebaseController = Get.find();
+  VersionController versionController = Get.find();
+  PackageInfo? packageInfo;
   int? groupValue = 0;
   final List<MenuOptionsModel> themeOptions = [
     MenuOptionsModel(
@@ -29,6 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    packageInfo = versionController.packageInfo;
     FirebaseController firebaseController = Get.find();
     firebaseController.logCurrentScreen(
         screenClass: 'Settings', screenName: 'Settings');
@@ -105,7 +110,62 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
             ],
-          )
+          ),
+          //package info
+
+          packageInfo == null
+              ? const SettingsSection(title: Text('Chomu'), tiles: [])
+              : SettingsSection(
+                  title: const Text(
+                    'App Info',
+                  ),
+                  tiles: [
+                    //app name
+                    SettingsTile(
+                      leading: const Icon(Icons.android_rounded),
+                      title: const Text('App Name'),
+                      description: Text(packageInfo!.appName),
+                      onPressed: (i) {
+                        Get.snackbar('App Name ?',
+                            'name of the app is ${packageInfo!.appName}',
+                            snackPosition: SnackPosition.BOTTOM);
+                      },
+                    ),
+                    //package  name
+                    SettingsTile(
+                      leading: const Icon(Icons.scatter_plot_rounded),
+                      title: const Text('Package Name'),
+                      description: Text(packageInfo!.packageName),
+                      onPressed: (i) {
+                        Get.snackbar('Package Name ?',
+                            'name of the package is ${packageInfo!.packageName}',
+                            snackPosition: SnackPosition.BOTTOM);
+                      },
+                    ),
+                    //Version  name
+                    SettingsTile(
+                      leading: const Icon(Icons.precision_manufacturing_sharp),
+                      title: const Text('Version Code'),
+                      description: Text(packageInfo!.version),
+                      onPressed: (i) {
+                        Get.snackbar('Version Code ?',
+                            'name of the Version is ${packageInfo!.version}',
+                            snackPosition: SnackPosition.BOTTOM);
+                      },
+                    ),
+                    //Build  Number
+                    SettingsTile(
+                      leading: const Icon(Icons.build),
+                      title: const Text('Build Number'),
+                      description: Text(packageInfo!.buildNumber),
+                      onPressed: (i) {
+                        Get.snackbar('Build Number ?',
+                            'value of the buildNumber is ${packageInfo!.buildNumber}',
+                            snackPosition: SnackPosition.BOTTOM);
+                      },
+                    ),
+                  ],
+                ),
         ]),
       ),
     );

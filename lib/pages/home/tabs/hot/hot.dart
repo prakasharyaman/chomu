@@ -54,11 +54,17 @@ class HotPage extends StatefulWidget {
 class _HotPageState extends State<HotPage> {
   final homeController = Get.find<HomeController>();
   HotController controller = Get.find<HotController>();
+  late List<Meme> memes;
   bool showReport = false;
   Meme? menuMeme;
   @override
+  void initState() {
+    super.initState();
+    memes = controller.memes;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var memes = controller.memes;
     return Stack(
       children: [
         //content

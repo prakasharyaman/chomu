@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/pages/splash/splash.dart';
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +48,30 @@ class Home extends StatelessWidget {
             child: Column(
               children: [
                 DrawerHeader(
-                  child: Container(
-                    color: Colors.deepPurple,
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: CachedNetworkImage(
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          imageUrl:
+                              'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif',
+                          errorWidget: (buildContext, string, dynamic) {
+                            return Container(
+                              color: Colors.purple,
+                            );
+                          },
+                        ),
+                      ),
+                      const Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          'Chomu',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -110,8 +133,7 @@ class Home extends StatelessWidget {
                 // privacy Policy
                 GestureDetector(
                   onTap: () {
-                    var url =
-                        'https://pages.flycricket.io/chomu-0/privacy.html';
+                    var url = 'https://www.otft.in/chomuprivacypolicy';
                     _launchUrl(url);
                   },
                   child: const Padding(

@@ -3,6 +3,7 @@
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/services/download_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:get/get.dart';
 import '../../models/meme_model.dart';
 
@@ -159,24 +160,20 @@ class DropDownMenu extends StatelessWidget {
                                     const Divider(),
                                     // Download
                                     GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
                                         if (meme != null) {
-                                          try {
-                                            FileDownloadService()
-                                                .requestDownload(
+                                          FileDownloadService
+                                              fileDownloadService = Get.find();
+                                          if (meme!.type == 'Animated') {
+                                            fileDownloadService.requestDownload(
+                                              url: meme!.videoUrl!,
+                                              name: 'Chomu Video',
+                                            );
+                                          } else {
+                                            fileDownloadService.requestDownload(
                                               url: meme!.url,
                                               name: meme!.title,
                                             );
-
-                                            Get.snackbar('Download Started',
-                                                'Check your downloads folder \n Open Notifications to see the progress',
-                                                snackPosition:
-                                                    SnackPosition.BOTTOM);
-                                          } catch (e) {
-                                            Get.snackbar('Oops',
-                                                'We were not able to download the post \n  Please try again later',
-                                                snackPosition:
-                                                    SnackPosition.BOTTOM);
                                           }
                                         } else {
                                           Get.snackbar('Oops',

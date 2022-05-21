@@ -170,8 +170,8 @@ class _BookMarkMemePageState extends State<BookMarkMemePage> {
                               hotController.reportMeme(meme: meme);
                               break;
                             case MenuItems.download:
-                              hotController.downloadMemeUrl(
-                                  url: meme.url, fileName: meme.title);
+                              // hotController.downloadMemeUrl(
+                              //     url: meme.url, fileName: meme.title);
                               break;
                             case MenuItems.cancel:
                               //Do something

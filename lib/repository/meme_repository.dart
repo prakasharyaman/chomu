@@ -1,9 +1,7 @@
 import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_downloader/image_downloader.dart';
 import '../models/meme_model.dart';
 
 class MemeRepository {
@@ -93,16 +91,6 @@ class MemeRepository {
       }
     } else {
       throw Exception('User not logged in try opening app again');
-    }
-  }
-
-  //download a meme
-
-  downloadMeme({required String url, required String fileName}) async {
-    // Saved with this method.
-    var imageId = await ImageDownloader.downloadImage(url);
-    if (imageId == null) {
-      throw Exception('Error Downloading Meme');
     }
   }
 

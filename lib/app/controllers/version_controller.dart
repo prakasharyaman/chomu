@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:new_version/new_version.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class VersionController extends GetxController {
   static VersionController versionController = Get.find();
+  PackageInfo? packageInfo;
+  @override
+  void onInit() {
+    super.onInit();
+    createPackageInfo();
+  }
 
   @override
   void onReady() {
     super.onReady();
     // Instantiate NewVersion manager
     checkforUpdate();
+  }
+
+  createPackageInfo() async {
+    debugPrint('createPackageInfo');
+    packageInfo = await PackageInfo.fromPlatform();
   }
 
   checkforUpdate() {

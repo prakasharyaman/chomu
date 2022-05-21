@@ -4,7 +4,8 @@ description: Meme Factory.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 0.0.6+6
+version: 0.0.7+7
+
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
@@ -35,7 +36,6 @@ dependencies:
   visibility_detector: ^0.2.2
   flashy_tab_bar2: ^0.0.4
   dropdown_button2: ^1.4.0
-  image_downloader: ^0.31.0
   share_plus: ^4.0.4
   settings_ui: ^2.0.2  
   url_launcher: ^6.1.0
@@ -44,10 +44,13 @@ dependencies:
   loading_animation_widget: ^1.1.0+3
   video_player: ^2.4.0
   inview_notifier_list: ^3.0.0
-  flutter_downloader: ^1.7.3
   path_provider: ^2.0.9
   permission_handler: ^9.2.0
   new_version: ^0.3.0
+  wakelock: ^0.6.1+2
+  flutter_file_downloader: ^1.0.14
+  open_file: ^3.2.1
+  package_info_plus: ^1.4.2
 
 
 dev_dependencies:

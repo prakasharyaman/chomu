@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../../app/controllers/firebase_controller.dart';
 import '../../models/meme_model.dart';
@@ -57,6 +58,7 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
   void initState() {
     super.initState();
     meme = widget.post;
+    Wakelock.enable();
     height = widget.height;
     menuFunction = widget.menuFunction;
     volume = volumeController.volume;
@@ -94,6 +96,7 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
   @override
   void dispose() {
     _controller.dispose();
+    Wakelock.disable();
     super.dispose();
   }
 

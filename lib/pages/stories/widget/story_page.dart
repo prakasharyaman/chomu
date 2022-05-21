@@ -1,4 +1,5 @@
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
+import 'package:chomu/services/download_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -215,11 +216,20 @@ class _StoryPageState extends State<StoryPage> {
                               storiesController.getMemes();
                               break;
                             case MenuItems.download:
-                              Get.snackbar(
-                                'Sorry ',
-                                'You Cannot Download This Story',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
+                              FileDownloadService fileDownloadService =
+                                  Get.find();
+                              if (meme.type == 'Animated') {
+                                fileDownloadService.requestDownload(
+                                  url: meme.videoUrl!,
+                                  name: 'Chomu Video',
+                                );
+                              } else {
+                                fileDownloadService.requestDownload(
+                                  url: meme.url,
+                                  name: meme.title,
+                                );
+                              }
+
                               break;
                             case MenuItems.cancel:
                               //Do something

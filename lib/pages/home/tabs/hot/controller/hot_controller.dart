@@ -191,25 +191,6 @@ class HotController extends GetxController {
     }
   }
 
-// download meme
-  downloadMemeUrl({required String url, required String fileName}) async {
-    try {
-      await memeRepository.downloadMeme(url: url, fileName: fileName);
-      Get.snackbar(
-        'Download Complete',
-        'The file has been saved to your Downloads folder',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } catch (e) {
-      errorMessage = e.toString();
-      Get.snackbar(
-        'Uh Oh!',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
   // report meme
   reportMeme({required Meme meme, bool hideSnack = false}) async {
     try {

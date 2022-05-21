@@ -236,7 +236,7 @@ class StoriesController extends GetxController {
 // download meme
   downloadMemeUrl({required String url, required String fileName}) async {
     try {
-      await memeRepository.downloadMeme(url: url, fileName: fileName);
+      // await memeRepository.downloadMeme(url: url, fileName: fileName);
       Get.snackbar(
         'Download Complete',
         'The file has been saved to your Downloads folder',

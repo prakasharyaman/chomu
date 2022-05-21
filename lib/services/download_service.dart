@@ -1,37 +1,69 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:isolate';
-import 'dart:ui';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:get/get.dart';
+import 'package:open_file/open_file.dart';
 
-void downloadCallback(String id, DownloadTaskStatus status, int progress) {
-  final SendPort send =
-      IsolateNameServer.lookupPortByName('downloader_send_port')!;
-  send.send([id, status, progress]);
-}
-
-class FileDownloadService {
-  Future<void> requestDownload(
-      {required String url, required String name}) async {
-    final dir = await getExternalStorageDirectory();
-//From path_provider package
-    if (dir != null) {
-      var _localPath = dir.path + 'chomu';
-      final savedDir = Directory(_localPath);
-
-      await savedDir.create(recursive: true).then(
-        (value) async {
-          // ignore: unused_local_variable
-          String? _taskid = await FlutterDownloader.enqueue(
-              url: url,
-              fileName: name,
-              savedDir: _localPath,
-              showNotification: true,
-              openFileFromNotification: true,
-              saveInPublicStorage: true);
+class FileDownloadService extends GetxController
+    with GetSingleTickerProviderStateMixin {
+  void requestDownload({required String url, required String name}) async {
+    final file = await FileDownloader.downloadFile(
+        url: url,
+        name: name,
+        onProgress: (name, progress) {
+          debugPrint(progress.toDouble().toString());
+          if (progress.toDouble() == 0.0) {
+            Get.snackbar('Downloading', 'The post is being downloaded',
+                backgroundColor: Get.isDarkMode ? Colors.black54 : Colors.white,
+                colorText: Get.isDarkMode ? Colors.white : Colors.purple,
+                icon: Icon(Icons.download_rounded,
+                    color: Get.isDarkMode ? Colors.white : Colors.purple),
+                messageText: LinearProgressIndicator(
+                  color: Get.isDarkMode ? Colors.white : Colors.purple,
+                ));
+          }
         },
-      );
-    }
+        onDownloadCompleted: (path) {
+          Get.snackbar('Download Complete', 'The download has been completed',
+              backgroundColor: Get.isDarkMode ? Colors.black54 : Colors.white,
+              colorText: Get.isDarkMode ? Colors.white : Colors.purple,
+              icon: Icon(Icons.done,
+                  color: Get.isDarkMode ? Colors.white : Colors.purple),
+              messageText: GestureDetector(
+                onTap: () {
+                  // opens the file we clicked on
+                  try {
+                    OpenFile.open(path);
+                  } catch (e) {
+                    debugPrint(e.toString());
+                  }
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      'Click to open the file',
+                      style: TextStyle(
+                          color: Get.isDarkMode ? Colors.white : Colors.black),
+                    ),
+                    const Spacer(),
+                    Text(
+                      'Open',
+                      style: TextStyle(
+                          color: Get.isDarkMode ? Colors.white : Colors.purple,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ));
+        },
+        onDownloadError: (error) {
+          Get.snackbar(
+            'Error Downloading ',
+            error.toString(),
+            backgroundColor: Get.isDarkMode ? Colors.black54 : Colors.white,
+            colorText: Get.isDarkMode ? Colors.white : Colors.purple,
+          );
+        });
   }
 }
