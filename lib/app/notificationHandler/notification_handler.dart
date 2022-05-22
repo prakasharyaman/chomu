@@ -22,8 +22,7 @@ class _NotificationMessageHandlerState
     extends State<NotificationMessageHandler> {
   void _handleMessage(ReceivedNotification message) {
     if (message.body != null) {
-      //TODO : handle notification
-      if (message.channelKey == "meme" || message.channelKey == "debug") {
+      if (message.channelKey == "meme") {
         if (message.id != null) {
           if (message.payload != null) {
             FirebaseController firebaseController = Get.find();
