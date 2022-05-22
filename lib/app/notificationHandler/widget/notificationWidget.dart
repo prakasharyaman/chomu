@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../models/meme_model.dart';
-import '../../../pages/home/tabs/hot/controller/hot_controller.dart';
+
 import '../../../services/share_service.dart';
 
 class NotificationWidget extends StatelessWidget {
@@ -14,7 +14,6 @@ class NotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HotController hotController = Get.find();
     GlobalKey _cardKey = GlobalKey();
     return FutureBuilder(
         builder: (ctx, snapshot) {
@@ -55,7 +54,15 @@ class NotificationWidget extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   Get.back();
-                                  hotController.bookmarkMeme(meme: meme);
+                                  Get.snackbar(
+                                      'Saved', 'Post saved to your bookmarks',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.purpleAccent,
+                                      borderColor: Colors.purpleAccent,
+                                      icon: const Icon(
+                                        Icons.bookmark,
+                                        color: Colors.white,
+                                      ));
                                 },
                               ),
                               // close button
@@ -119,8 +126,6 @@ class NotificationWidget extends StatelessWidget {
                                       Object object, StackTrace? stackTrace) {
                                     debugPrint(
                                         'Image threw an error \n Reporting to the developer');
-                                    hotController.reportMeme(
-                                        meme: meme, hideSnack: true);
 
                                     return SizedBox(
                                       height: Get.height * 0.4,
