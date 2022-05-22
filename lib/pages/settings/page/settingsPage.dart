@@ -136,11 +136,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       leading: const Icon(Icons.scatter_plot_rounded),
                       title: const Text('Package Name'),
                       description: Text(packageInfo!.packageName),
-                      onPressed: (i) {
-                        Get.snackbar('Package Name ?',
-                            'name of the package is ${packageInfo!.packageName}',
-                            snackPosition: SnackPosition.BOTTOM);
-                      },
+                      onPressed: crashCauseDialog,
                     ),
                     //Version  name
                     SettingsTile(
@@ -168,6 +164,27 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
         ]),
       ),
+    );
+  }
+
+  crashCauseDialog(i) {
+    Get.defaultDialog(
+      title: 'Package Name ?',
+      buttonColor: Colors.red,
+      cancelTextColor: Colors.red,
+      content: Text(
+        packageInfo!.packageName +
+            ' is your package name\nThis button is also a test button for users experiencing crashes.Press crash to test it.',
+      ),
+      onCancel: () {},
+      onConfirm: () {
+        Get.back();
+        Get.snackbar('Crash Reported',
+            'A crash wash reported with ${packageInfo!.packageName} and user id ${firebaseController.getUid()}',
+            snackPosition: SnackPosition.BOTTOM);
+        throw Exception();
+      },
+      textConfirm: 'Force Crash',
     );
   }
 }

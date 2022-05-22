@@ -64,11 +64,11 @@ class HotController extends GetxController {
         nineList.removeWhere((element) => watchednineList.contains(element));
       }
       if (nineList.length > 5 && memes.length > 15) {
-        if (memes.length > 30) {
-          memes = memes.sublist(0, 25);
+        if (memes.length > 45) {
+          memes = memes.sublist(0, 45);
         }
-        if (nineList.length > 10) {
-          nineList = nineList.sublist(0, 10);
+        if (nineList.length > 15) {
+          nineList = nineList.sublist(0, 15);
         }
         memes.addAll(nineList);
       }
@@ -76,7 +76,7 @@ class HotController extends GetxController {
       if (memes.length > 3) {
         memes.shuffle();
         if (memes.length > 50) {
-          memes = memes.sublist(0, 35);
+          memes = memes.sublist(0, 50);
         }
         status.value = Status.loaded;
       } else {

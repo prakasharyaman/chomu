@@ -24,9 +24,6 @@ class _StoriesFinishedState extends State<StoriesFinished> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          image: const DecorationImage(
-            image: AssetImage('assets/images/splashbackground.gif'),
-          ),
           //background gradient
           gradient: LinearGradient(
             begin: Alignment.topRight,

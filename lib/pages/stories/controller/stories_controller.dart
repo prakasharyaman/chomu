@@ -74,10 +74,10 @@ class StoriesController extends GetxController {
         List<Meme> tempList = animatedNineList;
         tempList.addAll(nonAnimatedNineList);
         nineList = tempList;
-        if (memes.length > 20) {
-          memes = memes.sublist(0, 20);
+        if (memes.length > 30) {
+          memes = memes.sublist(0, 30);
         }
-        if (nineList.length < 30) {
+        if (nineList.length < 40) {
           memes.addAll(nineList);
           memes.shuffle();
         } else {
@@ -86,8 +86,8 @@ class StoriesController extends GetxController {
         // debugPrint(nineList.length.toString());
         // debugPrint(memes.length.toString());
 
-        if (memes.length > 40) {
-          memes = memes.sublist(0, 40);
+        if (memes.length > 50) {
+          memes = memes.sublist(0, 50);
         }
 
         status.value = Status.loaded;
