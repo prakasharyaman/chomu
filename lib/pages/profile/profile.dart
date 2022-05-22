@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:chomu/ads/widgets/small_banner_ad.dart';
 import 'package:chomu/pages/profile/controller/profile_controller.dart';
 import 'package:chomu/pages/profile/widgets/blocked_users.dart';
 import 'package:flutter/material.dart';
@@ -185,6 +186,10 @@ class ProfilePage extends StatelessWidget {
               ],
             ),
           ),
+        ),
+        // small Banner ad
+        const SliverToBoxAdapter(
+          child: SmallBannerAd(),
         ),
         // book marks
         SliverToBoxAdapter(

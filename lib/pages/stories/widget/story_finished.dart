@@ -1,3 +1,4 @@
+import 'package:chomu/ads/widgets/small_banner_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -83,42 +84,49 @@ class _StoriesFinishedState extends State<StoriesFinished> {
                 ],
               ),
             ),
+            // button to go back
             Align(
               alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 50.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(0, 13),
-                        blurRadius: 25,
-                        color: Colors.purpleAccent.withOpacity(0.3),
-                      ),
-                    ],
-                  ),
-                  child: TextButton(
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.circular(40)),
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.purpleAccent,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.only(
-                            top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
-                        child: Text(
-                          "Lets's GO 🚀",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(0, 13),
+                          blurRadius: 25,
+                          color: Colors.purpleAccent.withOpacity(0.3),
+                        ),
+                      ],
+                    ),
+                    child: TextButton(
+                      // shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(40)),
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.purpleAccent,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.only(
+                              top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
+                          child: Text(
+                            "Lets's GO 🚀",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: SmallBannerAd(),
+                  ),
+                ],
               ),
             )
           ],

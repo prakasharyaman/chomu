@@ -48,27 +48,23 @@ class Home extends StatelessWidget {
             child: Column(
               children: [
                 DrawerHeader(
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(
+                        'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
+                  )),
                   child: Stack(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: CachedNetworkImage(
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          imageUrl:
-                              'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif',
-                          errorWidget: (buildContext, string, dynamic) {
-                            return Container(
-                              color: Colors.purple,
-                            );
-                          },
-                        ),
-                      ),
-                      const Align(
+                    children: const [
+                      SizedBox(),
+                      Align(
                         alignment: Alignment.bottomCenter,
                         child: Text(
                           'Chomu',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],

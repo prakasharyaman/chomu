@@ -1,3 +1,5 @@
+import 'package:chomu/ads/widgets/full_screen_ad.dart';
+import 'package:chomu/ads/widgets/stories_ad.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/pages/stories/widget/story_finished.dart';
 import 'package:chomu/pages/stories/widget/story_page.dart';
@@ -46,6 +48,7 @@ class StoryPlayer extends GetView<StoriesController> {
                   }
                 },
                 scrollDirection: Axis.vertical,
+                controller: controller.pageController,
               );
             case Status.error:
               return ErrorScreen(

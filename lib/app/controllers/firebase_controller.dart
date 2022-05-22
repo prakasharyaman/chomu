@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../models/user_model.dart';
 
 class FirebaseController extends GetxController {
@@ -21,20 +22,20 @@ class FirebaseController extends GetxController {
   var userModel = UserModel().obs;
 
   Stream<User?> get userStream => firebaseAuth.authStateChanges();
-
   @override
-  void onReady() {
+  void onInit() {
     //log app open
     firebaseAnalytics.logAppOpen();
 
     //run every time auth state changes
     ever(user, handleAuthChanged);
-
+    //bind to user model
     user.bindStream(userStream);
-
-    super.onReady();
-
+    // subscribe to topic
     FirebaseMessaging.instance.subscribeToTopic('meme');
+    // initiate ads
+    _initGoogleMobileAds();
+    super.onInit();
   }
 
   getUid() {
@@ -100,6 +101,9 @@ class FirebaseController extends GetxController {
     }
   }
 
+  _initGoogleMobileAds() async {
+    await MobileAds.instance.initialize();
+  }
   // logInAnalytics() async {
   //   try {
   //     await firebaseAnalytics.

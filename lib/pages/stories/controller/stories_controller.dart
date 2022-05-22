@@ -13,7 +13,7 @@ class StoriesController extends GetxController {
   Rx<Status> status = Status.loading.obs;
   MemeRepository memeRepository = MemeRepository();
   final getStorage = GetStorage();
-
+  PageController pageController = PageController();
   String errorMessage = '';
   List<Meme> memes = [];
   @override

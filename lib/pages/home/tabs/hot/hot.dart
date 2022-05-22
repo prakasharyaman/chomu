@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chomu/ads/widgets/big_banner_ad.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
 import 'package:chomu/pages/error/error.dart';
@@ -29,7 +30,6 @@ class Hot extends GetView<HotController> {
           case Status.loading:
             return const Splash();
           case Status.loaded:
-            // Get.to(MyHomePage(title: 'sb'));
             return const HotPage();
           case Status.error:
             return ErrorScreen(
@@ -160,6 +160,8 @@ class _HotPageState extends State<HotPage> {
                           )
                         ],
                       );
+                    } else if (index % 10 == 0 && index != 0) {
+                      return const BigBannerAd();
                     } else {
                       if (memes[index].type == 'Animated') {
                         // animated meme

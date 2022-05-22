@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
+import '../../../ads/ads_helper.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../app/controllers/theme_controller.dart';
 import '../../../app/controllers/version_controller.dart';
@@ -174,7 +176,7 @@ class _SettingsPageState extends State<SettingsPage> {
       cancelTextColor: Colors.red,
       content: Text(
         packageInfo!.packageName +
-            ' is your package name\nThis button is also a test button for users experiencing crashes.Press crash to test it.',
+            ' is your package name\nThe Force Crash button is a test button for users experiencing crashes.Press Force Crash to test it.\nWARNING! This might crash the app.',
       ),
       onCancel: () {},
       onConfirm: () {
