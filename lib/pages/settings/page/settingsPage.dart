@@ -2,10 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
-import '../../../ads/ads_helper.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../app/controllers/theme_controller.dart';
 import '../../../app/controllers/version_controller.dart';

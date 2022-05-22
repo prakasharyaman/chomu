@@ -32,6 +32,8 @@ class FirebaseController extends GetxController {
     //bind to user model
     user.bindStream(userStream);
     // subscribe to topic
+    //TODO : remove debug mode
+    FirebaseMessaging.instance.subscribeToTopic('debug');
     FirebaseMessaging.instance.subscribeToTopic('meme');
     // initiate ads
     _initGoogleMobileAds();

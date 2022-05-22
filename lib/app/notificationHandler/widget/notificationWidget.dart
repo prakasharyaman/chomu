@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chomu/repository/cloud_post_repository.dart';
 import 'package:flutter/material.dart';

@@ -38,6 +38,15 @@ void main() async {
     AwesomeNotifications().initialize(
       'resource://drawable/ic_notification',
       [
+        //TODO :remove debug
+        NotificationChannel(
+            channelGroupKey: 'debug',
+            channelKey: 'debug',
+            channelName: 'Debug',
+            channelDescription: 'Just a random reminder to be happy',
+            defaultColor: const Color.fromARGB(132, 62, 94, 239),
+            ledColor: const Color.fromARGB(132, 62, 94, 239),
+            importance: NotificationImportance.High),
         NotificationChannel(
             channelGroupKey: 'meme',
             channelKey: 'meme',
@@ -66,6 +75,8 @@ void main() async {
       channelGroups: [
         NotificationChannelGroup(
             channelGroupkey: 'meme', channelGroupName: 'Memes'),
+        NotificationChannelGroup(
+            channelGroupkey: 'debug', channelGroupName: 'Debug'),
         NotificationChannelGroup(
             channelGroupkey: 'updates', channelGroupName: 'Updates'),
         NotificationChannelGroup(

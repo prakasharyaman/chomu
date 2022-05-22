@@ -49,7 +49,7 @@ class CloudPostRepository {
             .collection('memes')
             .doc(docId)
             .get();
-        var meme;
+        Meme? meme;
         if (postSnapshot.exists) {
           var postJson = postSnapshot.data();
           var memeSnapshotId = postSnapshot.id;

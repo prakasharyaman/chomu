@@ -1,6 +1,4 @@
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:get/get.dart';
 import 'package:open_file/open_file.dart';
@@ -8,6 +6,7 @@ import 'package:open_file/open_file.dart';
 class FileDownloadService extends GetxController
     with GetSingleTickerProviderStateMixin {
   void requestDownload({required String url, required String name}) async {
+    // ignore: unused_local_variable
     final file = await FileDownloader.downloadFile(
         url: url,
         name: name,
