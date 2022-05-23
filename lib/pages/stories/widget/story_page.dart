@@ -1,6 +1,8 @@
+import 'package:chomu/ads/widgets/small_banner_ad.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/services/download_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -262,12 +264,20 @@ class _StoryPageState extends State<StoryPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(meme.title,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text(
+                      meme.title,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     Text(meme.author,
                         style: const TextStyle(
                           fontSize: 10,
+                          color: Colors.white,
                         )),
                   ],
                 ),
@@ -337,9 +347,11 @@ class _StoryPageState extends State<StoryPage> {
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(isPostLiked
-                                ? Icons.thumb_up
-                                : Icons.thumb_up_alt_outlined),
+                            child: Icon(
+                                isPostLiked
+                                    ? FontAwesomeIcons.solidHeart
+                                    : FontAwesomeIcons.heart,
+                                color: isPostLiked ? Colors.red : Colors.white),
                           ),
                         ),
                       ),
@@ -372,6 +384,11 @@ class _StoryPageState extends State<StoryPage> {
                   ],
                 ),
               )),
+          //ad
+          // const Align(
+          //   alignment: Alignment.topCenter,
+          //   child: SafeArea(child: SmallBannerAd()),
+          // ),
         ],
       ),
     );

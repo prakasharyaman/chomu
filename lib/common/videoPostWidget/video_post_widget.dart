@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
@@ -241,9 +242,11 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: Icon(isPostLiked
-                          ? Icons.thumb_up
-                          : Icons.thumb_up_alt_outlined),
+                      icon: Icon(
+                          isPostLiked
+                              ? FontAwesomeIcons.solidHeart
+                              : FontAwesomeIcons.heart,
+                          color: isPostLiked ? Colors.red : Colors.grey),
                       onPressed: () {
                         setState(() {
                           isPostLiked = !isPostLiked;

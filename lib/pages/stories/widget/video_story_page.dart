@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -103,6 +104,11 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                   height: height * 0.6,
                   width: width,
                   child: GestureDetector(
+                    onDoubleTap: () {
+                      setState(() {
+                        isPostLiked = !isPostLiked;
+                      });
+                    },
                     onTap: () {
                       isMute
                           ? _controller.setVolume(100)
@@ -406,11 +412,12 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                                     left: 15.0,
                                     right: 15.0),
                                 child: Icon(
-                                  isPostLiked
-                                      ? Icons.thumb_up
-                                      : Icons.thumb_up_alt_outlined,
-                                  color: Colors.white,
-                                ),
+                                    isPostLiked
+                                        ? FontAwesomeIcons.solidHeart
+                                        : FontAwesomeIcons.heart,
+                                    color: isPostLiked
+                                        ? Colors.red
+                                        : Colors.white),
                               ),
                             ),
                           ),

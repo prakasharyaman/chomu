@@ -6,6 +6,7 @@ import '../../app/controllers/firebase_controller.dart';
 import '../../models/meme_model.dart';
 import '../../pages/home/tabs/hot/controller/hot_controller.dart';
 import '../../services/share_service.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MemeWidget extends StatefulWidget {
   const MemeWidget(
@@ -174,9 +175,11 @@ class _MemeWidgetState extends State<MemeWidget> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: Icon(isPostLiked
-                          ? Icons.thumb_up
-                          : Icons.thumb_up_alt_outlined),
+                      icon: Icon(
+                          isPostLiked
+                              ? FontAwesomeIcons.solidHeart
+                              : FontAwesomeIcons.heart,
+                          color: isPostLiked ? Colors.red : Colors.grey),
                       onPressed: () {
                         setState(() {
                           isPostLiked = !isPostLiked;
