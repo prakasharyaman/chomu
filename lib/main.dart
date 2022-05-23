@@ -96,7 +96,7 @@ void main() async {
     Get.put<VolumeController>(VolumeController());
     // check for latest version
     Get.put<VersionController>(VersionController());
-// download services
+    // download services
     Get.put<FileDownloadService>(FileDownloadService());
     Wakelock.enable();
     runApp(GetMaterialApp(

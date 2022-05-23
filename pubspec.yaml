@@ -53,6 +53,7 @@ dependencies:
   package_info_plus: ^1.4.2
   in_app_review: ^2.0.4
   google_mobile_ads: ^1.2.0
+  rating_dialog: ^2.0.4
 
 
 dev_dependencies:
