@@ -28,14 +28,20 @@ class Home extends StatelessWidget {
           bottomNavigationBar: FlashyTabBar(
             selectedIndex: controller.currentPage,
             showElevation: true,
+            iconSize: 25,
             onItemSelected: controller.changeCurrentPage,
             items: [
               FlashyTabBarItem(
-                icon: const Icon(Icons.home_rounded),
-                title: const Text('Home'),
+                icon: Icon(Icons.home_rounded,
+                    color: Get.isDarkMode ? Colors.white : Colors.purple),
+                title: Text(
+                  'Home',
+                  style: TextStyle(
+                      color: Get.isDarkMode ? Colors.white : Colors.purple),
+                ),
               ),
               FlashyTabBarItem(
-                icon: const Icon(Icons.amp_stories),
+                icon: const Icon(Icons.play_arrow_rounded),
                 title: const Text('Stories'),
               ),
               FlashyTabBarItem(

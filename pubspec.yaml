@@ -55,6 +55,7 @@ dependencies:
   google_mobile_ads: ^1.2.0
   rating_dialog: ^2.0.4
   font_awesome_flutter: ^10.1.0
+  device_info_plus: ^3.2.3
 
 
 dev_dependencies:

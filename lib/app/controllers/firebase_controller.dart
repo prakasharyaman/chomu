@@ -1,11 +1,12 @@
 // ignore_for_file: avoid_print
-
+import 'package:chomu/repository/meme_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../models/user_model.dart';
@@ -37,6 +38,7 @@ class FirebaseController extends GetxController {
     FirebaseMessaging.instance.subscribeToTopic('meme');
     // initiate ads
     _initGoogleMobileAds();
+
     super.onInit();
   }
 
@@ -51,6 +53,8 @@ class FirebaseController extends GetxController {
       await firebaseAnalytics.logLogin();
       await firebaseAnalytics.setUserId(id: _firebaseUser.uid);
       FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);
+      //log user on cloud
+      logUserActiveTodayOnCloud();
       print(userModel.value.id);
     } else if (_firebaseUser == null) {
       await signIn();
@@ -105,6 +109,40 @@ class FirebaseController extends GetxController {
 
   _initGoogleMobileAds() async {
     await MobileAds.instance.initialize();
+  }
+
+//log user as active today
+  logUserActiveTodayOnCloud() async {
+    try {
+      var date = MemeRepository().getDate();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('active_users')
+          .collection(date)
+          .doc(await getUid())
+          .set({'userId': await getUid(), 'date': date});
+      await saveUserTokenAndDeviceType();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  //save user token
+  saveUserTokenAndDeviceType() async {
+    try {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      debugPrint('Running on ${androidInfo.model}');
+      var token = await FirebaseMessaging.instance.getToken();
+      await FirebaseFirestore.instance.collection('users').doc(getUid()).set({
+        'token': token,
+        'deviceType': androidInfo.model,
+        'id': getUid(),
+        'lastActive': DateTime.now(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
   // logInAnalytics() async {
   //   try {
