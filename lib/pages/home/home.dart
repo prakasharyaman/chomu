@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chomu/pages/feedback/feedback_screen.dart';
 import 'package:chomu/pages/splash/splash.dart';
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../feedback/controller/feedback_controller_bindings.dart';
 import '../profile/bindings/profile_bindings.dart';
 import '../profile/profile.dart';
 import '../settings/page/settingsPage.dart';
@@ -130,7 +132,15 @@ class Home extends StatelessWidget {
                   leading: const Icon(Icons.share_rounded),
                   title: const Text('Share App'),
                 ),
-
+                // contact , website
+                ListTile(
+                  onTap: () {
+                    Get.to(const FeedbackScreen(),
+                        binding: FeedBackScreenBindings());
+                  },
+                  leading: const Icon(Icons.feedback_rounded),
+                  title: const Text('Feedback'),
+                ),
                 const Spacer(),
                 // privacy Policy
                 GestureDetector(

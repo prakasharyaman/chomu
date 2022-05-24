@@ -188,8 +188,9 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
         // small Banner ad
-        const SliverToBoxAdapter(
-          child: SmallBannerAd(),
+        // ignore: prefer_const_constructors
+        SliverToBoxAdapter(
+          child: const SmallBannerAd(),
         ),
         // book marks
         SliverToBoxAdapter(
