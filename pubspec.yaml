@@ -56,6 +56,8 @@ dependencies:
   rating_dialog: ^2.0.4
   font_awesome_flutter: ^10.1.0
   device_info_plus: ^3.2.3
+  introduction_screen: ^3.0.2
+  flutter_material_pickers: ^3.1.4+1
 
 
 dev_dependencies:

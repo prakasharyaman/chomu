@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:chomu/pages/introduction/introduction_screen.dart';
 import 'package:chomu/repository/meme_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../models/user_model.dart';
 
@@ -17,6 +19,7 @@ class FirebaseController extends GetxController {
   FirebaseController({required this.firebaseAnalytics});
   //login variables
   static FirebaseController firebaseController = Get.find();
+  final storage = GetStorage();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   Rxn<User> user = Rxn<User>();
   DateTime dateTime = DateTime.now();
@@ -55,6 +58,8 @@ class FirebaseController extends GetxController {
       FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);
       //log user on cloud
       logUserActiveTodayOnCloud();
+      // check for introduction
+      checkForIntroduction();
       print(userModel.value.id);
     } else if (_firebaseUser == null) {
       await signIn();
@@ -139,6 +144,29 @@ class FirebaseController extends GetxController {
         'deviceType': androidInfo.model,
         'id': getUid(),
         'lastActive': DateTime.now(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  checkForIntroduction() async {
+    try {
+      var introductionShown = storage.read('introductionShown');
+      if (introductionShown == null || introductionShown == false) {
+        debugPrint('showing introduction');
+        await storage.write('introductionShown', true);
+        Get.to(const Introduction());
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  saveUserAge({required int age}) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(getUid()).set({
+        'age': age,
       }, SetOptions(merge: true));
     } catch (e) {
       debugPrint(e.toString());
