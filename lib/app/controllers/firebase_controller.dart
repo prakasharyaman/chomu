@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../models/user_model.dart';
 
 class FirebaseController extends GetxController {
@@ -39,8 +38,6 @@ class FirebaseController extends GetxController {
 
     // FirebaseMessaging.instance.subscribeToTopic('debug');
     FirebaseMessaging.instance.subscribeToTopic('meme');
-    // initiate ads
-    _initGoogleMobileAds();
 
     super.onInit();
   }
@@ -110,10 +107,6 @@ class FirebaseController extends GetxController {
     } catch (e) {
       print(e);
     }
-  }
-
-  _initGoogleMobileAds() async {
-    await MobileAds.instance.initialize();
   }
 
 //log user as active today

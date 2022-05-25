@@ -12,8 +12,11 @@ import '../error/error.dart';
 import '../splash/splash.dart';
 
 class StoryPlayer extends GetView<StoriesController> {
-  const StoryPlayer({Key? key}) : super(key: key);
-
+  const StoryPlayer({
+    Key? key,
+    this.tag,
+  }) : super(key: key);
+  final String? tag;
   @override
   Widget build(BuildContext context) {
     FirebaseController firebaseController = Get.find();
@@ -21,7 +24,7 @@ class StoryPlayer extends GetView<StoriesController> {
         screenClass: 'Story Player', screenName: 'Story Player');
     return Scaffold(
       body: GetBuilder<StoriesController>(
-        init: StoriesController(),
+        init: StoriesController(tag: tag),
         builder: (controller) => Obx(() {
           switch (controller.status.value) {
             case Status.loading:

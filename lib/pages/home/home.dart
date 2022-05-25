@@ -35,11 +35,11 @@ class Home extends StatelessWidget {
             items: [
               FlashyTabBarItem(
                 icon: Icon(Icons.home_rounded,
-                    color: Get.isDarkMode ? Colors.white : Colors.purple),
+                    color: Get.isDarkMode ? Colors.white : Colors.deepPurple),
                 title: Text(
                   'Home',
                   style: TextStyle(
-                      color: Get.isDarkMode ? Colors.white : Colors.purple),
+                      color: Get.isDarkMode ? Colors.white : Colors.deepPurple),
                 ),
               ),
               FlashyTabBarItem(
@@ -93,7 +93,7 @@ class Home extends StatelessWidget {
                   onTap: () {
                     Get.to(const StoryPlayer());
                   },
-                  leading: const Icon(Icons.amp_stories),
+                  leading: const Icon(Icons.play_arrow_rounded),
                   title: const Text('Stories'),
                 ),
                 //profile
@@ -119,7 +119,7 @@ class Home extends StatelessWidget {
                     var url = 'mailto:info.outfitindia@gmail.com';
                     _launchUrl(url);
                   },
-                  leading: const Icon(Icons.contact_mail),
+                  leading: const Icon(Icons.contact_support),
                   title: const Text('Contact'),
                 ),
                 // contact , website

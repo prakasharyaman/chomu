@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 class Meme {
   String author, postLink, subReddit, title, url, id;
   List<dynamic> preview;
@@ -8,24 +10,25 @@ class Meme {
   String source;
   String? type;
   int ups;
+  List<dynamic>? tags;
 
-  Meme({
-    required this.id,
-    required this.author,
-    required this.postLink,
-    required this.subReddit,
-    required this.title,
-    required this.url,
-    required this.preview,
-    required this.nsfw,
-    required this.spoiler,
-    required this.ups,
-    required this.source,
-    required this.image460,
-    required this.videoUrl,
-    required this.length,
-    required this.type,
-  });
+  Meme(
+      {required this.id,
+      required this.author,
+      required this.postLink,
+      required this.subReddit,
+      required this.title,
+      required this.url,
+      required this.preview,
+      required this.nsfw,
+      required this.spoiler,
+      required this.ups,
+      required this.source,
+      required this.image460,
+      required this.videoUrl,
+      required this.length,
+      required this.type,
+      this.tags});
   factory Meme.fromJson(Map<String, dynamic> json) {
     return Meme(
       id: json['id'] as String,

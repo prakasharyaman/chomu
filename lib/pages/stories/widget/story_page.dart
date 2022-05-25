@@ -266,18 +266,18 @@ class _StoryPageState extends State<StoryPage> {
                   children: [
                     Text(
                       meme.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Get.isDarkMode ? Colors.white : Colors.black,
                       ),
                       maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(meme.author,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10,
-                          color: Colors.white,
+                          color: Get.isDarkMode ? Colors.white : Colors.black,
                         )),
                   ],
                 ),

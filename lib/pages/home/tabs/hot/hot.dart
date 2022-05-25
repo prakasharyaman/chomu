@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chomu/ads/controller/ads_controller.dart';
 import 'package:chomu/ads/widgets/big_banner_ad.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
 import 'package:chomu/pages/error/error.dart';
+import 'package:chomu/pages/home/tabs/hot/widgets/homeStories/home_stories.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
@@ -87,20 +89,27 @@ class _HotPageState extends State<HotPage> {
                           key.currentState!.openDrawer();
                         }
                       },
-                      child: const CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                            'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
-                        radius: 15,
+                      child: CircleAvatar(
+                        child: Image.asset('assets/images/logo.png'),
+                        backgroundColor: Colors.deepPurpleAccent,
+                        radius: 18,
                       ),
                     ),
                     const SizedBox(width: 5),
                     //app Title
-                    Text(
-                      "CHOMU",
-                      style: TextStyle(
-                          color:
-                              Get.isDarkMode ? Colors.white : Colors.deepPurple,
-                          fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap: () {
+                        var key = homeController.drawerOpenKey;
+                        if (key.currentState != null) {
+                          key.currentState!.openDrawer();
+                        }
+                      },
+                      child: Text(
+                        "CHOMU",
+                        style: TextStyle(
+                            color: Get.isDarkMode ? Colors.white : Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     //spacer
                     const Spacer(),
@@ -112,12 +121,11 @@ class _HotPageState extends State<HotPage> {
                         iconSize: 25,
                         icon: Icon(
                           Icons.replay_rounded,
-                          color:
-                              Get.isDarkMode ? Colors.white : Colors.deepPurple,
+                          color: Get.isDarkMode ? Colors.white : Colors.white,
                         )),
                   ],
                 ),
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.deepPurple,
               ),
             ];
           },
@@ -126,12 +134,14 @@ class _HotPageState extends State<HotPage> {
             margin: const EdgeInsets.only(left: 1, right: 1),
             child: RefreshIndicator(
               displacement: 80,
+              color: Colors.deepPurple,
               onRefresh: () async {
                 controller.getMemes();
               },
               child: InViewNotifierList(
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.vertical,
+
                   // ignore: prefer_const_literals_to_create_immutables
                   initialInViewIds: ['0'],
                   isInViewPortCondition: (double deltaTop, double deltaBottom,
@@ -161,7 +171,11 @@ class _HotPageState extends State<HotPage> {
                         ],
                       );
                     } else if (index % 10 == 0 && index != 0) {
-                      return const BigBannerAd();
+                      AdsController adsController = Get.find();
+
+                      return adsController.bigBannerAd;
+                    } else if (index == 0) {
+                      return const HomeStories();
                     } else {
                       if (memes[index].type == 'Animated') {
                         // animated meme
@@ -190,6 +204,7 @@ class _HotPageState extends State<HotPage> {
                         );
                       } else {
                         // image meme
+
                         return MemeWidget(
                           height: Get.height,
                           menuFunction: () {

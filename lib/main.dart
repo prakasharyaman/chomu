@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:chomu/ads/controller/ads_controller.dart';
 import 'package:chomu/app/controllers/version_controller.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:chomu/app/controllers/theme_controller.dart';
@@ -98,6 +99,8 @@ void main() async {
     Get.put<VersionController>(VersionController());
     // download services
     Get.put<FileDownloadService>(FileDownloadService());
+    // ads services
+    Get.put<AdsController>(AdsController());
     Wakelock.enable();
     runApp(GetMaterialApp(
       debugShowCheckedModeBanner: false,

@@ -67,16 +67,16 @@ class HotController extends GetxController {
         if (memes.length > 45) {
           memes = memes.sublist(0, 45);
         }
-        if (nineList.length > 15) {
-          nineList = nineList.sublist(0, 15);
+        if (nineList.length > 25) {
+          nineList = nineList.sublist(0, 25);
         }
         memes.addAll(nineList);
       }
 
       if (memes.length > 3) {
         memes.shuffle();
-        if (memes.length > 50) {
-          memes = memes.sublist(0, 50);
+        if (memes.length > 65) {
+          memes = memes.sublist(0, 65);
         }
         status.value = Status.loaded;
       } else {
@@ -126,7 +126,11 @@ class HotController extends GetxController {
     // check if the meme is watched
     try {
       if (blockedUserList.contains(username)) {
-        return true;
+        if (username == 'ChomuKing') {
+          return false;
+        } else {
+          return true;
+        }
       } else {
         return false;
       }
