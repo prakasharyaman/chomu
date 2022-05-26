@@ -447,7 +447,10 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                                     bottom: 8.0,
                                     left: 15.0,
                                     right: 15.0),
-                                child: Icon(FontAwesomeIcons.share),
+                                child: Icon(
+                                  FontAwesomeIcons.share,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),

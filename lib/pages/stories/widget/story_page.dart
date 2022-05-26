@@ -344,7 +344,10 @@ class _StoryPageState extends State<StoryPage> {
                           child: const Padding(
                             padding: EdgeInsets.only(
                                 top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(FontAwesomeIcons.share),
+                            child: Icon(
+                              FontAwesomeIcons.share,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
