@@ -28,6 +28,9 @@ class StoryPlayer extends GetView<StoriesController> {
         builder: (controller) => Obx(() {
           switch (controller.status.value) {
             case Status.loading:
+              if (tag != null) {
+                controller.getStoryByTag(tag: tag!);
+              }
               return const Splash();
             case Status.loaded:
               return PageView.builder(

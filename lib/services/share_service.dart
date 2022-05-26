@@ -6,6 +6,10 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:open_file/open_file.dart';
 import 'package:share_plus/share_plus.dart';
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -38,11 +42,55 @@ void convertWidgetToImageAndShare(
       await Share.shareFiles(imagePaths,
           subject: 'CHOMU',
           text:
-              'Hey check out this *MEME* from *CHOMU*.\n\n https://play.google.com/store/apps/details?id=android.chomu \n' +
+              'Hey check out this *POST* from *CHOMU*.\n\n https://bit.ly/chomuApp \n' +
                   title,
           sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
     }).catchError((onError) {
       print(onError);
     });
   });
+}
+
+void downloadAndSharePost({required String url, required String name}) async {
+  try {
+    final file = await FileDownloader.downloadFile(
+        url: url,
+        name: name,
+        onProgress: (name, progress) {
+          debugPrint(progress.toDouble().toString());
+          if (progress.toDouble() == 0.0) {
+            Get.snackbar('Preparing for Sharing. Please wait.', 'Hold On',
+                backgroundColor: Get.isDarkMode ? Colors.black54 : Colors.white,
+                colorText: Get.isDarkMode ? Colors.white : Colors.purple,
+                icon: Icon(FontAwesomeIcons.share,
+                    color: Get.isDarkMode ? Colors.white : Colors.purple),
+                messageText: LinearProgressIndicator(
+                  color: Get.isDarkMode ? Colors.white : Colors.purple,
+                ));
+          }
+        },
+        onDownloadCompleted: (path) async {
+          List<String> imagePaths = [];
+          imagePaths.add(path);
+          await Share.shareFiles(
+            imagePaths,
+            subject: name,
+            text:
+                'Check this out: Download *CHOMU*.\n https://bit.ly/chomuApp \n\n' +
+                    name,
+          );
+          File tobeDeleted = File(path);
+          await tobeDeleted.delete();
+        },
+        onDownloadError: (error) {
+          throw Exception('Error While Sharing ');
+        });
+  } catch (e) {
+    Get.snackbar(
+      'Uh oh!',
+      e.toString(),
+      backgroundColor: Get.isDarkMode ? Colors.black54 : Colors.white,
+      colorText: Get.isDarkMode ? Colors.white : Colors.purple,
+    );
+  }
 }

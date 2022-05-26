@@ -258,14 +258,6 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
                       NumberFormat.compact().format(meme.ups),
                       style: const TextStyle(fontSize: 10),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.comment),
-                      onPressed: () {
-                        Get.snackbar('Sorry !',
-                            'Comments have been diabled due to some issues',
-                            snackPosition: SnackPosition.BOTTOM);
-                      },
-                    ),
                     const Text(
                       '',
                       style: TextStyle(fontSize: 10),

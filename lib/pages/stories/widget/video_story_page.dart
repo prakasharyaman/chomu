@@ -1,12 +1,15 @@
 import 'dart:ui';
 import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
+import 'package:chomu/services/share_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import '../../../ads/ads_helper.dart';
 import '../../../app/app.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';
@@ -20,6 +23,11 @@ class VideoStoryPage extends StatefulWidget {
 }
 
 class _VideoStoryPageState extends State<VideoStoryPage> {
+  // COMPLETE: Add _bannerAd
+  late BannerAd _bannerAd;
+
+  // COMPLETE: Add _isBannerAdReady
+  bool _isBannerAdReady = false;
   VolumeController volumeController = Get.find();
   late VideoPlayerController _controller;
   late VideoPlayerController _blurVideoController;
@@ -34,7 +42,26 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
   StoriesController storiesController = Get.find();
   @override
   void initState() {
-    super.initState();
+    // COMPLETE: Initialize _bannerAd
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          debugPrint('Failed to load a banner ad: ${err.message}');
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+
+    _bannerAd.load();
     meme = widget.meme;
     volume = volumeController.volume;
     FirebaseController firebaseController = Get.find();
@@ -60,6 +87,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
     volume > 0 ? isMute = false : isMute = true;
     _controller.setVolume(volume);
     _controller.setLooping(true);
+    super.initState();
   }
 
   @override
@@ -284,7 +312,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                   )), // title
               // title and author
               Positioned(
-                  bottom: 10,
+                  bottom: 50,
                   right: 50,
                   left: 0,
                   child: Padding(
@@ -311,37 +339,10 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                       ],
                     ),
                   )),
-              // mute button
-              Positioned(
-                bottom: 100,
-                left: 10,
-                child: Visibility(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                        onTap: () {
-                          isMute
-                              ? _controller.setVolume(100)
-                              : _controller.setVolume(0);
-                          isMute
-                              ? volumeController.setVolume(value: 100)
-                              : volumeController.setVolume(value: 0);
-                          setState(() {
-                            isMute = !isMute;
-                          });
-                        },
-                        child: const Icon(
-                          Icons.volume_off_rounded,
-                          color: Colors.white,
-                        )),
-                  ),
-                  visible: isMute,
-                ),
-              ),
 
               // floating buttons
               Positioned(
-                  bottom: 30,
+                  bottom: 50,
                   right: 0,
                   left: 0,
                   child: Padding(
@@ -350,6 +351,73 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        // mute button
+                        Visibility(
+                          visible: isMute,
+                          child: GestureDetector(
+                            onTap: () {
+                              isMute
+                                  ? _controller.setVolume(100)
+                                  : _controller.setVolume(0);
+                              isMute
+                                  ? volumeController.setVolume(value: 100)
+                                  : volumeController.setVolume(value: 0);
+                              setState(() {
+                                isMute = !isMute;
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Get.isDarkMode
+                                      ? Colors.white38.withOpacity(0.3)
+                                      : Colors.grey.shade500.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 8.0,
+                                      bottom: 8.0,
+                                      left: 15.0,
+                                      right: 15.0),
+                                  child: Icon(
+                                    Icons.volume_off_rounded,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        // share button
+                        GestureDetector(
+                          onTap: () {
+                            Future.delayed(
+                                const Duration(milliseconds: 200),
+                                () => downloadAndSharePost(
+                                    name: meme.title, url: meme.videoUrl!));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Get.isDarkMode
+                                    ? Colors.white38.withOpacity(0.3)
+                                    : Colors.grey.shade500.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 8.0,
+                                    bottom: 8.0,
+                                    left: 15.0,
+                                    right: 15.0),
+                                child: Icon(FontAwesomeIcons.share),
+                              ),
+                            ),
+                          ),
+                        ),
                         //book mark
                         GestureDetector(
                           onTap: () {
@@ -422,35 +490,21 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                             ),
                           ),
                         ),
-                        // share button
-                        // GestureDetector(
-                        //   onTap: () {
-
-                        //     Future.delayed(
-                        //         const Duration(milliseconds: 200),
-                        //         () => convertWidgetToImageAndShare(
-                        //             context, _cardKey, meme.title));
-                        //   },
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.all(8.0),
-                        //     child: Container(
-                        //       decoration: BoxDecoration(
-                        //         color: Get.isDarkMode
-                        //             ? Colors.white38.withOpacity(0.3)
-                        //             : Colors.grey.shade500.withOpacity(0.3),
-                        //         borderRadius: BorderRadius.circular(20),
-                        //       ),
-                        //       child: const Padding(
-                        //         padding: EdgeInsets.only(
-                        //             top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                        //         child: Icon(Icons.share),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                   )),
+              //ad widget
+              Positioned(
+                left: 0,
+                bottom: 0,
+                right: 0,
+                child: SizedBox(
+                  height: 50,
+                  width: 320,
+                  child:
+                      _isBannerAdReady ? AdWidget(ad: _bannerAd) : Container(),
+                ),
+              )
             ],
           ),
         ),
@@ -484,6 +538,8 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
   void dispose() {
     super.dispose();
     _controller.dispose();
+    // COMPLETE: Dispose a BannerAd object
+    _bannerAd.dispose();
   }
 }
 

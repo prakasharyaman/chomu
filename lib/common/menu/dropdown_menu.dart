@@ -2,6 +2,7 @@
 
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/services/download_service.dart';
+import 'package:chomu/services/share_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../models/meme_model.dart';
@@ -197,12 +198,22 @@ class DropDownMenu extends StatelessWidget {
                                     // share button
                                     GestureDetector(
                                       onTap: () {
-                                        if (meme != null) {}
-                                        debugPrint('Share');
-                                        Get.snackbar(
-                                            'Oops', 'Couldn\'t share the meme',
-                                            snackPosition:
-                                                SnackPosition.BOTTOM);
+                                        if (meme != null) {
+                                          if (meme!.type != null) {
+                                            if (meme!.type == 'Animated') {
+                                              downloadAndSharePost(
+                                                  url: meme!.videoUrl!,
+                                                  name: meme!.title);
+                                            }
+                                          } else {
+                                            downloadAndSharePost(
+                                                url: meme!.url,
+                                                name: meme!.title);
+                                          }
+                                        } else {
+                                          Get.snackbar('Oops !',
+                                              'Cannot share this post');
+                                        }
                                         onClose();
                                       },
                                       child: const Padding(

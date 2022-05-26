@@ -7,6 +7,7 @@ import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
 import 'package:chomu/pages/error/error.dart';
 import 'package:chomu/pages/home/tabs/hot/widgets/homeStories/home_stories.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 import '../../../../app/app.dart';
@@ -61,8 +62,8 @@ class _HotPageState extends State<HotPage> {
   Meme? menuMeme;
   @override
   void initState() {
-    super.initState();
     memes = controller.memes;
+    super.initState();
   }
 
   @override
@@ -71,6 +72,7 @@ class _HotPageState extends State<HotPage> {
       children: [
         //content
         NestedScrollView(
+          controller: homeController.scrollController,
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
@@ -78,25 +80,34 @@ class _HotPageState extends State<HotPage> {
                 automaticallyImplyLeading: false,
                 centerTitle: false,
                 floating: true,
+                // // logo for menu
+                // leading: IconButton(
+                //     onPressed: () {
+                //       var key = homeController.drawerOpenKey;
+                //       if (key.currentState != null) {
+                //         key.currentState!.openDrawer();
+                //       }
+                //     },
+                //     icon: const Icon(Icons.menu)),
+                //app Title
                 title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // icon
                     GestureDetector(
-                      onTap: () {
-                        var key = homeController.drawerOpenKey;
-                        if (key.currentState != null) {
-                          key.currentState!.openDrawer();
-                        }
-                      },
-                      child: CircleAvatar(
-                        child: Image.asset('assets/images/logo.png'),
-                        backgroundColor: Colors.deepPurpleAccent,
-                        radius: 18,
-                      ),
+                        onTap: () {
+                          var key = homeController.drawerOpenKey;
+                          if (key.currentState != null) {
+                            key.currentState!.openDrawer();
+                          }
+                        },
+                        child: const CircleAvatar(
+                          radius: 15,
+                          backgroundImage: CachedNetworkImageProvider(
+                              'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
+                        )),
+                    const SizedBox(
+                      width: 8,
                     ),
-                    const SizedBox(width: 5),
-                    //app Title
                     GestureDetector(
                       onTap: () {
                         var key = homeController.drawerOpenKey;
@@ -105,26 +116,32 @@ class _HotPageState extends State<HotPage> {
                         }
                       },
                       child: Text(
-                        "CHOMU",
+                        "Chomu",
                         style: TextStyle(
                             color: Get.isDarkMode ? Colors.white : Colors.white,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    //spacer
-                    const Spacer(),
-                    // icon search
-                    IconButton(
-                        onPressed: () {
-                          controller.getMemes();
-                        },
-                        iconSize: 25,
-                        icon: Icon(
-                          Icons.replay_rounded,
-                          color: Get.isDarkMode ? Colors.white : Colors.white,
-                        )),
                   ],
                 ),
+                // refresh button
+                actions: [
+                  // icon refresh
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: IconButton(
+                      tooltip: 'Refresh',
+                      onPressed: () {
+                        controller.getMemes();
+                      },
+                      icon: Icon(
+                        Icons.replay_rounded,
+                        color: Get.isDarkMode ? Colors.white : Colors.white,
+                      ),
+                    ),
+                  ),
+                  //menu
+                ],
                 backgroundColor: Colors.deepPurple,
               ),
             ];

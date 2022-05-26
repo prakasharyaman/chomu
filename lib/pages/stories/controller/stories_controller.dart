@@ -24,16 +24,10 @@ class StoriesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    if (tag != null) {
-      debugPrint('clicked on stories with tag : $tag');
-      getStoryByTag(tag: tag!);
-    } else {
-      debugPrint('clicked on play button');
-      getMemes();
-    }
+    getMemes();
   }
 
+// function for checking if it contains tags
   bool _ifContainsTag({required var tags, required var ktag}) {
     var atagsList = [];
     var result = false;
@@ -52,79 +46,69 @@ class StoriesController extends GetxController {
     return result;
   }
 
+// home stories getter by tag
   getStoryByTag({required String tag}) async {
+    debugPrint('getting stories by tag : $tag');
     try {
       status.value = Status.loading;
-      memes = await storiesRepository.getNewsPosts();
-      var watchedmemesList = [];
-      List<Meme> newsList = [];
-      List<Meme> animatedNewsList = [];
-      List<Meme> nonAnimatedNewsList = [];
-      newsList = await storiesRepository.getNewsPosts();
-      memes.addAll(newsList);
-      if (memes.length > 2) {
-        // check if the meme has been watched
-        for (var meme in memes) {
-          if (await checkMemesIfWatched(url: meme.url)) {
-            watchedmemesList.add(meme);
-          }
+      // cleaning the list
+      memes.clear();
+      List<Meme> tempNewsPosts = await storiesRepository.getNewsPosts();
+      List<Meme> tempVideoList = await storiesRepository.getVideoPosts();
+      // cleaning repeating elements
+      tempVideoList.removeWhere((element) => tempNewsPosts.contains(element));
+      // adding news to the list
+      memes.addAll(tempNewsPosts);
+      // adding videos to the list
+      memes.addAll(tempVideoList);
+      // sorting the list
+      List<Meme> watchedmemesList = [];
+      List<Meme> animatedMemesList = [];
+      List<Meme> nonAnimatedMemesList = [];
+      // check if the meme has been watched
+      for (var meme in memes) {
+        if (await checkMemesIfWatched(url: meme.url)) {
+          watchedmemesList.add(meme);
         }
-
-        memes.removeWhere((element) => watchedmemesList.contains(element));
       }
-      // putting animated memes in the temp list
+      // removing watched memes from the list
+      memes.removeWhere((element) => watchedmemesList.contains(element));
+
+      // creating animated and non animated lists
+      // animated
       for (var animatedPost in memes) {
         if (animatedPost.type == 'Animated') {
-          animatedNewsList.add(animatedPost);
+          animatedMemesList.add(animatedPost);
         }
       }
-      // putting non animated memes in the temp list
-      for (var notAnimatedPost in memes) {
-        if (notAnimatedPost.type != 'Animated') {
-          nonAnimatedNewsList.add(notAnimatedPost);
+      debugPrint('total Animated Posts : ${animatedMemesList.length}');
+      // non animated
+      for (var nonAnimatedPost in memes) {
+        if (nonAnimatedPost.type != 'Animated') {
+          nonAnimatedMemesList.add(nonAnimatedPost);
         }
       }
-      if (newsList.length > 3 && memes.length > 3) {
-        List<Meme> tempList = animatedNewsList;
-        tempList.addAll(nonAnimatedNewsList);
-        var tagList = tempList
-            .where((element) => _ifContainsTag(tags: element.tags, ktag: tag))
-            .toList();
-        tempList.removeWhere((element) => tagList.contains(element));
-        List<Meme> animatedTagsList = [];
-        List<Meme> nonAnimatedTagsList = [];
-        // putting animated memes in the temp list
-        for (var animatedPost in tagList) {
-          if (animatedPost.type == 'Animated') {
-            animatedTagsList.add(animatedPost);
-          }
-        } // putting non animated memes in the temp list
-        for (var animatedPost in tagList) {
-          if (animatedPost.type != 'Animated') {
-            nonAnimatedTagsList.add(animatedPost);
+      debugPrint('total NON-Animated Posts : ${nonAnimatedMemesList.length}');
+
+      if (memes.length > 3) {
+        // List<Meme> tempMemesList = memes;
+        List<Meme> tagList = [];
+        // checking for animated tags
+        for (var tempMeme in animatedMemesList) {
+          if (tempMeme.tags != null) {
+            if (_ifContainsTag(tags: tempMeme.tags, ktag: tag)) {
+              tagList.add(tempMeme);
+            }
           }
         }
-        if (nonAnimatedTagsList.length > 1) {
-          nonAnimatedTagsList.sublist(0, 1);
-        }
-
-        if (animatedTagsList.length > 1) {
-          //TODO: remove debug print
-          debugPrint('total animated tag posts are : ' +
-              animatedTagsList.length.toString());
-          var tempAnB = animatedTagsList;
-          tempAnB.addAll(nonAnimatedTagsList);
-          tempAnB.addAll(tempList);
-          // tagList.addAll(tempList);
-          memes = tempAnB;
-        } else {
-          var xlist = animatedNewsList;
-          xlist.addAll(nonAnimatedNewsList);
-          memes = xlist;
-        }
-
-        // debugPrint(nineList.length.toString());
-        // debugPrint(memes.length.toString());
+        debugPrint('total tag Posts : ${tagList.length}');
+        animatedMemesList.removeWhere((element) => tagList.contains(element));
+        //clearing memes once again to sort
+        memes.clear();
+        // creating final list
+        memes.addAll(tagList);
+        memes.addAll(animatedMemesList);
+        memes.addAll(nonAnimatedMemesList);
 
         if (memes.length > 50) {
           memes = memes.sublist(0, 50);
@@ -132,7 +116,7 @@ class StoriesController extends GetxController {
 
         status.value = Status.loaded;
       } else {
-        throw Exception('No More Memes Found');
+        throw Exception('No More Posts Found');
       }
     } catch (e) {
       status.value == Status.error;

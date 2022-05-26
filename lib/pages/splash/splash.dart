@@ -10,9 +10,7 @@ class Splash extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
 
     var colorizeTextStyle = const TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.bold,
-    );
+        fontSize: 15.0, fontWeight: FontWeight.bold, color: Colors.white);
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(

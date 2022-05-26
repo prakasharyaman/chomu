@@ -34,7 +34,6 @@ dependencies:
   cached_network_image: ^3.2.0
   simple_animations: ^4.0.1
   visibility_detector: ^0.2.2
-  flashy_tab_bar2: ^0.0.4
   dropdown_button2: ^1.4.0
   share_plus: ^4.0.4
   settings_ui: ^2.0.2  
@@ -60,6 +59,9 @@ dependencies:
   flutter_material_pickers: ^3.1.4+1
   file_picker: ^4.5.1
   dotted_border: ^2.0.0+2
+  hidable: ^1.0.2
+  badges: ^2.0.2
+  dot_navigation_bar: ^1.0.1+4
 
 
 dev_dependencies:

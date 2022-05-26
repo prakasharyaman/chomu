@@ -293,6 +293,31 @@ class _StoryPageState extends State<StoryPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    // share button
+                    GestureDetector(
+                      onTap: () {
+                        Future.delayed(
+                            const Duration(milliseconds: 200),
+                            () => downloadAndSharePost(
+                                name: meme.title, url: meme.url));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Get.isDarkMode
+                                ? Colors.white38.withOpacity(0.3)
+                                : Colors.grey.shade500.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.only(
+                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+                            child: Icon(FontAwesomeIcons.share),
+                          ),
+                        ),
+                      ),
+                    ),
                     //book mark
                     GestureDetector(
                       onTap: () {

@@ -64,14 +64,12 @@ class HomeStoriesController extends GetxController {
               Get.to(StoryPlayer(
                 tag: tag,
               ));
-              StoriesController storiesController = Get.find();
-              storiesController.getStoryByTag(tag: tag);
             },
             child: SizedBox(
               width: Get.height * 0.1,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     DottedBorder(
                       strokeWidth: 1.5,
@@ -87,7 +85,7 @@ class HomeStoriesController extends GetxController {
                     Padding(
                       padding: const EdgeInsets.only(left: 2.0, right: 2.0),
                       child: Text(
-                        tag == 'news' ? 'Latest' : tag,
+                        tag == 'news' ? 'Latest' : _convertTitle(title: tag),
                         maxLines: 1,
                         style: TextStyle(
                           fontSize: 12,
@@ -116,6 +114,14 @@ class HomeStoriesController extends GetxController {
     } catch (e) {
       storiesWidget.value = Container();
       debugPrint(e.toString());
+    }
+  }
+
+  String _convertTitle({required String title}) {
+    if (title.length > 10) {
+      return title.substring(0, 9) + '..';
+    } else {
+      return title;
     }
   }
 
