@@ -1,13 +1,11 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/ads/controller/ads_controller.dart';
-import 'package:chomu/ads/widgets/big_banner_ad.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
 import 'package:chomu/pages/error/error.dart';
 import 'package:chomu/pages/home/tabs/hot/widgets/homeStories/home_stories.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 import '../../../../app/app.dart';
@@ -169,30 +167,64 @@ class _HotPageState extends State<HotPage> {
                   itemCount: memes.length + 1,
                   builder: (BuildContext context, int index) {
                     if (index == memes.length) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          // end of content
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Hit refresh or click on Stories to see more posts',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 8.0, bottom: 1),
-                            child: Icon(Icons.arrow_downward_rounded),
-                          )
-                        ],
+                      return LayoutBuilder(
+                        builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          return InViewNotifierWidget(
+                            id: '$index',
+                            builder: (BuildContext context, bool isInView,
+                                Widget? child) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: const [
+                                  // end of content
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Hit refresh or click on Stories to see more posts',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(top: 8.0, bottom: 1),
+                                    child: Icon(Icons.arrow_downward_rounded),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
                       );
                     } else if (index % 10 == 0 && index != 0) {
                       AdsController adsController = Get.find();
-
-                      return adsController.bigBannerAd;
+                      return LayoutBuilder(
+                        builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          return InViewNotifierWidget(
+                            id: '$index',
+                            builder: (BuildContext context, bool isInView,
+                                Widget? child) {
+                              return adsController.bigBannerAd;
+                            },
+                          );
+                        },
+                      );
                     } else if (index == 0) {
-                      return const HomeStories();
+                      return LayoutBuilder(
+                        builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          return InViewNotifierWidget(
+                            id: '$index',
+                            builder: (BuildContext context, bool isInView,
+                                Widget? child) {
+                              return const HomeStories();
+                            },
+                          );
+                        },
+                      );
                     } else {
                       if (memes[index].type == 'Animated') {
                         // animated meme
@@ -221,16 +253,26 @@ class _HotPageState extends State<HotPage> {
                         );
                       } else {
                         // image meme
-
-                        return MemeWidget(
-                          height: Get.height,
-                          menuFunction: () {
-                            setState(() {
-                              menuMeme = memes[index];
-                              showReport = !showReport;
-                            });
+                        return LayoutBuilder(
+                          builder: (BuildContext context,
+                              BoxConstraints constraints) {
+                            return InViewNotifierWidget(
+                              id: '$index',
+                              builder: (BuildContext context, bool isInView,
+                                  Widget? child) {
+                                return MemeWidget(
+                                  height: Get.height,
+                                  menuFunction: () {
+                                    setState(() {
+                                      menuMeme = memes[index];
+                                      showReport = !showReport;
+                                    });
+                                  },
+                                  meme: memes[index],
+                                );
+                              },
+                            );
                           },
-                          meme: memes[index],
                         );
                       }
                     }

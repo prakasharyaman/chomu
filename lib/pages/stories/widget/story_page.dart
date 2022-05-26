@@ -1,4 +1,3 @@
-import 'package:chomu/ads/widgets/small_banner_ad.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/services/download_service.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +10,10 @@ import '../../../models/meme_model.dart';
 import '../../../services/share_service.dart';
 
 class StoryPage extends StatefulWidget {
-  const StoryPage({Key? key, required this.meme}) : super(key: key);
+  const StoryPage({Key? key, required this.meme, required this.pageController})
+      : super(key: key);
   final Meme meme;
+  final PageController pageController;
   @override
   State<StoryPage> createState() => _StoryPageState();
 }
@@ -21,15 +22,17 @@ class _StoryPageState extends State<StoryPage> {
   late Meme meme;
   bool watched = false;
   bool isPostLiked = false;
-
+  late PageController pageController;
   bool isPostBookMarked = false;
   StoriesController storiesController = Get.find();
   @override
   void initState() {
+    pageController = widget.pageController;
     meme = widget.meme;
     super.initState();
     FirebaseController firebaseController = Get.find();
     firebaseController.logFirebaseEvent(eventName: 'StoryView');
+    super.initState();
   }
 
   @override
@@ -293,6 +296,34 @@ class _StoryPageState extends State<StoryPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    //next page
+                    GestureDetector(
+                      onTap: () {
+                        pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Get.isDarkMode
+                                ? Colors.white38.withOpacity(0.3)
+                                : Colors.grey.shade500.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.only(
+                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+                            child: Icon(
+                              Icons.arrow_upward_rounded,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
                     // share button
                     GestureDetector(
                       onTap: () {
@@ -382,30 +413,6 @@ class _StoryPageState extends State<StoryPage> {
                       ),
                     ),
                     // share button
-                    GestureDetector(
-                      onTap: () {
-                        Future.delayed(
-                            const Duration(milliseconds: 200),
-                            () => convertWidgetToImageAndShare(
-                                context, _cardKey, meme.title));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? Colors.white38.withOpacity(0.3)
-                                : Colors.grey.shade500.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(Icons.share),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               )),

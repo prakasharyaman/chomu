@@ -16,8 +16,11 @@ import '../../../models/meme_model.dart';
 import '../../../services/download_service.dart';
 
 class VideoStoryPage extends StatefulWidget {
-  const VideoStoryPage({Key? key, required this.meme}) : super(key: key);
+  const VideoStoryPage(
+      {Key? key, required this.meme, required this.pageController})
+      : super(key: key);
   final Meme meme;
+  final PageController pageController;
   @override
   State<VideoStoryPage> createState() => _VideoStoryPageState();
 }
@@ -25,7 +28,7 @@ class VideoStoryPage extends StatefulWidget {
 class _VideoStoryPageState extends State<VideoStoryPage> {
   // COMPLETE: Add _bannerAd
   late BannerAd _bannerAd;
-
+  late PageController pageController;
   // COMPLETE: Add _isBannerAdReady
   bool _isBannerAdReady = false;
   VolumeController volumeController = Get.find();
@@ -42,7 +45,9 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
   StoriesController storiesController = Get.find();
   @override
   void initState() {
+    pageController = widget.pageController;
     // COMPLETE: Initialize _bannerAd
+
     _bannerAd = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       request: const AdRequest(),
@@ -106,8 +111,6 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
           onVisibilityChanged: (VisibilityInfo info) {
             if (info.visibleFraction > 0.9) {
               if (watched != true) {
-                debugPrint('watched video');
-
                 storiesController.saveMemeAsWatched(url: meme.url);
                 watched = true;
               }
@@ -351,6 +354,37 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        //next page
+                        GestureDetector(
+                          onTap: () {
+                            pageController.nextPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Get.isDarkMode
+                                    ? Colors.white38.withOpacity(0.3)
+                                    : Colors.grey.shade500.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 8.0,
+                                    bottom: 8.0,
+                                    left: 15.0,
+                                    right: 15.0),
+                                child: Icon(
+                                  Icons.arrow_upward_rounded,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
                         // mute button
                         Visibility(
                           visible: isMute,

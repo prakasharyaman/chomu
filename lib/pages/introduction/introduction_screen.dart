@@ -1,4 +1,3 @@
-import 'package:chomu/app/app.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';

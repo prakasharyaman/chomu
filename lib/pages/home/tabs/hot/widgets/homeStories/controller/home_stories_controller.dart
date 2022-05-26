@@ -1,6 +1,5 @@
 import 'package:chomu/models/meme_model.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
-import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/pages/stories/stories_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,7 +61,7 @@ class HomeStoriesController extends GetxController {
           GestureDetector(
             onTap: () {
               Get.to(StoryPlayer(
-                tag: tag,
+                postTag: tag,
               ));
             },
             child: SizedBox(

@@ -204,6 +204,10 @@ class DropDownMenu extends StatelessWidget {
                                               downloadAndSharePost(
                                                   url: meme!.videoUrl!,
                                                   name: meme!.title);
+                                            } else {
+                                              downloadAndSharePost(
+                                                  url: meme!.url,
+                                                  name: meme!.title);
                                             }
                                           } else {
                                             downloadAndSharePost(
@@ -230,7 +234,7 @@ class DropDownMenu extends StatelessWidget {
                                     const Divider(),
                                     // when appear on home , the share button is not visible
                                     const SizedBox(
-                                      height: 100,
+                                      height: 50,
                                     ),
                                   ],
                                 ),

@@ -9,7 +9,6 @@ import 'dart:ui' as ui;
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:open_file/open_file.dart';
 import 'package:share_plus/share_plus.dart';
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -53,6 +52,7 @@ void convertWidgetToImageAndShare(
 
 void downloadAndSharePost({required String url, required String name}) async {
   try {
+    // ignore: unused_local_variable
     final file = await FileDownloader.downloadFile(
         url: url,
         name: name,

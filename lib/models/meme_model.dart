@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Meme {
   String author, postLink, subReddit, title, url, id;
   List<dynamic> preview;

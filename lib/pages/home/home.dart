@@ -14,7 +14,6 @@ import '../settings/page/settingsPage.dart';
 import '../stories/stories_player.dart';
 import 'controller/home_controller.dart';
 import 'tabs/hot/hot.dart';
-import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

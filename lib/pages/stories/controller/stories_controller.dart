@@ -101,8 +101,29 @@ class StoriesController extends GetxController {
             }
           }
         }
+        debugPrint('total, animated tag Posts : ${tagList.length}');
+        if (tagList.length < 2) {
+          debugPrint('Not enough animated posts');
+          // checking for non animated tags
+          for (var tempMeme in nonAnimatedMemesList) {
+            if (tempMeme.tags != null) {
+              if (_ifContainsTag(tags: tempMeme.tags, ktag: tag)) {
+                tagList.add(tempMeme);
+              }
+            }
+          }
+        }
+        if (tagList.length > 1) {
+          debugPrint('Cutting the list');
+          var bList = tagList.sublist(0, 1);
+          tagList.clear();
+          tagList.addAll(bList);
+        }
         debugPrint('total tag Posts : ${tagList.length}');
         animatedMemesList.removeWhere((element) => tagList.contains(element));
+        nonAnimatedMemesList
+            .removeWhere((element) => tagList.contains(element));
+        debugPrint('total animated posts ${animatedMemesList.length}');
         //clearing memes once again to sort
         memes.clear();
         // creating final list

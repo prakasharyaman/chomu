@@ -14,9 +14,9 @@ import '../splash/splash.dart';
 class StoryPlayer extends GetView<StoriesController> {
   const StoryPlayer({
     Key? key,
-    this.tag,
+    this.postTag,
   }) : super(key: key);
-  final String? tag;
+  final String? postTag;
   @override
   Widget build(BuildContext context) {
     FirebaseController firebaseController = Get.find();
@@ -24,29 +24,37 @@ class StoryPlayer extends GetView<StoriesController> {
         screenClass: 'Story Player', screenName: 'Story Player');
     return Scaffold(
       body: GetBuilder<StoriesController>(
-        init: StoriesController(tag: tag),
+        init: StoriesController(tag: postTag),
         builder: (controller) => Obx(() {
           switch (controller.status.value) {
             case Status.loading:
-              if (tag != null) {
-                controller.getStoryByTag(tag: tag!);
+              if (postTag != null) {
+                controller.getStoryByTag(tag: postTag!);
               }
               return const Splash();
             case Status.loaded:
+              var memes = controller.memes;
               return PageView.builder(
-                itemCount: controller.memes.length + 1,
+                itemCount: memes.length + 1,
                 itemBuilder: (context, index) {
-                  if (index == controller.memes.length) {
+                  if (index == memes.length) {
                     return const StoriesFinished();
                   } else {
-                    var post = controller.memes[index];
+                    var post = memes[index];
                     if (post.type == 'Animated') {
-                      return VideoStoryPage(meme: controller.memes[index]);
+                      return VideoStoryPage(
+                        meme: memes[index],
+                        pageController: controller.pageController,
+                      );
                     } else if (post.type == 'Photo') {
-                      return StoryPage(meme: post);
+                      return StoryPage(
+                        meme: post,
+                        pageController: controller.pageController,
+                      );
                     } else {
                       return StoryPage(
                         meme: post,
+                        pageController: controller.pageController,
                       );
                     }
                   }

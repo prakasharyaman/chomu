@@ -4,7 +4,6 @@ import 'package:chomu/pages/feedback/controller/feedback_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 
 class FeedbackScreen extends GetView<FeedbackController> {
   const FeedbackScreen({Key? key}) : super(key: key);

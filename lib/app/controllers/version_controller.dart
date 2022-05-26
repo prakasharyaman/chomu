@@ -133,6 +133,7 @@ class VersionController extends GetxController {
         debugPrint('rating: ${response.rating}, comment: ${response.comment}');
 
         if (response.rating >= 4.0) {
+          debugPrint('asking for google play review');
           logReviewRequested(isReviewRequested: true);
           final InAppReview inAppReview = InAppReview.instance;
           Future.delayed(const Duration(milliseconds: 50), () async {
