@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:chomu/app/controllers/version_controller.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/pages/introduction/introduction_screen.dart';
 import 'package:chomu/repository/meme_repository.dart';
@@ -11,6 +12,8 @@ import 'package:get/get.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/user_model.dart';
 
 class FirebaseController extends GetxController {
@@ -59,6 +62,8 @@ class FirebaseController extends GetxController {
       logUserActiveTodayOnCloud();
       // check for introduction
       checkForIntroduction();
+      //check for update
+      checkForLatestVersion();
       print(userModel.value.id);
     } else if (_firebaseUser == null) {
       await signIn();
@@ -158,6 +163,58 @@ class FirebaseController extends GetxController {
     }
   }
 
+// check for latest build number
+  checkForLatestVersion() async {
+    try {
+      debugPrint('Checking for latest version');
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      if (packageInfo.buildNumber != null) {
+        var buildNumber = int.parse(packageInfo.buildNumber);
+        var cloudBuildDoc = await FirebaseFirestore.instance
+            .collection('app')
+            .doc('latestBuildNumber')
+            .get();
+        if (cloudBuildDoc.exists) {
+          var cloudBuildData = cloudBuildDoc.data();
+          if (cloudBuildData != null) {
+            var cloudBuildNumber = cloudBuildData['latestBuildNumber'];
+
+            if (cloudBuildNumber != null) {
+              if (cloudBuildNumber > buildNumber) {
+                Get.defaultDialog(
+                  title: 'New Update Available !',
+                  buttonColor: Colors.deepPurple,
+                  cancelTextColor:
+                      Get.isDarkMode ? Colors.white : Colors.deepPurple,
+                  confirmTextColor: Colors.white,
+                  middleText:
+                      'Please update to the latest version to get the best experience',
+                  textConfirm: 'Update',
+                  textCancel: 'Later',
+                  onConfirm: () async {
+                    var _url = Uri.parse(
+                        'https://play.google.com/store/apps/details?id=com.otft.chomu');
+
+                    if (!await launchUrl(_url,
+                        mode: LaunchMode.externalApplication)) {
+                      debugPrint('Could not launch $_url');
+                    }
+                  },
+                );
+              } else if (cloudBuildNumber == buildNumber) {
+                debugPrint('The app is at latest version : $buildNumber');
+              } else {
+                debugPrint('The app is AWOL  : $buildNumber');
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   saveUserAge({required int age}) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(getUid()).set({
@@ -167,6 +224,7 @@ class FirebaseController extends GetxController {
       debugPrint(e.toString());
     }
   }
+
   // logInAnalytics() async {
   //   try {
   //     await firebaseAnalytics.

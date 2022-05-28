@@ -66,156 +66,161 @@ class _HotPageState extends State<HotPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        //content
-        NestedScrollView(
-          controller: homeController.scrollController,
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                centerTitle: false,
-                floating: true,
-                // // logo for menu
-                // leading: IconButton(
-                //     onPressed: () {
-                //       var key = homeController.drawerOpenKey;
-                //       if (key.currentState != null) {
-                //         key.currentState!.openDrawer();
-                //       }
-                //     },
-                //     icon: const Icon(Icons.menu)),
-                //app Title
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
+    return Scaffold(
+      backgroundColor: Colors.deepPurple,
+      body: Stack(
+        children: [
+          //content
+          NestedScrollView(
+            controller: homeController.scrollController,
+            floatHeaderSlivers: true,
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  centerTitle: false,
+                  floating: true,
+
+                  // // logo for menu
+                  // leading: IconButton(
+                  //     onPressed: () {
+                  //       var key = homeController.drawerOpenKey;
+                  //       if (key.currentState != null) {
+                  //         key.currentState!.openDrawer();
+                  //       }
+                  //     },
+                  //     icon: const Icon(Icons.menu)),
+
+                  //app Title
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            var key = homeController.drawerOpenKey;
+                            if (key.currentState != null) {
+                              key.currentState!.openDrawer();
+                            }
+                          },
+                          child: const CircleAvatar(
+                            radius: 15,
+                            backgroundImage: CachedNetworkImageProvider(
+                                'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
+                          )),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      GestureDetector(
                         onTap: () {
                           var key = homeController.drawerOpenKey;
                           if (key.currentState != null) {
                             key.currentState!.openDrawer();
                           }
                         },
-                        child: const CircleAvatar(
-                          radius: 15,
-                          backgroundImage: CachedNetworkImageProvider(
-                              'https://i.gifer.com/origin/b8/b842107e63c67d5674d17e0f576274fa_w200.gif'),
-                        )),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        var key = homeController.drawerOpenKey;
-                        if (key.currentState != null) {
-                          key.currentState!.openDrawer();
-                        }
-                      },
-                      child: Text(
-                        "Chomu",
-                        style: TextStyle(
-                            color: Get.isDarkMode ? Colors.white : Colors.white,
-                            fontWeight: FontWeight.bold),
+                        child: Text(
+                          "Chomu",
+                          style: TextStyle(
+                              color:
+                                  Get.isDarkMode ? Colors.white : Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                // refresh button
-                actions: [
-                  // icon refresh
-                  Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: IconButton(
-                      tooltip: 'Refresh',
-                      onPressed: () {
-                        controller.getMemes();
-                      },
-                      icon: Icon(
-                        Icons.replay_rounded,
-                        color: Get.isDarkMode ? Colors.white : Colors.white,
-                      ),
-                    ),
+                    ],
                   ),
-                  //menu
-                ],
-                backgroundColor: Colors.deepPurple,
-              ),
-            ];
-          },
-          body: Container(
-            decoration: kHomeBoxDecoration(),
-            margin: const EdgeInsets.only(left: 1, right: 1),
-            child: RefreshIndicator(
-              displacement: 80,
-              color: Colors.deepPurple,
-              onRefresh: () async {
-                controller.getMemes();
-              },
-              child: InViewNotifierList(
-                  physics: const BouncingScrollPhysics(),
-                  scrollDirection: Axis.vertical,
+                  // refresh button
+                  actions: [
+                    // icon refresh
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5.0),
+                      child: IconButton(
+                        tooltip: 'Refresh',
+                        onPressed: () {
+                          controller.getMemes();
+                        },
+                        icon: Icon(
+                          Icons.replay_rounded,
+                          color: Get.isDarkMode ? Colors.white : Colors.white,
+                        ),
+                      ),
+                    ),
+                    //menu
+                  ],
+                  backgroundColor: Colors.deepPurple,
+                ),
+              ];
+            },
+            body: Container(
+              decoration: kHomeBoxDecoration(),
+              child: RefreshIndicator(
+                displacement: 80,
+                color: Colors.deepPurple,
+                onRefresh: () async {
+                  controller.getMemes();
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 1, right: 1, top: 7),
+                  child: InViewNotifierList(
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.vertical,
 
-                  // ignore: prefer_const_literals_to_create_immutables
-                  initialInViewIds: ['0'],
-                  isInViewPortCondition: (double deltaTop, double deltaBottom,
-                      double viewPortDimension) {
-                    return deltaTop < (0.5 * viewPortDimension) &&
-                        deltaBottom > (0.5 * viewPortDimension);
-                  },
-                  itemCount: memes.length + 1,
-                  builder: (BuildContext context, int index) {
-                    if (index == memes.length) {
-                      return LayoutBuilder(
-                        builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                          return InViewNotifierWidget(
-                            id: '$index',
-                            builder: (BuildContext context, bool isInView,
-                                Widget? child) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  // end of content
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Hit refresh or click on Stories to see more posts',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(top: 8.0, bottom: 1),
-                                    child: Icon(Icons.arrow_downward_rounded),
-                                  )
-                                ],
+                      // ignore: prefer_const_literals_to_create_immutables
+                      initialInViewIds: ['0'],
+                      isInViewPortCondition: (double deltaTop,
+                          double deltaBottom, double viewPortDimension) {
+                        return deltaTop < (0.5 * viewPortDimension) &&
+                            deltaBottom > (0.5 * viewPortDimension);
+                      },
+                      itemCount: memes.length + 1,
+                      builder: (BuildContext context, int index) {
+                        if (index == memes.length) {
+                          return LayoutBuilder(
+                            builder: (BuildContext context,
+                                BoxConstraints constraints) {
+                              return InViewNotifierWidget(
+                                id: '$index',
+                                builder: (BuildContext context, bool isInView,
+                                    Widget? child) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: const [
+                                      // end of content
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          'Hit refresh or click on Stories to see more posts',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 8.0, bottom: 1),
+                                        child:
+                                            Icon(Icons.arrow_downward_rounded),
+                                      )
+                                    ],
+                                  );
+                                },
                               );
                             },
                           );
-                        },
-                      );
-                    } else if (index % 10 == 0 && index != 0) {
-                      AdsController adsController = Get.find();
-                      return LayoutBuilder(
-                        builder:
-                            (BuildContext context, BoxConstraints constraints) {
-                          return InViewNotifierWidget(
-                            id: '$index',
-                            builder: (BuildContext context, bool isInView,
-                                Widget? child) {
-                              return adsController.bigBannerAd;
+                        } else if (index % 10 == 0 && index != 0) {
+                          AdsController adsController = Get.find();
+                          return LayoutBuilder(
+                            builder: (BuildContext context,
+                                BoxConstraints constraints) {
+                              return InViewNotifierWidget(
+                                id: '$index',
+                                builder: (BuildContext context, bool isInView,
+                                    Widget? child) {
+                                  return adsController.bigBannerAd;
+                                },
+                              );
                             },
                           );
-                        },
-                      );
-                    } else if (index == 0) {
-                      return LayoutBuilder(
-                        builder:
-                            (BuildContext context, BoxConstraints constraints) {
+                        } else if (index == 0) {
                           return InViewNotifierWidget(
                             id: '$index',
                             builder: (BuildContext context, bool isInView,
@@ -223,39 +228,34 @@ class _HotPageState extends State<HotPage> {
                               return const HomeStories();
                             },
                           );
-                        },
-                      );
-                    } else {
-                      if (memes[index].type == 'Animated') {
-                        // animated meme
-                        return LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            return InViewNotifierWidget(
-                              id: '$index',
-                              builder: (BuildContext context, bool isInView,
-                                  Widget? child) {
-                                return VideoPostWidget(
-                                  play: isInView,
-                                  url: memes[index].videoUrl ?? '',
-                                  post: memes[index],
-                                  height: Get.height,
-                                  menuFunction: () {
-                                    setState(() {
-                                      menuMeme = memes[index];
-                                      showReport = !showReport;
-                                    });
+                        } else {
+                          if (memes[index].type == 'Animated') {
+                            // animated meme
+                            return LayoutBuilder(
+                              builder: (BuildContext context,
+                                  BoxConstraints constraints) {
+                                return InViewNotifierWidget(
+                                  id: '$index',
+                                  builder: (BuildContext context, bool isInView,
+                                      Widget? child) {
+                                    return VideoPostWidget(
+                                      play: isInView,
+                                      url: memes[index].videoUrl ?? '',
+                                      post: memes[index],
+                                      height: Get.height,
+                                      menuFunction: () {
+                                        setState(() {
+                                          menuMeme = memes[index];
+                                          showReport = !showReport;
+                                        });
+                                      },
+                                    );
                                   },
                                 );
                               },
                             );
-                          },
-                        );
-                      } else {
-                        // image meme
-                        return LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
+                          } else {
+                            // image meme
                             return InViewNotifierWidget(
                               id: '$index',
                               builder: (BuildContext context, bool isInView,
@@ -272,38 +272,40 @@ class _HotPageState extends State<HotPage> {
                                 );
                               },
                             );
-                          },
-                        );
-                      }
-                    }
-                  }),
-            ),
-          ),
-        ),
-        // drop down menu
-        AnimatedPositioned(
-            top: showReport == false
-                ? MediaQuery.of(context).size.height * 1.5
-                : 150,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: DropDownMenu(
-                onClose: () {
-                  setState(() {
-                    showReport = !showReport;
-                  });
-                },
-                meme: menuMeme,
+                          }
+                        }
+                      }),
+                ),
               ),
             ),
-            duration: const Duration(milliseconds: 500)),
-      ],
+          ),
+          // drop down menu
+          AnimatedPositioned(
+              top: showReport == false
+                  ? MediaQuery.of(context).size.height * 1.5
+                  : 150,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: DropDownMenu(
+                  onClose: () {
+                    setState(() {
+                      showReport = !showReport;
+                    });
+                  },
+                  meme: menuMeme,
+                ),
+              ),
+              duration: const Duration(milliseconds: 500)),
+        ],
+      ),
     );
   }
 
   BoxDecoration kHomeBoxDecoration() {
     return BoxDecoration(
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         gradient: Get.isDarkMode
             ? const LinearGradient(
                 begin: Alignment.topLeft,

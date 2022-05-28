@@ -55,8 +55,19 @@ class StoriesController extends GetxController {
       memes.clear();
       List<Meme> tempNewsPosts = await storiesRepository.getNewsPosts();
       List<Meme> tempVideoList = await storiesRepository.getVideoPosts();
+      debugPrint(tempVideoList.length.toString());
       // cleaning repeating elements
-      tempVideoList.removeWhere((element) => tempNewsPosts.contains(element));
+      // since tag are different , the object is different so , we have to do it like this
+      tempVideoList.removeWhere((element) {
+        var rxb = tempNewsPosts
+            .where((tempNewsPost) => tempNewsPost.title == element.title);
+        if (rxb.length > 1) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      debugPrint(tempVideoList.length.toString());
       // adding news to the list
       memes.addAll(tempNewsPosts);
       // adding videos to the list

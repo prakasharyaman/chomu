@@ -20,7 +20,7 @@ class VersionController extends GetxController {
   void onReady() {
     super.onReady();
     // Instantiate NewVersion manager
-    checkforUpdate();
+    // checkforUpdate();
     // appOpenLog
     appOpenLog();
   }

@@ -380,6 +380,7 @@ class _StoryPageState extends State<StoryPage> {
                               isPostBookMarked
                                   ? Icons.bookmark
                                   : Icons.bookmark_add_outlined,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -415,7 +416,6 @@ class _StoryPageState extends State<StoryPage> {
                         ),
                       ),
                     ),
-                    // share button
                   ],
                 ),
               )),

@@ -133,11 +133,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     //package  name
                     SettingsTile(
-                      leading: const Icon(Icons.scatter_plot_rounded),
-                      title: const Text('Package Name'),
-                      description: Text(packageInfo!.packageName),
-                      onPressed: crashCauseDialog,
-                    ),
+                        leading: const Icon(Icons.scatter_plot_rounded),
+                        title: const Text('Package Name'),
+                        description: Text(packageInfo!.packageName),
+                        onPressed: (i) {
+                          Get.snackbar('Package Name ?',
+                              'name of the package is ${packageInfo!.packageName}',
+                              snackPosition: SnackPosition.BOTTOM);
+                        }),
                     //Version  name
                     SettingsTile(
                       leading: const Icon(Icons.precision_manufacturing_sharp),
@@ -179,10 +182,10 @@ class _SettingsPageState extends State<SettingsPage> {
       onCancel: () {},
       onConfirm: () {
         Get.back();
-        Get.snackbar('Crash Reported',
-            'A crash wash reported with ${packageInfo!.packageName} and user id ${firebaseController.getUid()}',
-            snackPosition: SnackPosition.BOTTOM);
-        throw Exception();
+        // Get.snackbar('Crash Reported',
+        //     'A crash wash reported with ${packageInfo!.packageName} and user id ${firebaseController.getUid()}',
+        //     snackPosition: SnackPosition.BOTTOM);
+        // throw Exception();
       },
       textConfirm: 'Force Crash',
     );

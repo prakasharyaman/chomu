@@ -59,6 +59,7 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
+                            tooltip: 'Home',
                             onPressed: () {},
                             icon: Icon(
                               Icons.home_rounded,
@@ -68,6 +69,7 @@ class _HomeState extends State<Home> {
                               size: 30,
                             )),
                         IconButton(
+                            tooltip: 'Stories',
                             onPressed: () {
                               setState(() {
                                 showBadge = false;
@@ -92,6 +94,7 @@ class _HomeState extends State<Home> {
                               ),
                             )),
                         IconButton(
+                            tooltip: 'Profile',
                             onPressed: () {
                               controller.changeCurrentPage(2);
                             },

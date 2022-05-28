@@ -72,7 +72,7 @@ class HomeStoriesController extends GetxController {
                   children: [
                     DottedBorder(
                       strokeWidth: 1.5,
-                      dashPattern: const [8, 3, 8, 3],
+                      dashPattern: const [8, 3, 4, 3],
                       borderType: BorderType.Circle,
                       color: Get.isDarkMode ? Colors.white : Colors.deepPurple,
                       padding: const EdgeInsets.all(3),

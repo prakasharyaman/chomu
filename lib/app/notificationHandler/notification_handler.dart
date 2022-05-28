@@ -26,12 +26,17 @@ class _NotificationMessageHandlerState
         if (message.id != null) {
           if (message.payload != null) {
             FirebaseController firebaseController = Get.find();
-            firebaseController.logFirebaseEvent(
-                eventName: 'Notification Click');
+            firebaseController.logFirebaseEvent(eventName: 'notificationclick');
             Get.dialog(Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                     child: NotificationWidget(receivedNotification: message))));
+          }
+        }
+      } else if (message.channelKey == "general") {
+        if (message.id != null) {
+          if (message.title != null && message.body != null) {
+            Get.defaultDialog(title: message.title!, middleText: message.body!);
           }
         }
       }
