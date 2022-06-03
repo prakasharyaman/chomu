@@ -1,4 +1,6 @@
 import 'package:chomu/ads/widgets/small_banner_ad.dart';
+import 'package:chomu/pages/home/controller/home_controller.dart';
+import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,6 +24,7 @@ class _StoriesFinishedState extends State<StoriesFinished> {
 
   @override
   Widget build(BuildContext context) {
+    StoriesController _controller = Get.find();
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -75,7 +78,7 @@ class _StoriesFinishedState extends State<StoriesFinished> {
                     height: 20,
                   ),
                   Text(
-                    'Let\'s go to Home for more',
+                    'Let\'s go to Home or Watch more',
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.white,
@@ -90,6 +93,7 @@ class _StoriesFinishedState extends State<StoriesFinished> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  // more stories
                   Container(
                     decoration: BoxDecoration(
                       boxShadow: [
@@ -104,7 +108,7 @@ class _StoriesFinishedState extends State<StoriesFinished> {
                       // shape: RoundedRectangleBorder(
                       //     borderRadius: BorderRadius.circular(40)),
                       onPressed: () {
-                        Get.back();
+                        _controller.getMemes();
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -115,7 +119,49 @@ class _StoriesFinishedState extends State<StoriesFinished> {
                           padding: EdgeInsets.only(
                               top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
                           child: Text(
-                            "Lets's GO 🚀",
+                            "Watch More 🚀",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      'or',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  //go home
+                  Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(0, 13),
+                          blurRadius: 25,
+                          color: Colors.purpleAccent.withOpacity(0.3),
+                        ),
+                      ],
+                    ),
+                    child: TextButton(
+                      // shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(40)),
+                      onPressed: () {
+                        HomeController _homecontroller = Get.find();
+                        _homecontroller.changeCurrentPage(0);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.purpleAccent,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.only(
+                              top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
+                          child: Text(
+                            "Go Home 🏠",
                             style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                         ),

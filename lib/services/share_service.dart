@@ -9,6 +9,7 @@ import 'dart:ui' as ui;
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -52,39 +53,45 @@ void convertWidgetToImageAndShare(
 
 void downloadAndSharePost({required String url, required String name}) async {
   try {
+    if (await Permission.storage.request().isGranted) {
+      // ignore: unused_local_variable
+      final file = await FileDownloader.downloadFile(
+          url: url,
+          name: name,
+          onProgress: (name, progress) {
+            debugPrint(progress.toDouble().toString());
+            if (progress.toDouble() == 0.0) {
+              Get.snackbar('Preparing for Sharing. Please wait.', 'Hold On',
+                  backgroundColor:
+                      Get.isDarkMode ? Colors.black54 : Colors.white,
+                  colorText: Get.isDarkMode ? Colors.white : Colors.purple,
+                  icon: Icon(FontAwesomeIcons.share,
+                      color: Get.isDarkMode ? Colors.white : Colors.purple),
+                  messageText: LinearProgressIndicator(
+                    color: Get.isDarkMode ? Colors.white : Colors.purple,
+                  ));
+            }
+          },
+          onDownloadCompleted: (path) async {
+            List<String> imagePaths = [];
+            imagePaths.add(path);
+            await Share.shareFiles(
+              imagePaths,
+              subject: name,
+              text:
+                  'Check this out: Download *CHOMU*.\n https://bit.ly/chomuApp \n\n' +
+                      name,
+            );
+            File tobeDeleted = File(path);
+            await tobeDeleted.delete();
+          },
+          onDownloadError: (error) {
+            throw Exception('Error While Sharing ');
+          });
+    } else {
+      throw Exception('Storage Permission Denied');
+    }
     // ignore: unused_local_variable
-    final file = await FileDownloader.downloadFile(
-        url: url,
-        name: name,
-        onProgress: (name, progress) {
-          debugPrint(progress.toDouble().toString());
-          if (progress.toDouble() == 0.0) {
-            Get.snackbar('Preparing for Sharing. Please wait.', 'Hold On',
-                backgroundColor: Get.isDarkMode ? Colors.black54 : Colors.white,
-                colorText: Get.isDarkMode ? Colors.white : Colors.purple,
-                icon: Icon(FontAwesomeIcons.share,
-                    color: Get.isDarkMode ? Colors.white : Colors.purple),
-                messageText: LinearProgressIndicator(
-                  color: Get.isDarkMode ? Colors.white : Colors.purple,
-                ));
-          }
-        },
-        onDownloadCompleted: (path) async {
-          List<String> imagePaths = [];
-          imagePaths.add(path);
-          await Share.shareFiles(
-            imagePaths,
-            subject: name,
-            text:
-                'Check this out: Download *CHOMU*.\n https://bit.ly/chomuApp \n\n' +
-                    name,
-          );
-          File tobeDeleted = File(path);
-          await tobeDeleted.delete();
-        },
-        onDownloadError: (error) {
-          throw Exception('Error While Sharing ');
-        });
   } catch (e) {
     Get.snackbar(
       'Uh oh!',

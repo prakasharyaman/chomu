@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
 import '../../../common/enum/status.dart';
 import '../../../models/meme_model.dart';
 import '../../../repository/meme_repository.dart';
@@ -16,7 +14,9 @@ class StoriesController extends GetxController {
   Rx<Status> status = Status.loading.obs;
   MemeRepository memeRepository = MemeRepository();
   final getStorage = GetStorage();
-  PageController pageController = PageController();
+  PageController pageController = PageController(
+    viewportFraction: 1,
+  );
   String errorMessage = '';
   List<Meme> memes = [];
 
@@ -367,7 +367,7 @@ class StoriesController extends GetxController {
         await getStorage.write('watchedMemesList', watchedMemeList);
       }
     } catch (e) {
-      // throw Exception('Error Saving Meme');
+      debugPrint('Error Saving Meme');
     }
   }
 

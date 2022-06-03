@@ -3,8 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chomu/pages/feedback/feedback_screen.dart';
 import 'package:chomu/pages/splash/splash.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:hidable/hidable.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../feedback/controller/feedback_controller_bindings.dart';
@@ -33,81 +33,44 @@ class _HomeState extends State<Home> {
           extendBody: false,
           key: controller.drawerOpenKey,
           body: IndexedStack(
-            children: [Hot(), const Splash(), const Splash()],
+            children: [Hot(), const StoryPlayer(), const Splash()],
             index: controller.currentPage,
           ),
-          bottomNavigationBar: Hidable(
-              controller: controller.scrollController,
-              size: 70,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Colors.grey,
-                        spreadRadius: 2,
-                        blurRadius: 1,
-                        offset: Offset(1, 2))
-                  ],
-                ),
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  elevation: 10,
-                  child: SizedBox(
-                    height: 70,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                            tooltip: 'Home',
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.home_rounded,
-                              color: Get.isDarkMode
-                                  ? Colors.white
-                                  : Colors.deepPurple,
-                              size: 30,
-                            )),
-                        IconButton(
-                            tooltip: 'Stories',
-                            onPressed: () {
-                              setState(() {
-                                showBadge = false;
-                              });
-                              controller.changeCurrentPage(1);
-                            },
-                            icon: Badge(
-                              badgeColor: Colors.deepPurple,
-                              animationType: BadgeAnimationType.scale,
-                              showBadge: controller.showBadge.value,
-                              badgeContent: Text(
-                                controller
-                                    .generateRandomBadgeNumber()
-                                    .toString(),
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 10),
-                              ),
-                              child: const Icon(
-                                Icons.play_arrow_rounded,
-                                color: Colors.grey,
-                                size: 35,
-                              ),
-                            )),
-                        IconButton(
-                            tooltip: 'Profile',
-                            onPressed: () {
-                              controller.changeCurrentPage(2);
-                            },
-                            icon: const Icon(
-                              Icons.person,
-                              color: Colors.grey,
-                              size: 30,
-                            )),
-                      ],
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Colors.black,
+            onTap: controller.changeCurrentPage,
+            currentIndex: controller.currentPage,
+            selectedItemColor: Colors.deepPurple,
+            unselectedItemColor: Colors.grey,
+            items: [
+              // home
+              BottomNavigationBarItem(
+                  icon: Badge(
+                    animationType: BadgeAnimationType.scale,
+                    showBadge: controller.showBadge.value,
+                    badgeColor: Colors.orangeAccent,
+                    badgeContent: Text(
+                      controller.generateRandomBadgeNumber().toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    child: const CustomIcon(
+                      icon: FontAwesomeIcons.house,
                     ),
                   ),
-                ),
-              )),
+                  label: ''),
+              // home
+              const BottomNavigationBarItem(
+                  icon: CustomIcon(
+                    icon: FontAwesomeIcons.play,
+                  ),
+                  label: ''),
+              const BottomNavigationBarItem(
+                  icon: CustomIcon(
+                    icon: FontAwesomeIcons.solidUser,
+                  ),
+                  label: ''),
+            ],
+          ),
           drawer: _buildHomeDrawer(),
         );
       },
@@ -219,32 +182,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-// FlashyTabBar(
-//               selectedIndex: controller.currentPage,
-//               showElevation: true,
-//               iconSize: 25,
-//               onItemSelected: controller.changeCurrentPage,
-//               items: [
-//                 FlashyTabBarItem(
-//                   icon: Icon(Icons.home_rounded,
-//                       color: Get.isDarkMode ? Colors.white : Colors.deepPurple),
-//                   title: Text(
-//                     'Home',
-//                     style: TextStyle(
-//                         color:
-//                             Get.isDarkMode ? Colors.white : Colors.deepPurple),
-//                   ),
-//                 ),
-//                 FlashyTabBarItem(
-//                   icon: const Icon(Icons.play_arrow_rounded),
-//                   title: const Text('Stories'),
-//                 ),
-//                 FlashyTabBarItem(
-//                   icon: const Icon(Icons.person_rounded),
-//                   title: const Text('Account'),
-//                 ),
-//               ],
-//             ),
 
   void _launchUrl(url) async {
     var _url = Uri.parse(url);
@@ -253,24 +190,55 @@ class _HomeState extends State<Home> {
   }
 }
 
-
-// BottomNavigationBar(
-//                 elevation: 5,
-//                 iconSize: 26,
-//                 items: <BottomNavigationBarItem>[
-//                   const BottomNavigationBarItem(
-//                       icon: Icon(Icons.home_rounded), label: ''),
-//                   BottomNavigationBarItem(
-//                       icon: Badge(
-//                         child: const Icon(Icons.play_arrow_rounded),
-//                         badgeContent: Text(
-//                             controller.generateRandomBadgeNumber().toString()),
-//                       ),
-//                       label: ''),
-//                   const BottomNavigationBarItem(
-//                       icon: Icon(Icons.person), label: ''),
-//                 ],
-//                 onTap: controller.changeCurrentPage,
-//                 currentIndex: controller.currentPage,
-//               )),
-       
+class CustomIcon extends StatelessWidget {
+  const CustomIcon({Key? key, required this.icon}) : super(key: key);
+  final IconData icon;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 1.0),
+      child: SizedBox(
+        width: 45,
+        height: 30,
+        child: Stack(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(
+                left: 10,
+              ),
+              width: 38,
+              decoration: BoxDecoration(
+                color: Colors.orangeAccent,
+                borderRadius: BorderRadius.circular(7),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(
+                right: 10,
+              ),
+              width: 38,
+              decoration: BoxDecoration(
+                color: Colors.deepPurpleAccent,
+                borderRadius: BorderRadius.circular(7),
+              ),
+            ),
+            Center(
+              child: Container(
+                height: double.infinity,
+                width: 38,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Icon(
+                  icon,
+                  size: 20,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

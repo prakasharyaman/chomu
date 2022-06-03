@@ -1,6 +1,4 @@
 // ignore_for_file: avoid_print
-import 'package:chomu/app/controllers/version_controller.dart';
-import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/pages/introduction/introduction_screen.dart';
 import 'package:chomu/repository/meme_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -39,8 +37,7 @@ class FirebaseController extends GetxController {
     //bind to user model
     user.bindStream(userStream);
     // subscribe to topic
-
-    // FirebaseMessaging.instance.subscribeToTopic('debug');
+    FirebaseMessaging.instance.subscribeToTopic('debug');
     FirebaseMessaging.instance.subscribeToTopic('meme');
 
     super.onInit();
@@ -57,7 +54,6 @@ class FirebaseController extends GetxController {
       FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);
       await firebaseAnalytics.logLogin();
       await firebaseAnalytics.setUserId(id: _firebaseUser.uid);
-      Get.put(HotController());
       //log user on cloud
       logUserActiveTodayOnCloud();
       // check for introduction
@@ -168,6 +164,7 @@ class FirebaseController extends GetxController {
     try {
       debugPrint('Checking for latest version');
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      // ignore: unnecessary_null_comparison
       if (packageInfo.buildNumber != null) {
         var buildNumber = int.parse(packageInfo.buildNumber);
         var cloudBuildDoc = await FirebaseFirestore.instance

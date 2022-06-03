@@ -4,7 +4,6 @@ import 'package:chomu/ads/controller/ads_controller.dart';
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/common/videoPostWidget/video_post_widget.dart';
 import 'package:chomu/pages/error/error.dart';
-import 'package:chomu/pages/home/tabs/hot/widgets/homeStories/home_stories.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
@@ -208,24 +207,11 @@ class _HotPageState extends State<HotPage> {
                           );
                         } else if (index % 10 == 0 && index != 0) {
                           AdsController adsController = Get.find();
-                          return LayoutBuilder(
-                            builder: (BuildContext context,
-                                BoxConstraints constraints) {
-                              return InViewNotifierWidget(
-                                id: '$index',
-                                builder: (BuildContext context, bool isInView,
-                                    Widget? child) {
-                                  return adsController.bigBannerAd;
-                                },
-                              );
-                            },
-                          );
-                        } else if (index == 0) {
                           return InViewNotifierWidget(
                             id: '$index',
                             builder: (BuildContext context, bool isInView,
                                 Widget? child) {
-                              return const HomeStories();
+                              return adsController.bigBannerAd;
                             },
                           );
                         } else {
@@ -319,9 +305,18 @@ class _HotPageState extends State<HotPage> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomLeft,
                 colors: [
-                  Color.fromARGB(255, 245, 246, 248),
-                  Color.fromARGB(255, 244, 247, 250),
+                  Color.fromARGB(255, 244, 245, 247),
+                  Color.fromARGB(255, 239, 244, 249),
                 ],
               ));
   }
 }
+// else if (index == 0) {
+//                           return InViewNotifierWidget(
+//                             id: '$index',
+//                             builder: (BuildContext context, bool isInView,
+//                                 Widget? child) {
+//                               return const HomeStories();
+//                             },
+//                           );
+//                         }

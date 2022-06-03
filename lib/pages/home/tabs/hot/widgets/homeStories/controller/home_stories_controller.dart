@@ -60,9 +60,7 @@ class HomeStoriesController extends GetxController {
         storyWidgetChildren.add(
           GestureDetector(
             onTap: () {
-              Get.to(StoryPlayer(
-                postTag: tag,
-              ));
+              Get.to(const StoryPlayer());
             },
             child: SizedBox(
               width: Get.height * 0.1,
