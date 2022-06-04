@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:chomu/models/meme_model.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
-import 'package:chomu/pages/stories/stories_player.dart';
+import 'package:chomu/pages/home/tabs/hot/widgets/homeStories/page/home_story_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -60,7 +62,9 @@ class HomeStoriesController extends GetxController {
         storyWidgetChildren.add(
           GestureDetector(
             onTap: () {
-              Get.to(const StoryPlayer());
+              Get.to(HomeStoryPlayer(
+                tag: tag,
+              ));
             },
             child: SizedBox(
               width: Get.height * 0.1,
@@ -70,7 +74,7 @@ class HomeStoriesController extends GetxController {
                   children: [
                     DottedBorder(
                       strokeWidth: 1.5,
-                      dashPattern: const [8, 3, 4, 3],
+                      dashPattern: const [8, 4, 8, 4],
                       borderType: BorderType.Circle,
                       color: Get.isDarkMode ? Colors.white : Colors.deepPurple,
                       padding: const EdgeInsets.all(3),

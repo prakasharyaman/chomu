@@ -195,6 +195,9 @@ class StoriesRepository {
                 subReddit: 'Hot',
                 title: memeJson['title'],
                 type: memeJson['type'],
+                duration: memeJson['type'] == 'Animated'
+                    ? memeJson['images']['image460sv']['duration']
+                    : 0,
                 ups: memeJson['upVoteCount'],
                 url: memeJson['images']['image460']['url'],
                 videoUrl: memeJson['images']['image460sv'] != null

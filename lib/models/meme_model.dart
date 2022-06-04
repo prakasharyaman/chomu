@@ -9,6 +9,7 @@ class Meme {
   String? type;
   int ups;
   List<dynamic>? tags;
+  int? duration;
 
   Meme(
       {required this.id,
@@ -26,7 +27,8 @@ class Meme {
       required this.videoUrl,
       required this.length,
       required this.type,
-      this.tags});
+      this.tags,
+      this.duration});
   factory Meme.fromJson(Map<String, dynamic> json) {
     return Meme(
       id: json['id'] as String,

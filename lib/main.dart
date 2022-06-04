@@ -44,21 +44,18 @@ void main() async {
             channelKey: 'meme',
             channelName: 'Memes',
             channelDescription: 'Just a random reminder to be happy',
-            ledColor: const Color.fromARGB(132, 62, 94, 239),
             importance: NotificationImportance.High),
         NotificationChannel(
             channelGroupKey: 'updates',
             channelKey: 'updates',
             channelName: 'Updates',
             channelDescription: 'Crucial App Update Notifications',
-            ledColor: const Color.fromARGB(132, 62, 94, 239),
             importance: NotificationImportance.High),
         NotificationChannel(
             channelGroupKey: 'general',
             channelKey: 'general',
             channelName: 'General',
             channelDescription: 'General Notifications',
-            ledColor: const Color.fromARGB(132, 62, 94, 239),
             importance: NotificationImportance.High),
       ],
       channelGroups: [

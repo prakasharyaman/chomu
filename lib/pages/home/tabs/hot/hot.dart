@@ -15,6 +15,7 @@ import '../../../../models/meme_model.dart';
 import '../../../splash/splash.dart';
 import '../../controller/home_controller.dart';
 import 'controller/hot_controller.dart';
+import 'widgets/homeStories/home_stories.dart';
 
 class Hot extends GetView<HotController> {
   Hot({Key? key}) : super(key: key);
@@ -214,6 +215,14 @@ class _HotPageState extends State<HotPage> {
                               return adsController.bigBannerAd;
                             },
                           );
+                        } else if (index == 0) {
+                          return InViewNotifierWidget(
+                            id: '$index',
+                            builder: (BuildContext context, bool isInView,
+                                Widget? child) {
+                              return const HomeStories();
+                            },
+                          );
                         } else {
                           if (memes[index].type == 'Animated') {
                             // animated meme
@@ -311,12 +320,3 @@ class _HotPageState extends State<HotPage> {
               ));
   }
 }
-// else if (index == 0) {
-//                           return InViewNotifierWidget(
-//                             id: '$index',
-//                             builder: (BuildContext context, bool isInView,
-//                                 Widget? child) {
-//                               return const HomeStories();
-//                             },
-//                           );
-//                         }
