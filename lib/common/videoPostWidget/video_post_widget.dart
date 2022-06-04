@@ -10,6 +10,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../app/controllers/firebase_controller.dart';
 import '../../models/meme_model.dart';
+import '../../pages/home/controller/home_controller.dart';
 import '../../pages/stories/stories_player.dart';
 
 class VideoPostWidget extends StatefulWidget {
@@ -286,8 +287,8 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
             ),
             gradient: const LinearGradient(
               colors: [
-                Colors.purpleAccent,
-                Colors.purple,
+                Colors.deepPurpleAccent,
+                Colors.deepPurple,
               ],
             ),
             boxShadow: [
@@ -312,7 +313,8 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
             onTap: () {
               debugPrint("Going to Stories");
               _controller.setVolume(0);
-              Get.to(const StoryPlayer());
+              HomeController homeController = Get.find();
+              homeController.changeCurrentPage(1);
             },
           ),
         ),
