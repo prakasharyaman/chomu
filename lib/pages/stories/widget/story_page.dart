@@ -1,10 +1,14 @@
+import 'package:chomu/ads/widgets/small_banner_ad.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/services/download_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import '../../../ads/ads_helper.dart';
+import '../../../app/app.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';
 import '../../../services/share_service.dart';
@@ -22,6 +26,10 @@ class _StoryPageState extends State<StoryPage> {
   late Meme meme;
   bool watched = false;
   bool isPostLiked = false;
+  // COMPLETE: Add _bannerAd
+  late BannerAd _bannerAd;
+  // COMPLETE: Add _isBannerAdReady
+  bool _isBannerAdReady = false;
   late PageController pageController;
   bool isPostBookMarked = false;
   StoriesController storiesController = Get.find();
@@ -29,6 +37,25 @@ class _StoryPageState extends State<StoryPage> {
   void initState() {
     pageController = widget.pageController;
     meme = widget.meme;
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          debugPrint('Failed to load a banner ad: ${err.message}');
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+
+    _bannerAd.load();
     super.initState();
     FirebaseController firebaseController = Get.find();
     firebaseController.logFirebaseEvent(eventName: 'StoryView');
@@ -108,155 +135,8 @@ class _StoryPageState extends State<StoryPage> {
               ),
             ),
           ),
-          // back button and dropdown
-          Positioned(
-              top: 10,
-              left: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? Colors.white38.withOpacity(0.3)
-                                : Colors.grey.shade500.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(Icons.arrow_back_rounded),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // dropdown
-                    DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                        customButton: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Get.isDarkMode
-                                  ? Colors.white38.withOpacity(0.3)
-                                  : Colors.grey.shade500.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.only(
-                                  top: 8.0,
-                                  bottom: 8.0,
-                                  left: 15.0,
-                                  right: 15.0),
-                              child: Icon(Icons.more_vert_rounded),
-                            ),
-                          ),
-                        ),
-                        openWithLongPress: true,
-                        customItemsIndexes: const [4],
-                        customItemsHeight: 8,
-                        items: [
-                          ...MenuItems.firstItems.map(
-                            (item) => DropdownMenuItem<MenuItem>(
-                              value: item,
-                              child: MenuItems.buildItem(item),
-                            ),
-                          ),
-                          const DropdownMenuItem<Divider>(
-                              enabled: false, child: Divider()),
-                          ...MenuItems.secondItems.map(
-                            (item) => DropdownMenuItem<MenuItem>(
-                              value: item,
-                              child: MenuItems.buildItem(item),
-                            ),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          switch (value) {
-                            case MenuItems.remove:
-                              //Do something
-                              storiesController.saveMemeAsWatched(
-                                  url: meme.url);
-                              Get.snackbar(
-                                'Refresh ',
-                                'We have removed this meme',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
 
-                              break;
-                            case MenuItems.block:
-                              // block user
-                              if (meme.url != '') {
-                                Get.defaultDialog(
-                                    title: "Block User ${meme.author} ?",
-                                    middleText:
-                                        "Are You Sure You Want To Block ${meme.author} . This will block all posts from this user \n and will not show them in your feed",
-                                    radius: 30,
-                                    onConfirm: () {
-                                      storiesController.blockUser(
-                                          userName: meme.author);
-                                      storiesController.getMemes();
-                                      Get.back();
-                                    },
-                                    onCancel: () {
-                                      Get.back();
-                                    });
-                              } else {
-                                Get.snackbar('Oops',
-                                    'We were not able to block the user \n  Please try again later',
-                                    snackPosition: SnackPosition.BOTTOM);
-                              }
-                              break;
-                            case MenuItems.report:
-                              storiesController.reportMeme(meme: meme);
-                              storiesController.getMemes();
-                              break;
-                            case MenuItems.download:
-                              FileDownloadService fileDownloadService =
-                                  Get.find();
-                              if (meme.type == 'Animated') {
-                                fileDownloadService.requestDownload(
-                                  url: meme.videoUrl!,
-                                  name: 'Chomu Video',
-                                );
-                              } else {
-                                fileDownloadService.requestDownload(
-                                  url: meme.url,
-                                  name: meme.title,
-                                );
-                              }
-
-                              break;
-                            case MenuItems.cancel:
-                              //Do something
-                              break;
-                          }
-                        },
-                        itemHeight: 48,
-                        itemPadding: const EdgeInsets.only(left: 16, right: 16),
-                        dropdownWidth: 160,
-                        dropdownPadding:
-                            const EdgeInsets.symmetric(vertical: 6),
-                        dropdownDecoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        dropdownElevation: 8,
-                        offset: const Offset(40, -4),
-                      ),
-                    ),
-                  ],
-                ),
-              )), // title
-          // title and author
+          // // title and author
           Positioned(
               bottom: 10,
               right: 10,
@@ -416,14 +296,133 @@ class _StoryPageState extends State<StoryPage> {
                         ),
                       ),
                     ),
+                    //more
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        customButton: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Get.isDarkMode
+                                  ? Colors.white38.withOpacity(0.3)
+                                  : Colors.grey.shade500.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.only(
+                                  top: 8.0,
+                                  bottom: 8.0,
+                                  left: 15.0,
+                                  right: 15.0),
+                              child: Icon(
+                                Icons.more_vert_rounded,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        openWithLongPress: true,
+                        customItemsIndexes: const [4],
+                        customItemsHeight: 8,
+                        items: [
+                          ...MenuItems.firstItems.map(
+                            (item) => DropdownMenuItem<MenuItem>(
+                              value: item,
+                              child: MenuItems.buildItem(item),
+                            ),
+                          ),
+                          const DropdownMenuItem<Divider>(
+                              enabled: false, child: Divider()),
+                          ...MenuItems.secondItems.map(
+                            (item) => DropdownMenuItem<MenuItem>(
+                              value: item,
+                              child: MenuItems.buildItem(item),
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          switch (value) {
+                            case MenuItems.remove:
+                              //Do something
+                              storiesController.saveMemeAsWatched(
+                                  url: meme.url);
+                              Get.snackbar(
+                                'Refresh ',
+                                'We have removed this meme',
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+
+                              break;
+                            case MenuItems.block:
+                              // block user
+                              if (meme.url != '') {
+                                Get.defaultDialog(
+                                    title: "Block User ${meme.author}",
+                                    middleText:
+                                        "Are You Sure You Want To Block ${meme.author} \n This will block all posts from this user \n and will not show them in your feed",
+                                    radius: 30,
+                                    onConfirm: () {
+                                      storiesController.blockUser(
+                                          userName: meme.author);
+                                      Future.delayed(const Duration(
+                                              milliseconds: 2100))
+                                          .then((_) => Get.offAll(const App()));
+                                    },
+                                    onCancel: () {
+                                      Get.back();
+                                    });
+                              } else {
+                                Get.snackbar('Oops',
+                                    'We were not able to block the user \n  Please try again later',
+                                    snackPosition: SnackPosition.BOTTOM);
+                              }
+                              break;
+                            case MenuItems.report:
+                              storiesController.reportMeme(meme: meme);
+                              break;
+                            case MenuItems.download:
+                              FileDownloadService fileDownloadService =
+                                  Get.find();
+                              if (meme.type == 'Animated') {
+                                fileDownloadService.requestDownload(
+                                  url: meme.videoUrl!,
+                                  name: 'Chomu Video',
+                                );
+                              } else {
+                                fileDownloadService.requestDownload(
+                                  url: meme.url,
+                                  name: meme.title,
+                                );
+                              }
+
+                              break;
+                            case MenuItems.cancel:
+                              //Do something
+                              break;
+                          }
+                        },
+                        itemHeight: 48,
+                        itemPadding: const EdgeInsets.only(left: 16, right: 16),
+                        dropdownWidth: 160,
+                        dropdownPadding:
+                            const EdgeInsets.symmetric(vertical: 6),
+                        dropdownDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        dropdownElevation: 8,
+                        offset: const Offset(40, -4),
+                      ),
+                    ),
                   ],
                 ),
               )),
-          //ad
-          // const Align(
-          //   alignment: Alignment.topCenter,
-          //   child: SafeArea(child: SmallBannerAd()),
-          // ),
+          //ad widget
+          const Positioned(
+              top: 0,
+              right: 0,
+              left: 0,
+              // curve: Curves.easeInOut,
+              child: SmallBannerAd())
         ],
       ),
     );
@@ -506,3 +505,151 @@ class MenuItems {
     }
   }
 }
+ // back button and dropdown
+          // Positioned(
+          //     top: 10,
+          //     left: 0,
+          //     right: 0,
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(10.0),
+          //       child: Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           GestureDetector(
+          //             onTap: () {
+          //               Get.back();
+          //             },
+          //             child: Padding(
+          //               padding: const EdgeInsets.all(8.0),
+          //               child: Container(
+          //                 decoration: BoxDecoration(
+          //                   color: Get.isDarkMode
+          //                       ? Colors.white38.withOpacity(0.3)
+          //                       : Colors.grey.shade500.withOpacity(0.3),
+          //                   borderRadius: BorderRadius.circular(20),
+          //                 ),
+          //                 child: const Padding(
+          //                   padding: EdgeInsets.only(
+          //                       top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
+          //                   child: Icon(Icons.arrow_back_rounded),
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //           // dropdown
+          //           DropdownButtonHideUnderline(
+          //             child: DropdownButton2(
+          //               customButton: Padding(
+          //                 padding: const EdgeInsets.all(8.0),
+          //                 child: Container(
+          //                   decoration: BoxDecoration(
+          //                     color: Get.isDarkMode
+          //                         ? Colors.white38.withOpacity(0.3)
+          //                         : Colors.grey.shade500.withOpacity(0.3),
+          //                     borderRadius: BorderRadius.circular(20),
+          //                   ),
+          //                   child: const Padding(
+          //                     padding: EdgeInsets.only(
+          //                         top: 8.0,
+          //                         bottom: 8.0,
+          //                         left: 15.0,
+          //                         right: 15.0),
+          //                     child: Icon(Icons.more_vert_rounded),
+          //                   ),
+          //                 ),
+          //               ),
+          //               openWithLongPress: true,
+          //               customItemsIndexes: const [4],
+          //               customItemsHeight: 8,
+          //               items: [
+          //                 ...MenuItems.firstItems.map(
+          //                   (item) => DropdownMenuItem<MenuItem>(
+          //                     value: item,
+          //                     child: MenuItems.buildItem(item),
+          //                   ),
+          //                 ),
+          //                 const DropdownMenuItem<Divider>(
+          //                     enabled: false, child: Divider()),
+          //                 ...MenuItems.secondItems.map(
+          //                   (item) => DropdownMenuItem<MenuItem>(
+          //                     value: item,
+          //                     child: MenuItems.buildItem(item),
+          //                   ),
+          //                 ),
+          //               ],
+          //               onChanged: (value) {
+          //                 switch (value) {
+          //                   case MenuItems.remove:
+          //                     //Do something
+          //                     storiesController.saveMemeAsWatched(
+          //                         url: meme.url);
+          //                     Get.snackbar(
+          //                       'Refresh ',
+          //                       'We have removed this meme',
+          //                       snackPosition: SnackPosition.BOTTOM,
+          //                     );
+
+          //                     break;
+          //                   case MenuItems.block:
+          //                     // block user
+          //                     if (meme.url != '') {
+          //                       Get.defaultDialog(
+          //                           title: "Block User ${meme.author} ?",
+          //                           middleText:
+          //                               "Are You Sure You Want To Block ${meme.author} . This will block all posts from this user \n and will not show them in your feed",
+          //                           radius: 30,
+          //                           onConfirm: () {
+          //                             storiesController.blockUser(
+          //                                 userName: meme.author);
+          //                             storiesController.getMemes();
+          //                             Get.back();
+          //                           },
+          //                           onCancel: () {
+          //                             Get.back();
+          //                           });
+          //                     } else {
+          //                       Get.snackbar('Oops',
+          //                           'We were not able to block the user \n  Please try again later',
+          //                           snackPosition: SnackPosition.BOTTOM);
+          //                     }
+          //                     break;
+          //                   case MenuItems.report:
+          //                     storiesController.reportMeme(meme: meme);
+          //                     storiesController.getMemes();
+          //                     break;
+          //                   case MenuItems.download:
+          //                     FileDownloadService fileDownloadService =
+          //                         Get.find();
+          //                     if (meme.type == 'Animated') {
+          //                       fileDownloadService.requestDownload(
+          //                         url: meme.videoUrl!,
+          //                         name: 'Chomu Video',
+          //                       );
+          //                     } else {
+          //                       fileDownloadService.requestDownload(
+          //                         url: meme.url,
+          //                         name: meme.title,
+          //                       );
+          //                     }
+
+          //                     break;
+          //                   case MenuItems.cancel:
+          //                     //Do something
+          //                     break;
+          //                 }
+          //               },
+          //               itemHeight: 48,
+          //               itemPadding: const EdgeInsets.only(left: 16, right: 16),
+          //               dropdownWidth: 160,
+          //               dropdownPadding:
+          //                   const EdgeInsets.symmetric(vertical: 6),
+          //               dropdownDecoration: BoxDecoration(
+          //                 borderRadius: BorderRadius.circular(4),
+          //               ),
+          //               dropdownElevation: 8,
+          //               offset: const Offset(40, -4),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     )), // title

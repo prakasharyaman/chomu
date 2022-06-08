@@ -111,21 +111,42 @@ class _HomeStoryPlayerState extends State<HomeStoryPlayer> {
     List<Meme> watchedmemesList = [];
     List<Meme> animatedTagList = [];
     List<Meme> tagList = [];
+    List<String> titleList = [];
+
     //getting all news posts
     memes = await storiesRepository.getNewsPosts();
-    // List<Meme> videoMemes = await storiesRepository.getVideoPosts();
-    //rm repeated memes
-    // for (var meme in memes) {
-    //   videoMemes.removeWhere((element) => element.title == meme.title);
-    // }
+    List<Meme> videoMemes = await storiesRepository.getVideoPosts();
+    // rm repeated memes
+    for (var meme in memes) {
+      videoMemes.removeWhere((element) => element.title == meme.title);
+    }
+    memes = memes + videoMemes;
     // check if the meme has been watched
     for (var meme in memes) {
       if (await checkMemesIfWatched(url: meme.url)) {
         watchedmemesList.add(meme);
       }
+      titleList.add(meme.title.toString());
     }
+
     // removing watched memes from the list
     memes.removeWhere((element) => watchedmemesList.contains(element));
+    debugPrint('total posts : ${titleList.length}');
+    titleList = titleList.toSet().toList();
+    debugPrint('total non repeating posts : ${titleList.length}');
+    // clear list from repeating elements
+    List<Meme> clearMemes = [];
+    // removing repeated titles posts
+    for (var title in titleList) {
+      var rep = memes.where((element) => element.title == title);
+      if (rep.length > 1) {
+        clearMemes.add(rep.first);
+      } else if (rep.length == 1) {
+        clearMemes.add(rep.first);
+      }
+    }
+    memes = clearMemes;
+    debugPrint('after removing repeating posts, length is now:${memes.length}');
     // adding news to the list
     for (var meme in memes) {
       if (_ifContainsTag(tags: meme.tags, ktag: tag)) {

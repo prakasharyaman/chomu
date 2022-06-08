@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:chomu/pages/home/games/games_page.dart';
 import 'package:chomu/pages/profile/bindings/profile_bindings.dart';
 import 'package:chomu/pages/profile/profile.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class HomeController extends GetxController {
       currentPage = index;
       update();
     } else if (index == 2) {
+      Get.to(const GamesPage());
+    } else if (index == 3) {
       Get.to(const Profile(), binding: ProfileBindings());
     } else {
       currentPage = index;

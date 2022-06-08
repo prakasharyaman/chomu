@@ -58,12 +58,28 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   label: ''),
-              // home
+              // play stories
               const BottomNavigationBarItem(
                   icon: CustomIcon(
                     icon: FontAwesomeIcons.play,
                   ),
                   label: ''),
+              // game
+              BottomNavigationBarItem(
+                  icon: Badge(
+                    animationType: BadgeAnimationType.scale,
+                    showBadge: controller.showBadge.value,
+                    badgeColor: Colors.orangeAccent,
+                    badgeContent: Text(
+                      controller.generateRandomBadgeNumber().toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    child: const CustomIcon(
+                      icon: FontAwesomeIcons.gamepad,
+                    ),
+                  ),
+                  label: ''),
+              // profile
               const BottomNavigationBarItem(
                   icon: CustomIcon(
                     icon: FontAwesomeIcons.solidUser,

@@ -14,7 +14,6 @@ import '../../../app/app.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';
 import '../../../services/download_service.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 class VideoStoryPage extends StatefulWidget {
   const VideoStoryPage(
@@ -107,7 +106,6 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
     _controller.addListener(() {
       if (_controller.value.hasError) {
         debugPrint(_controller.value.errorDescription);
-        showToast("Cannot Load Video", context: context);
         Future.delayed(const Duration(seconds: 1), () {
           pageController.nextPage(
               duration: const Duration(milliseconds: 500),
