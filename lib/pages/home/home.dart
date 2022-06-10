@@ -13,6 +13,7 @@ import '../profile/profile.dart';
 import '../settings/page/settingsPage.dart';
 import '../stories/stories_player.dart';
 import 'controller/home_controller.dart';
+import 'games/games_page.dart';
 import 'tabs/hot/hot.dart';
 
 class Home extends StatefulWidget {
@@ -24,7 +25,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var showBadge = true;
-
+  final List<Widget> _widgetOptions = [
+    Hot(),
+    const StoryPlayer(),
+    const GamesPage()
+  ];
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -32,10 +37,7 @@ class _HomeState extends State<Home> {
         return Scaffold(
           extendBody: false,
           key: controller.drawerOpenKey,
-          body: IndexedStack(
-            children: [Hot(), const StoryPlayer(), const Splash()],
-            index: controller.currentPage,
-          ),
+          body: _widgetOptions.elementAt(controller.currentPage),
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Colors.black,
             onTap: controller.changeCurrentPage,
@@ -65,18 +67,9 @@ class _HomeState extends State<Home> {
                   ),
                   label: ''),
               // game
-              BottomNavigationBarItem(
-                  icon: Badge(
-                    animationType: BadgeAnimationType.scale,
-                    showBadge: controller.showBadge.value,
-                    badgeColor: Colors.orangeAccent,
-                    badgeContent: Text(
-                      controller.generateRandomBadgeNumber().toString(),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    child: const CustomIcon(
-                      icon: FontAwesomeIcons.gamepad,
-                    ),
+              const BottomNavigationBarItem(
+                  icon: CustomIcon(
+                    icon: FontAwesomeIcons.gamepad,
                   ),
                   label: ''),
               // profile

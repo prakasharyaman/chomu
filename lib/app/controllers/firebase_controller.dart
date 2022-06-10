@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:chomu/pages/home/games/controller/games_page_controller.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/pages/introduction/introduction_screen.dart';
 import 'package:chomu/repository/meme_repository.dart';
@@ -52,6 +53,7 @@ class FirebaseController extends GetxController {
     //get user data from firestore
     if (_firebaseUser?.uid != null) {
       Get.put<HotController>(HotController());
+      Get.put<GamesPageController>(GamesPageController());
       userModel.value = UserModel(id: _firebaseUser.uid);
       FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);
       await firebaseAnalytics.logLogin();

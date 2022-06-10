@@ -22,7 +22,8 @@ class HomeController extends GetxController {
       currentPage = index;
       update();
     } else if (index == 2) {
-      Get.to(const GamesPage());
+      currentPage = index;
+      update();
     } else if (index == 3) {
       Get.to(const Profile(), binding: ProfileBindings());
     } else {

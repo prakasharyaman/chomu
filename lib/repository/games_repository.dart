@@ -27,22 +27,46 @@ class GamesRepository {
             await lastGamePlayed(name: gamesJson['name']),
           );
           gamesList.add(game);
-          if (gamesList.isNotEmpty) {
-            // sorting out already played games
-            for (var game in gamesList) {
-              if (game.lastPlayed != null) {
-                playedGamesList.add(game);
-              }
-            }
-            // removing played games from new games list
-            gamesList
-                .removeWhere((element) => playedGamesList.contains(element));
-            // sorting played games
-            playedGamesList
-                .sort((a, b) => b.lastPlayed!.compareTo(a.lastPlayed!));
-          } else {
-            throw Exception('No games found');
+        }
+        if (gamesList.isNotEmpty) {
+          var gameNameList = [];
+          for (var game in gamesList) {
+            gameNameList.add(game.name);
           }
+          gameNameList.toSet().toList();
+
+          List<Game> clearGameList = [];
+          for (var gameName in gameNameList) {
+            var game = gamesList.firstWhere((game) => game.name == gameName);
+            clearGameList.add(game);
+          }
+          gamesList = clearGameList;
+          // sorting out already played games
+          for (var game in gamesList) {
+            if (game.lastPlayed != null) {
+              playedGamesList.add(game);
+            }
+          }
+          var cleanNamePlayedList = [];
+          List<Game> cleanPlayedList = [];
+          for (var game in playedGamesList) {
+            cleanNamePlayedList.add(game.name);
+          }
+          cleanNamePlayedList.toSet().toList();
+          for (var gameName in cleanNamePlayedList) {
+            var game =
+                playedGamesList.firstWhere((game) => game.name == gameName);
+            cleanPlayedList.add(game);
+          }
+          playedGamesList.clear();
+          playedGamesList = cleanPlayedList;
+          // removing played games from new games list
+          gamesList.removeWhere((element) => playedGamesList.contains(element));
+          // sorting played games
+          playedGamesList
+              .sort((a, b) => b.lastPlayed!.compareTo(a.lastPlayed!));
+        } else {
+          throw Exception('No games found');
         }
       } else {
         throw Exception('No games found');

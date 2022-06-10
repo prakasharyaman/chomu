@@ -3,6 +3,7 @@ import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/pages/stories/widget/story_finished.dart';
 import 'package:chomu/pages/stories/widget/story_page.dart';
 import 'package:chomu/pages/stories/widget/video_story_page.dart';
+import 'package:chomu/xyz.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/app.dart';
@@ -34,6 +35,7 @@ class StoryPlayer extends GetView<StoriesController> {
                 return const Splash();
               case Status.loaded:
                 var memes = controller.memes;
+                // scroller
                 return PageView.builder(
                   itemCount: memes.length + 1,
                   itemBuilder: (context, index) {
@@ -78,3 +80,35 @@ class StoryPlayer extends GetView<StoriesController> {
     );
   }
 }
+
+            //  TikTokStyleFullPageScroller(
+            //         swipePositionThreshold: 0.2,
+            //         contentSize: memes.length + 1,
+            //         builder: (BuildContext context, int index) {
+            //           if (index == memes.length) {
+            //             return const StoriesFinished();
+            //           } else {
+            //             var post = memes[index];
+            //             if (post.type == 'Animated') {
+            //               return Scaffold(
+            //                 body: VideoStoryPage(
+            //                   currentPage: index,
+            //                   meme: memes[index],
+            //                   tag: null,
+            //                   pageController: controller.pageController,
+            //                 ),
+            //               );
+            //             } else if (post.type == 'Photo') {
+            //               return StoryPage(
+            //                 meme: post,
+            //                 pageController: controller.pageController,
+            //               );
+            //             } else {
+            //               return StoryPage(
+            //                 meme: post,
+            //                 pageController: controller.pageController,
+            //               );
+            //             }
+            //           }
+            //         });
+             

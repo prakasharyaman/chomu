@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chomu/xyz_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -9,14 +10,14 @@ import '../../../repository/stories_repository.dart';
 
 class StoriesController extends GetxController {
   StoriesRepository storiesRepository = StoriesRepository();
+
   final String? tag;
   static StoriesController storiesController = Get.find();
   Rx<Status> status = Status.loading.obs;
   MemeRepository memeRepository = MemeRepository();
   final getStorage = GetStorage();
-  PageController pageController = PageController(
-    viewportFraction: 1,
-  );
+  PageController pageController =
+      PageController(viewportFraction: 1, keepPage: true);
   String errorMessage = '';
   List<Meme> memes = [];
 
@@ -24,6 +25,7 @@ class StoriesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     getMemes();
   }
 
