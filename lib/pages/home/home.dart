@@ -46,6 +46,7 @@ class _HomeState extends State<Home> {
             items: [
               // home
               BottomNavigationBarItem(
+                  backgroundColor: Colors.black,
                   icon: Badge(
                     animationType: BadgeAnimationType.scale,
                     showBadge: controller.showBadge.value,
@@ -61,18 +62,21 @@ class _HomeState extends State<Home> {
                   label: ''),
               // play stories
               const BottomNavigationBarItem(
+                  backgroundColor: Colors.black,
                   icon: CustomIcon(
                     icon: FontAwesomeIcons.play,
                   ),
                   label: ''),
               // game
               const BottomNavigationBarItem(
+                  backgroundColor: Colors.black,
                   icon: CustomIcon(
                     icon: FontAwesomeIcons.gamepad,
                   ),
                   label: ''),
               // profile
               const BottomNavigationBarItem(
+                  backgroundColor: Colors.black,
                   icon: CustomIcon(
                     icon: FontAwesomeIcons.solidUser,
                   ),
