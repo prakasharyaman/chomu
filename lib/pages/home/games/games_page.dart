@@ -1,3 +1,4 @@
+import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/pages/home/games/controller/games_page_controller.dart';
 import 'package:chomu/pages/home/games/widgets/game_card.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,12 @@ class GamesPage extends StatefulWidget {
 class _GamesPageState extends State<GamesPage> {
   GamesPageController gamesPageController = Get.find();
   late WebViewController webViewController;
+  FirebaseController firebaseController = Get.find();
   @override
   void initState() {
     super.initState();
+    firebaseController.logCurrentScreen(
+        screenClass: 'Games', screenName: 'Games');
   }
 
   @override

@@ -964,13 +964,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.9"
-  tiktok_favorite_gesture:
-    dependency: "direct main"
-    description:
-      name: tiktok_favorite_gesture
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   typed_data:
     dependency: transitive
     description:

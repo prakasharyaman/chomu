@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/models/game_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ class GamePlayView extends StatefulWidget {
 
 class _GamePlayViewState extends State<GamePlayView> {
   late Game game;
+  FirebaseController firebaseController = Get.find();
   final storage = GetStorage();
   var loadingPercentage = 0;
   @override
@@ -28,6 +30,7 @@ class _GamePlayViewState extends State<GamePlayView> {
     addLastPlayedOn();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+    firebaseController.logFirebaseEvent(eventName: game.name.toString());
     super.initState();
   }
 
