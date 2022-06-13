@@ -3,7 +3,6 @@ import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/pages/stories/widget/story_finished.dart';
 import 'package:chomu/pages/stories/widget/story_page.dart';
 import 'package:chomu/pages/stories/widget/video_story_page.dart';
-import 'package:chomu/xyz.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/app.dart';

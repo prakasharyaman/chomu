@@ -67,20 +67,20 @@ class _HomeState extends State<Home> {
                     icon: FontAwesomeIcons.play,
                   ),
                   label: ''),
-              // game
-              const BottomNavigationBarItem(
-                  backgroundColor: Colors.black,
-                  icon: CustomIcon(
-                    icon: FontAwesomeIcons.gamepad,
-                  ),
-                  label: ''),
-              // profile
-              const BottomNavigationBarItem(
-                  backgroundColor: Colors.black,
-                  icon: CustomIcon(
-                    icon: FontAwesomeIcons.solidUser,
-                  ),
-                  label: ''),
+              // // game
+              // const BottomNavigationBarItem(
+              //     backgroundColor: Colors.black,
+              //     icon: CustomIcon(
+              //       icon: FontAwesomeIcons.gamepad,
+              //     ),
+              //     label: ''),
+              // // profile
+              // const BottomNavigationBarItem(
+              //     backgroundColor: Colors.black,
+              //     icon: CustomIcon(
+              //       icon: FontAwesomeIcons.solidUser,
+              //     ),
+              //     label: ''),
             ],
           ),
           drawer: _buildHomeDrawer(),
@@ -126,13 +126,13 @@ class _HomeState extends State<Home> {
             title: const Text('Home'),
           ),
 
-          //stories
+          // games
           ListTile(
             onTap: () {
-              Get.to(const StoryPlayer());
+              Get.to(const GamesPage());
             },
-            leading: const Icon(Icons.play_arrow_rounded),
-            title: const Text('Stories'),
+            leading: const Icon(FontAwesomeIcons.gamepad),
+            title: const Text('Games'),
           ),
           //profile
           ListTile(
@@ -165,7 +165,7 @@ class _HomeState extends State<Home> {
             onTap: () {
               Share.share(
                   'Check Out This App Chomu \n https://play.google.com/store/apps/details?id=com.otft.chomu',
-                  subject: 'Download Chomu 😂');
+                  subject: 'Download Chomu 💗🔥');
             },
             leading: const Icon(Icons.share_rounded),
             title: const Text('Share App'),

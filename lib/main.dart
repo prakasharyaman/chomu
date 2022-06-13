@@ -103,7 +103,7 @@ void main() async {
       darkTheme: FlexThemeData.dark(scheme: FlexScheme.deepPurple),
       themeMode: ThemeMode.system,
       navigatorObservers: [firebaseAnalyticsObserver],
-      home: const NotificationMessageHandler(child: App()),
+      home: const App(),
     ));
   },
       (error, stack) =>
@@ -114,36 +114,42 @@ void main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  try {
+    if (!AwesomeStringUtils.isNullOrEmpty(message.notification?.title,
+            considerWhiteSpaceAsEmpty: true) ||
+        !AwesomeStringUtils.isNullOrEmpty(message.notification?.body,
+            considerWhiteSpaceAsEmpty: true)) {
+      debugPrint(
+          'message also contained a notification: ${message.notification}');
 
-  if (!AwesomeStringUtils.isNullOrEmpty(message.notification?.title,
-          considerWhiteSpaceAsEmpty: true) ||
-      !AwesomeStringUtils.isNullOrEmpty(message.notification?.body,
-          considerWhiteSpaceAsEmpty: true)) {
-    debugPrint(
-        'message also contained a notification: ${message.notification}');
+      String? imageUrl;
+      imageUrl ??= message.notification!.android?.imageUrl;
+      imageUrl ??= message.notification!.apple?.imageUrl;
 
-    String? imageUrl;
-    imageUrl ??= message.notification!.android?.imageUrl;
-    imageUrl ??= message.notification!.apple?.imageUrl;
+      Map<String, dynamic> notificationAdapter = {
+        NOTIFICATION_CHANNEL_KEY: 'basic_channel',
+        NOTIFICATION_ID: message.data[NOTIFICATION_CONTENT]?[NOTIFICATION_ID] ??
+            message.messageId ??
+            Random().nextInt(2147483647),
+        NOTIFICATION_TITLE: message.data[NOTIFICATION_CONTENT]
+                ?[NOTIFICATION_TITLE] ??
+            message.notification?.title,
+        NOTIFICATION_BODY: message.data[NOTIFICATION_CONTENT]
+                ?[NOTIFICATION_BODY] ??
+            message.notification?.body,
+        NOTIFICATION_LAYOUT: AwesomeStringUtils.isNullOrEmpty(imageUrl)
+            ? 'Default'
+            : 'BigPicture',
+        NOTIFICATION_BIG_PICTURE: imageUrl
+      };
 
-    Map<String, dynamic> notificationAdapter = {
-      NOTIFICATION_CHANNEL_KEY: 'basic_channel',
-      NOTIFICATION_ID: message.data[NOTIFICATION_CONTENT]?[NOTIFICATION_ID] ??
-          message.messageId ??
-          Random().nextInt(2147483647),
-      NOTIFICATION_TITLE: message.data[NOTIFICATION_CONTENT]
-              ?[NOTIFICATION_TITLE] ??
-          message.notification?.title,
-      NOTIFICATION_BODY: message.data[NOTIFICATION_CONTENT]
-              ?[NOTIFICATION_BODY] ??
-          message.notification?.body,
-      NOTIFICATION_LAYOUT:
-          AwesomeStringUtils.isNullOrEmpty(imageUrl) ? 'Default' : 'BigPicture',
-      NOTIFICATION_BIG_PICTURE: imageUrl
-    };
-
-    AwesomeNotifications().createNotificationFromJsonData(notificationAdapter);
-  } else {
-    AwesomeNotifications().createNotificationFromJsonData(message.data);
+      AwesomeNotifications()
+          .createNotificationFromJsonData(notificationAdapter);
+    } else {
+      AwesomeNotifications().createNotificationFromJsonData(message.data);
+    }
+  } catch (e) {
+    debugPrint(e.toString());
   }
 }
