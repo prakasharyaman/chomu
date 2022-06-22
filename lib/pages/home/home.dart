@@ -165,7 +165,7 @@ class _HomeState extends State<Home> {
             onTap: () {
               Share.share(
                   'Check Out This App Chomu \n https://play.google.com/store/apps/details?id=com.otft.chomu',
-                  subject: 'Download Chomu 💗🔥');
+                  subject: 'Download Chomu 🔥');
             },
             leading: const Icon(Icons.share_rounded),
             title: const Text('Share App'),
