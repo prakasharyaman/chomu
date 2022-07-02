@@ -2,6 +2,7 @@
 import 'package:chomu/pages/home/games/controller/games_page_controller.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/pages/introduction/introduction_screen.dart';
+import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/repository/meme_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -39,7 +40,7 @@ class FirebaseController extends GetxController {
     //bind to user model
     user.bindStream(userStream);
     // subscribe to topic
-    FirebaseMessaging.instance.subscribeToTopic('debug');
+
     FirebaseMessaging.instance.subscribeToTopic('meme');
 
     super.onInit();
@@ -53,6 +54,7 @@ class FirebaseController extends GetxController {
     //get user data from firestore
     if (_firebaseUser?.uid != null) {
       Get.put<HotController>(HotController());
+      Get.put<StoriesController>(StoriesController());
       Get.put<GamesPageController>(GamesPageController());
       userModel.value = UserModel(id: _firebaseUser.uid);
       FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);
