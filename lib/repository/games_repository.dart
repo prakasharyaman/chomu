@@ -1,7 +1,12 @@
-import 'package:chomu/models/game_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
+
+// 🌎 Project imports:
+import 'package:chomu/models/game_model.dart';
 
 class GamesRepository {
   String baseUrl = 'https://www.friv.com/';

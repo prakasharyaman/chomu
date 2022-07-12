@@ -1,17 +1,20 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:chomu/app/controllers/volume_controller.dart';
-import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+// 🌎 Project imports:
+import 'package:chomu/app/controllers/volume_controller.dart';
+import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import '../../app/controllers/firebase_controller.dart';
 import '../../models/meme_model.dart';
 import '../../pages/home/controller/home_controller.dart';
-import '../../pages/stories/stories_player.dart';
 
 class VideoPostWidget extends StatefulWidget {
   const VideoPostWidget(

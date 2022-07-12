@@ -1,12 +1,17 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+// 🌎 Project imports:
 import '../../app/controllers/firebase_controller.dart';
 import '../../models/meme_model.dart';
 import '../../pages/home/tabs/hot/controller/hot_controller.dart';
 import '../../services/share_service.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MemeWidget extends StatefulWidget {
   const MemeWidget(

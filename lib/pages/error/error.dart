@@ -1,9 +1,13 @@
 // Flutter imports:
 // ignore_for_file: avoid_print
 
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 
+// 🌎 Project imports:
 import '../../app/controllers/firebase_controller.dart';
 
 // Project imports:

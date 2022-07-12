@@ -1,8 +1,13 @@
-import 'package:chomu/app/controllers/firebase_controller.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+
+// 🌎 Project imports:
+import 'package:chomu/app/controllers/firebase_controller.dart';
 
 class Introduction extends StatefulWidget {
   const Introduction({Key? key}) : super(key: key);

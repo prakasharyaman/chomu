@@ -1,8 +1,13 @@
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/ads/widgets/small_banner_ad.dart';
 import 'package:chomu/pages/home/controller/home_controller.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class StoriesFinished extends StatefulWidget {
   const StoriesFinished({Key? key}) : super(key: key);

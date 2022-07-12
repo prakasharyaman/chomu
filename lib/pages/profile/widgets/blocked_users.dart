@@ -1,8 +1,13 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:chomu/pages/profile/controller/profile_controller.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
+import 'package:chomu/pages/profile/controller/profile_controller.dart';
 import '../../../app/app.dart';
 import '../../../common/enum/status.dart';
 import '../../error/error.dart';

@@ -1,10 +1,14 @@
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:get/get.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/app/controllers/firebase_controller.dart';
 import 'package:chomu/pages/home/games/controller/games_page_controller.dart';
 import 'package:chomu/pages/home/games/widgets/game_card.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import '../../../ads/widgets/small_banner_ad.dart';
 
 class GameHome extends GetView<GamesPageController> {
   const GameHome({Key? key}) : super(key: key);

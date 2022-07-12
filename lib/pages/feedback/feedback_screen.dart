@@ -1,9 +1,15 @@
+// 🎯 Dart imports:
 import 'dart:io';
 
-import 'package:chomu/pages/feedback/controller/feedback_controller.dart';
-import 'package:file_picker/file_picker.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
+
+// 🌎 Project imports:
+import 'package:chomu/pages/feedback/controller/feedback_controller.dart';
 
 class FeedbackScreen extends GetView<FeedbackController> {
   const FeedbackScreen({Key? key}) : super(key: key);

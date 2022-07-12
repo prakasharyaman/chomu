@@ -1,7 +1,11 @@
-import 'package:chomu/pages/profile/widgets/bookmark_meme_page.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 
+// 🌎 Project imports:
+import 'package:chomu/pages/profile/widgets/bookmark_meme_page.dart';
 import '../../../models/meme_model.dart';
 
 class BookMarkGridWidget extends StatelessWidget {

@@ -1,6 +1,10 @@
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 
+// 🌎 Project imports:
 import 'controller/home_stories_controller.dart';
 
 class HomeStories extends GetView<HomeStoriesController> {

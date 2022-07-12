@@ -1,11 +1,15 @@
 // ignore_for_file: avoid_print
 
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:chomu/app/notificationHandler/widget/notificationWidget.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
+// 🌎 Project imports:
+import 'package:chomu/app/notificationHandler/widget/notificationWidget.dart';
 import '../controllers/firebase_controller.dart';
 
 class NotificationMessageHandler extends StatefulWidget {

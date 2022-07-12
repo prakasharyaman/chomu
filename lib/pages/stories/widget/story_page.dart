@@ -1,12 +1,15 @@
-import 'package:chomu/pages/stories/controller/stories_controller.dart';
-import 'package:chomu/services/download_service.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 
+// 🌎 Project imports:
+import 'package:chomu/pages/stories/controller/stories_controller.dart';
+import 'package:chomu/services/download_service.dart';
 import '../../../app/app.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';

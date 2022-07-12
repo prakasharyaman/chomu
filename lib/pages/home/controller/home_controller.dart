@@ -1,9 +1,15 @@
+// 🎯 Dart imports:
 import 'dart:math';
-import 'package:chomu/pages/home/games/games_page.dart';
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/pages/profile/bindings/profile_bindings.dart';
 import 'package:chomu/pages/profile/profile.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   static HomeController homeController = Get.find();

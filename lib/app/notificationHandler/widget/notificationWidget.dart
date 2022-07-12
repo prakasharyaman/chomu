@@ -1,12 +1,16 @@
 // ignore_for_file: file_names
 
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:chomu/repository/cloud_post_repository.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../models/meme_model.dart';
 
+// 🌎 Project imports:
+import 'package:chomu/repository/cloud_post_repository.dart';
+import '../../../models/meme_model.dart';
 import '../../../services/share_service.dart';
 
 class NotificationWidget extends StatelessWidget {

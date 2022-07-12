@@ -1,10 +1,14 @@
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/ads/widgets/small_banner_ad.dart';
 import 'package:chomu/pages/profile/controller/profile_controller.dart';
 import 'package:chomu/pages/profile/widgets/blocked_users.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
 import '../../app/app.dart';
 import '../../app/controllers/firebase_controller.dart';
 import '../../common/enum/status.dart';

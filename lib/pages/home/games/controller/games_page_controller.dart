@@ -1,11 +1,16 @@
+// 🐦 Flutter imports:
+import 'package:flutter/cupertino.dart';
+
+// 📦 Package imports:
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/models/game_model.dart';
 import 'package:chomu/pages/error/error.dart';
 import 'package:chomu/pages/home/controller/home_controller.dart';
 import 'package:chomu/pages/home/games/games_page.dart';
 import 'package:chomu/pages/splash/splash.dart';
 import 'package:chomu/repository/games_repository.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
 
 class GamesPageController extends GetxController {
   GamesRepository gamesRepository = GamesRepository();

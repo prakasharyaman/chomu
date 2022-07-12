@@ -1,8 +1,13 @@
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/models/game_model.dart';
 import 'package:chomu/pages/home/games/widgets/game_play_view.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class GameCard extends StatelessWidget {
   const GameCard({Key? key, required this.game}) : super(key: key);

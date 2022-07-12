@@ -1,11 +1,14 @@
-import 'dart:math';
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
 
+// 📦 Package imports:
+import 'package:dotted_border/dotted_border.dart';
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/models/meme_model.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/pages/home/tabs/hot/widgets/homeStories/page/home_story_player.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:dotted_border/dotted_border.dart';
 import '../../../../../../../repository/stories_repository.dart';
 
 class HomeStoriesController extends GetxController {

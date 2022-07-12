@@ -1,7 +1,11 @@
-import 'package:chomu/app/controllers/firebase_controller.dart';
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 
+// 🌎 Project imports:
+import 'package:chomu/app/controllers/firebase_controller.dart';
 import '../pages/home/home.dart';
 import '../pages/splash/splash.dart';
 

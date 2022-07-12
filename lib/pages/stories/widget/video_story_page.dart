@@ -1,15 +1,19 @@
+// 🎯 Dart imports:
 import 'dart:ui';
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/services/share_service.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:video_player/video_player.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-import '../../../ads/ads_helper.dart';
 import '../../../app/app.dart';
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';

@@ -1,9 +1,14 @@
 // ignore_for_file: file_names
 
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
+
+// 🌎 Project imports:
 import '../../../app/controllers/firebase_controller.dart';
 import '../../../app/controllers/theme_controller.dart';
 import '../../../app/controllers/version_controller.dart';

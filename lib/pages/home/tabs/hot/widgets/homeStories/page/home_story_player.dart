@@ -1,11 +1,16 @@
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:story_view/story_view.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/models/meme_model.dart';
 import 'package:chomu/pages/error/error.dart';
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/repository/stories_repository.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:story_view/story_view.dart';
 
 class HomeStoryPlayer extends StatefulWidget {
   const HomeStoryPlayer({Key? key, required this.tag}) : super(key: key);

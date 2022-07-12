@@ -1,23 +1,29 @@
+// 🎯 Dart imports:
 import 'dart:async';
 import 'dart:math';
-import 'package:chomu/ads/controller/ads_controller.dart';
-import 'package:chomu/app/controllers/version_controller.dart';
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:chomu/app/controllers/theme_controller.dart';
-import 'package:chomu/app/controllers/volume_controller.dart';
-import 'package:chomu/app/notificationHandler/notification_handler.dart';
-import 'package:chomu/firebase_options.dart';
-import 'package:chomu/pages/home/controller/home_controller.dart';
-import 'package:chomu/services/download_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wakelock/wakelock.dart';
+
+// 🌎 Project imports:
+import 'package:chomu/ads/controller/ads_controller.dart';
+import 'package:chomu/app/controllers/theme_controller.dart';
+import 'package:chomu/app/controllers/version_controller.dart';
+import 'package:chomu/app/controllers/volume_controller.dart';
+import 'package:chomu/firebase_options.dart';
+import 'package:chomu/pages/home/controller/home_controller.dart';
+import 'package:chomu/services/download_service.dart';
 import 'app/app.dart';
 import 'app/controllers/firebase_controller.dart';
 

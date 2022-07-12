@@ -1,11 +1,16 @@
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chomu/pages/feedback/feedback_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+// 🌎 Project imports:
+import 'package:chomu/pages/feedback/feedback_screen.dart';
 import '../feedback/controller/feedback_controller_bindings.dart';
 import '../profile/bindings/profile_bindings.dart';
 import '../profile/profile.dart';
@@ -26,7 +31,7 @@ class _HomeState extends State<Home> {
   var showBadge = true;
   final List<Widget> _widgetOptions = [
     Hot(),
-    const StoryPlayer(),
+    const StoryPlayerPage(),
     const GamesPage()
   ];
   @override

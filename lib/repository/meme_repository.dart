@@ -1,7 +1,14 @@
+// 🎯 Dart imports:
 import 'dart:ffi';
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+
+// 🌎 Project imports:
 import '../models/meme_model.dart';
 
 class MemeRepository {

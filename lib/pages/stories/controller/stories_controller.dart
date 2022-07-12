@@ -1,9 +1,14 @@
+// 🎯 Dart imports:
 import 'dart:convert';
+
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../../../ads/ads_helper.dart';
+
+// 🌎 Project imports:
 import '../../../common/enum/status.dart';
 import '../../../models/meme_model.dart';
 import '../../../repository/meme_repository.dart';
@@ -11,9 +16,6 @@ import '../../../repository/stories_repository.dart';
 
 class StoriesController extends GetxController {
   StoriesRepository storiesRepository = StoriesRepository();
-  var adWidget = Container().obs;
-  // COMPLETE: Add _bannerAd
-  late BannerAd _bannerAd;
   final String? tag;
   static StoriesController storiesController = Get.find();
   Rx<Status> status = Status.loading.obs;
@@ -28,31 +30,7 @@ class StoriesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    initiateAds();
     getMemes();
-  }
-
-// initiate ads
-  initiateAds() {
-    _bannerAd = BannerAd(
-      adUnitId: AdHelper.bannerAdUnitId,
-      request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (_) {
-          // ignore: avoid_unnecessary_containers
-          adWidget.value = Container(child: AdWidget(ad: _bannerAd));
-          update();
-        },
-        onAdFailedToLoad: (ad, err) {
-          debugPrint('Failed to load a banner ad: ${err.message}');
-
-          ad.dispose();
-        },
-      ),
-    );
-
-    _bannerAd.load();
   }
 
 // get Memes

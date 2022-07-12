@@ -2,21 +2,22 @@
 
 // ignore_for_file: avoid_print
 
-// Dart imports:
+// 🎯 Dart imports:
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:share_plus/share_plus.dart';
-// Flutter imports:
+
+// 🐦 Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-// Package imports:
+// 📦 Package imports:
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
 // Flutter imports:
 

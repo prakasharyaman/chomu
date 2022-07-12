@@ -1,20 +1,25 @@
 // ignore_for_file: avoid_print
-import 'package:chomu/pages/home/games/controller/games_page_controller.dart';
-import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
-import 'package:chomu/pages/introduction/introduction_screen.dart';
-import 'package:chomu/pages/stories/controller/stories_controller.dart';
-import 'package:chomu/repository/meme_repository.dart';
+
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+// 🌎 Project imports:
+import 'package:chomu/pages/home/games/controller/games_page_controller.dart';
+import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
+import 'package:chomu/pages/introduction/introduction_screen.dart';
+import 'package:chomu/repository/meme_repository.dart';
 import '../../models/user_model.dart';
 
 class FirebaseController extends GetxController {
@@ -54,7 +59,7 @@ class FirebaseController extends GetxController {
     //get user data from firestore
     if (_firebaseUser?.uid != null) {
       Get.put<HotController>(HotController());
-      Get.put<StoriesController>(StoriesController());
+
       Get.put<GamesPageController>(GamesPageController());
       userModel.value = UserModel(id: _firebaseUser.uid);
       FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);

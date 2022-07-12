@@ -1,10 +1,15 @@
 // ignore_for_file: must_be_immutable
 
+// 🐦 Flutter imports:
+import 'package:flutter/material.dart';
+
+// 📦 Package imports:
+import 'package:get/get.dart';
+
+// 🌎 Project imports:
 import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/services/download_service.dart';
 import 'package:chomu/services/share_service.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../models/meme_model.dart';
 
 class DropDownMenu extends StatelessWidget {
