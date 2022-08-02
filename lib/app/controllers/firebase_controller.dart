@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print
 
 // 🐦 Flutter imports:
+import 'package:chomu/pages/home/controller/home_page_controller.dart';
+import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -17,7 +19,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 // 🌎 Project imports:
 import 'package:chomu/pages/home/games/controller/games_page_controller.dart';
-import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/pages/introduction/introduction_screen.dart';
 import 'package:chomu/repository/meme_repository.dart';
 import '../../models/user_model.dart';
@@ -33,13 +34,11 @@ class FirebaseController extends GetxController {
   Rxn<User> user = Rxn<User>();
   DateTime dateTime = DateTime.now();
   var userModel = UserModel().obs;
-
   Stream<User?> get userStream => firebaseAuth.authStateChanges();
   @override
   void onInit() {
     //log app open
     firebaseAnalytics.logAppOpen();
-
     //run every time auth state changes
     ever(user, handleAuthChanged);
     //bind to user model
@@ -58,8 +57,8 @@ class FirebaseController extends GetxController {
   handleAuthChanged(_firebaseUser) async {
     //get user data from firestore
     if (_firebaseUser?.uid != null) {
-      Get.put<HotController>(HotController());
-
+      Get.put<StoriesController>(StoriesController());
+      Get.put<HomePageController>(HomePageController());
       Get.put<GamesPageController>(GamesPageController());
       userModel.value = UserModel(id: _firebaseUser.uid);
       FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);

@@ -80,6 +80,7 @@ class StoriesRepository {
                 nsfw: memeJson['nsfw'],
                 spoiler: memeJson['spoiler'],
                 ups: memeJson['ups'],
+                tags: memeJson['tags'],
                 source: 'reddit',
                 image460: '',
                 length: null,

@@ -1,21 +1,17 @@
 // 🎯 Dart imports:
+import 'dart:developer';
 import 'dart:ui';
-
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
-
 // 🌎 Project imports:
-import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:chomu/services/share_service.dart';
 import '../../../app/app.dart';
-import '../../../app/controllers/firebase_controller.dart';
 import '../../../models/meme_model.dart';
 import '../../../services/download_service.dart';
 
@@ -23,83 +19,43 @@ class VideoStoryPage extends StatefulWidget {
   const VideoStoryPage(
       {Key? key,
       required this.meme,
-      required this.pageController,
-      required this.tag,
-      required this.currentPage})
+      required this.videoPlayerController,
+      required this.isLoading})
       : super(key: key);
   final Meme meme;
-  final int currentPage;
-  final PageController pageController;
-
-  final String? tag;
+  final VideoPlayerController videoPlayerController;
+  final bool isLoading;
   @override
   State<VideoStoryPage> createState() => _VideoStoryPageState();
 }
 
 class _VideoStoryPageState extends State<VideoStoryPage> {
-  late PageController pageController;
-  VolumeController volumeController = Get.find();
+  StoriesController storiesController = Get.find<StoriesController>();
   late VideoPlayerController _controller;
   late VideoPlayerController _blurVideoController;
   late Meme meme;
-  bool watched = false;
   bool isPostLiked = false;
-  bool videoLoaded = false;
-  bool blurVideoLoaded = false;
   bool isPostBookMarked = false;
-  late int currentPage;
   late bool isMute;
-  late String? tag;
-  late double volume;
-  StoriesController storiesController = Get.find();
   @override
   void initState() {
     super.initState();
-    pageController = widget.pageController;
-    tag = widget.tag;
     meme = widget.meme;
-    volume = volumeController.volume;
-    FirebaseController firebaseController = Get.find();
-    firebaseController.logFirebaseEvent(eventName: 'videoview');
-    currentPage = widget.currentPage;
-    _controller = VideoPlayerController.network(
-      meme.videoUrl ?? '',
-    )..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {
-          videoLoaded = true;
-        });
-      });
+    isMute = storiesController.volume.toDouble() > 0 ? false : true;
+    _controller = widget.videoPlayerController;
     _blurVideoController = _controller;
-    // set looping to true
-    _blurVideoController.setLooping(true);
 
-    // set volume to zero
-    _blurVideoController.setVolume(0);
-    volume > 0 ? isMute = false : isMute = true;
-    _controller.setVolume(volume);
     _controller.setLooping(true);
-    _controller.addListener(() {
-      if (_controller.value.hasError) {
-        debugPrint(_controller.value.errorDescription);
-        Future.delayed(const Duration(seconds: 1), () {
-          pageController.nextPage(
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeIn);
-        });
-      }
-    });
-    _controller.play();
-    _blurVideoController.play();
+    _blurVideoController.setLooping(true);
+    _blurVideoController.setVolume(0);
+    _controller.setVolume(storiesController.volume.toDouble());
     storiesController.saveMemeAsWatched(url: meme.url);
   }
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-    GlobalKey _cardKey = GlobalKey();
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
+    var height = Get.height;
+    var width = Get.width;
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -112,29 +68,13 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
             // video player
             Align(
               alignment: Alignment.center,
-              child: videoLoaded
+              child: 1 == 1
                   ? AspectRatio(
                       aspectRatio: _controller.value.aspectRatio,
                       child: VideoPlayer(_controller),
                     )
                   : const Center(child: CircularProgressIndicator()),
             ),
-            // //ad widget
-            // Positioned(
-            //   top: 0,
-            //   right: 0,
-            //   left: 0,
-            //   // curve: Curves.easeInOut,
-            //   child: SizedBox(
-            //     height: 50,
-            //     width: 320,
-            //     child: _isBannerAdReady
-            //         ? AdWidget(ad: _bannerAd)
-            //         : Container(
-            //             height: 0,
-            //           ),
-            //   ),
-            // ),
             // gesture detector to mute video
             Align(
               alignment: Alignment.center,
@@ -152,8 +92,8 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                         ? _controller.setVolume(100)
                         : _controller.setVolume(0);
                     isMute
-                        ? volumeController.setVolume(value: 100)
-                        : volumeController.setVolume(value: 0);
+                        ? storiesController.setVolume(setVolume: 100)
+                        : storiesController.setVolume(setVolume: 0);
                     setState(() {
                       isMute = !isMute;
                     });
@@ -176,7 +116,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                       Text(
                         meme.title,
                         style: const TextStyle(
-                          fontSize: 15,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -185,7 +125,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                       ),
                       Text(meme.author,
                           style: const TextStyle(
-                            fontSize: 10,
+                            fontSize: 8,
                             color: Colors.white,
                           )),
                     ],
@@ -203,36 +143,36 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      //next page
-                      GestureDetector(
-                        onTap: () {
-                          pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Get.isDarkMode
-                                  ? Colors.white38.withOpacity(0.3)
-                                  : Colors.grey.shade500.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.only(
-                                  top: 8.0,
-                                  bottom: 8.0,
-                                  left: 15.0,
-                                  right: 15.0),
-                              child: Icon(
-                                Icons.arrow_upward_rounded,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // //next page
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     pageController.nextPage(
+                      //         duration: const Duration(milliseconds: 300),
+                      //         curve: Curves.easeInOut);
+                      //   },
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.all(8.0),
+                      //     child: Container(
+                      //       decoration: BoxDecoration(
+                      //         color: Get.isDarkMode
+                      //             ? Colors.white38.withOpacity(0.3)
+                      //             : Colors.grey.shade500.withOpacity(0.3),
+                      //         borderRadius: BorderRadius.circular(20),
+                      //       ),
+                      //       child: const Padding(
+                      //         padding: EdgeInsets.only(
+                      //             top: 8.0,
+                      //             bottom: 8.0,
+                      //             left: 15.0,
+                      //             right: 15.0),
+                      //         child: Icon(
+                      //           Icons.arrow_upward_rounded,
+                      //           color: Colors.white,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
 
                       // mute button
                       Visibility(
@@ -243,8 +183,8 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                                 ? _controller.setVolume(100)
                                 : _controller.setVolume(0);
                             isMute
-                                ? volumeController.setVolume(value: 100)
-                                : volumeController.setVolume(value: 0);
+                                ? storiesController.setVolume(setVolume: 100)
+                                : storiesController.setVolume(setVolume: 0);
                             setState(() {
                               isMute = !isMute;
                             });
@@ -347,6 +287,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                       //like button
                       GestureDetector(
                         onTap: () {
+                          print(storiesController.volume);
                           setState(() {
                             isPostLiked = !isPostLiked;
                             meme.ups += isPostLiked ? 1 : -1;
@@ -508,7 +449,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
   Stack _backgroundBlurredVideo() {
     return Stack(
       children: [
-        videoLoaded
+        1 == 1
             ? SizedBox(
                 height: Get.height,
                 width: Get.width,
@@ -525,14 +466,6 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.setVolume(0);
-
-    _controller.dispose();
   }
 }
 
@@ -612,191 +545,3 @@ class MenuItems {
     }
   }
 }
-// back button
-              // Positioned(
-              //     top: 10,
-              //     left: 0,
-              //     right: 0,
-              //     child: SafeArea(
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           Visibility(
-              //             visible: false,
-              //             child: GestureDetector(
-              //               onTap: () {
-              //                 Get.back();
-              //               },
-              //               child: Padding(
-              //                 padding: const EdgeInsets.all(8.0),
-              //                 child: Container(
-              //                   decoration: BoxDecoration(
-              //                     color: Get.isDarkMode
-              //                         ? Colors.white38.withOpacity(0.3)
-              //                         : Colors.grey.shade500.withOpacity(0.3),
-              //                     borderRadius: BorderRadius.circular(20),
-              //                   ),
-              //                   child: const Padding(
-              //                     padding: EdgeInsets.only(
-              //                         top: 8.0,
-              //                         bottom: 8.0,
-              //                         left: 15.0,
-              //                         right: 15.0),
-              //                     child: Icon(
-              //                       Icons.arrow_back_rounded,
-              //                       color: Colors.white,
-              //                     ),
-              //                   ),
-              //                 ),
-              //               ),
-              //             ),
-              //           ),
-              //           //title
-              //           Visibility(
-              //               visible: false,
-              //               child: Column(
-              //                 children: [
-              //                   Padding(
-              //                     padding: const EdgeInsets.only(
-              //                         top: 8.0, bottom: 5),
-              //                     child: Text(
-              //                       tag != null
-              //                           ? '${tag == 'news' ? 'Latest' : tag}'
-              //                           : 'Chomu',
-              //                       style: const TextStyle(
-              //                           color: Colors.white,
-              //                           fontWeight: FontWeight.bold,
-              //                           fontSize: 18),
-              //                     ),
-              //                   ),
-              //                   Visibility(
-              //                     visible: tag != null ? false : true,
-              //                     child: const Text(
-              //                       'For you',
-              //                       style: TextStyle(
-              //                           color: Colors.white,
-              //                           fontWeight: FontWeight.w400,
-              //                           fontSize: 10),
-              //                     ),
-              //                   ),
-              //                 ],
-              //               )),
-              //           // dropdown
-              //           DropdownButtonHideUnderline(
-              //             child: DropdownButton2(
-              //               customButton: Container(
-              //                 decoration: BoxDecoration(
-              //                   color: Get.isDarkMode
-              //                       ? Colors.white38.withOpacity(0.3)
-              //                       : Colors.grey.shade500.withOpacity(0.3),
-              //                   borderRadius: BorderRadius.circular(20),
-              //                 ),
-              //                 child: const Padding(
-              //                   padding: EdgeInsets.only(
-              //                       top: 8.0,
-              //                       bottom: 8.0,
-              //                       left: 15.0,
-              //                       right: 15.0),
-              //                   child: Icon(
-              //                     Icons.more_vert_rounded,
-              //                     color: Colors.white,
-              //                   ),
-              //                 ),
-              //               ),
-              //               openWithLongPress: true,
-              //               customItemsIndexes: const [4],
-              //               customItemsHeight: 8,
-              //               items: [
-              //                 ...MenuItems.firstItems.map(
-              //                   (item) => DropdownMenuItem<MenuItem>(
-              //                     value: item,
-              //                     child: MenuItems.buildItem(item),
-              //                   ),
-              //                 ),
-              //                 const DropdownMenuItem<Divider>(
-              //                     enabled: false, child: Divider()),
-              //                 ...MenuItems.secondItems.map(
-              //                   (item) => DropdownMenuItem<MenuItem>(
-              //                     value: item,
-              //                     child: MenuItems.buildItem(item),
-              //                   ),
-              //                 ),
-              //               ],
-              //               onChanged: (value) {
-              //                 switch (value) {
-              //                   case MenuItems.remove:
-              //                     //Do something
-              //                     storiesController.saveMemeAsWatched(
-              //                         url: meme.url);
-              //                     Get.snackbar(
-              //                       'Refresh ',
-              //                       'We have removed this meme',
-              //                       snackPosition: SnackPosition.BOTTOM,
-              //                     );
-
-              //                     break;
-              //                   case MenuItems.block:
-              //                     // block user
-              //                     if (meme.url != '') {
-              //                       Get.defaultDialog(
-              //                           title: "Block User ${meme.author}",
-              //                           middleText:
-              //                               "Are You Sure You Want To Block ${meme.author} \n This will block all posts from this user \n and will not show them in your feed",
-              //                           radius: 30,
-              //                           onConfirm: () {
-              //                             storiesController.blockUser(
-              //                                 userName: meme.author);
-              //                             Future.delayed(const Duration(
-              //                                     milliseconds: 2100))
-              //                                 .then((_) =>
-              //                                     Get.offAll(const App()));
-              //                           },
-              //                           onCancel: () {
-              //                             Get.back();
-              //                           });
-              //                     } else {
-              //                       Get.snackbar('Oops',
-              //                           'We were not able to block the user \n  Please try again later',
-              //                           snackPosition: SnackPosition.BOTTOM);
-              //                     }
-              //                     break;
-              //                   case MenuItems.report:
-              //                     storiesController.reportMeme(meme: meme);
-              //                     break;
-              //                   case MenuItems.download:
-              //                     FileDownloadService fileDownloadService =
-              //                         Get.find();
-              //                     if (meme.type == 'Animated') {
-              //                       fileDownloadService.requestDownload(
-              //                         url: meme.videoUrl!,
-              //                         name: 'Chomu Video',
-              //                       );
-              //                     } else {
-              //                       fileDownloadService.requestDownload(
-              //                         url: meme.url,
-              //                         name: meme.title,
-              //                       );
-              //                     }
-
-              //                     break;
-              //                   case MenuItems.cancel:
-              //                     //Do something
-              //                     break;
-              //                 }
-              //               },
-              //               itemHeight: 48,
-              //               itemPadding:
-              //                   const EdgeInsets.only(left: 16, right: 16),
-              //               dropdownWidth: 160,
-              //               dropdownPadding:
-              //                   const EdgeInsets.symmetric(vertical: 6),
-              //               dropdownDecoration: BoxDecoration(
-              //                 borderRadius: BorderRadius.circular(4),
-              //               ),
-              //               dropdownElevation: 8,
-              //               offset: const Offset(40, -4),
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     )), // title

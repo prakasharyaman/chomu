@@ -1,6 +1,5 @@
-// ignore: unused_import
-
 // 🎯 Dart imports:
+// ignore: unused_import
 import 'dart:async';
 
 // 🐦 Flutter imports:

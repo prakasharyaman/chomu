@@ -86,17 +86,20 @@ class HomeStoriesController extends GetxController {
                         backgroundImage: NetworkImage(meme.url),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2.0, right: 2.0),
-                      child: Text(
-                        tag == 'news' ? 'Latest' : _convertTitle(title: tag),
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          overflow: TextOverflow.ellipsis,
-                          color:
-                              Get.isDarkMode ? Colors.white : Colors.deepPurple,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 2.0, right: 2.0),
+                        child: Text(
+                          tag == 'news' ? 'Latest' : _convertTitle(title: tag),
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                            color: Get.isDarkMode
+                                ? Colors.white
+                                : Colors.deepPurple,
+                          ),
                         ),
                       ),
                     ),

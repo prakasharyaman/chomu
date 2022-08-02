@@ -4,7 +4,7 @@ description: Meme Factory.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 0.1.6+16
+version: 0.1.8+18
 
 
 environment:        
@@ -27,9 +27,9 @@ dependencies:
   firebase_messaging: ^11.2.7
   firebase_analytics: ^9.1.1
   firebase_crashlytics: ^2.6.3
+  cloud_firestore: ^3.1.13  
   animated_text_kit: ^4.2.1
   get_storage: ^2.0.3
-  cloud_firestore: ^3.1.13
   intl: ^0.17.0
   cached_network_image: ^3.2.0
   simple_animations: ^4.0.1
@@ -66,6 +66,9 @@ dependencies:
   story_view: ^0.13.2
   webview_flutter: ^3.0.4
   import_sorter: ^4.6.0
+  google_fonts: ^3.0.1
+  json_to_model: ^3.1.8+beta
+  quiver: ^3.1.0
 
 
 

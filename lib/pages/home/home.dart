@@ -1,4 +1,5 @@
 // 🐦 Flutter imports:
+import 'package:chomu/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -6,6 +7,7 @@ import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:hidable/hidable.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,9 +32,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   var showBadge = true;
   final List<Widget> _widgetOptions = [
-    Hot(),
+    const HomePage(),
     const StoryPlayerPage(),
-    const GamesPage()
   ];
   @override
   Widget build(BuildContext context) {
@@ -42,51 +43,25 @@ class _HomeState extends State<Home> {
           extendBody: false,
           key: controller.drawerOpenKey,
           body: _widgetOptions.elementAt(controller.currentPage),
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.black,
-            onTap: controller.changeCurrentPage,
-            currentIndex: controller.currentPage,
-            selectedItemColor: Colors.deepPurple,
-            unselectedItemColor: Colors.grey,
-            items: [
-              // home
-              BottomNavigationBarItem(
-                  backgroundColor: Colors.black,
-                  icon: Badge(
-                    animationType: BadgeAnimationType.scale,
-                    showBadge: controller.showBadge.value,
-                    badgeColor: Colors.orangeAccent,
-                    badgeContent: Text(
-                      controller.generateRandomBadgeNumber().toString(),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    child: const CustomIcon(
-                      icon: FontAwesomeIcons.house,
-                    ),
+          bottomNavigationBar: Visibility(
+            visible: controller.currentPage == 1 ? false : true,
+            child: Visibility(
+              child: BottomNavigationBar(
+                onTap: controller.changeCurrentPage,
+                currentIndex: controller.currentPage,
+                items: const [
+                  // home
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
                   ),
-                  label: ''),
-              // play stories
-              const BottomNavigationBarItem(
-                  backgroundColor: Colors.black,
-                  icon: CustomIcon(
-                    icon: FontAwesomeIcons.play,
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.play_arrow),
+                    label: 'Stories',
                   ),
-                  label: ''),
-              // // game
-              // const BottomNavigationBarItem(
-              //     backgroundColor: Colors.black,
-              //     icon: CustomIcon(
-              //       icon: FontAwesomeIcons.gamepad,
-              //     ),
-              //     label: ''),
-              // // profile
-              // const BottomNavigationBarItem(
-              //     backgroundColor: Colors.black,
-              //     icon: CustomIcon(
-              //       icon: FontAwesomeIcons.solidUser,
-              //     ),
-              //     label: ''),
-            ],
+                ],
+              ),
+            ),
           ),
           drawer: _buildHomeDrawer(),
         );
@@ -94,6 +69,7 @@ class _HomeState extends State<Home> {
     );
   }
 
+//home drawer
   Drawer _buildHomeDrawer() {
     return Drawer(
       child: Column(
@@ -204,58 +180,5 @@ class _HomeState extends State<Home> {
     var _url = Uri.parse(url);
 
     if (!await launchUrl(_url)) throw 'Could not launch $_url';
-  }
-}
-
-class CustomIcon extends StatelessWidget {
-  const CustomIcon({Key? key, required this.icon}) : super(key: key);
-  final IconData icon;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 1.0),
-      child: SizedBox(
-        width: 45,
-        height: 30,
-        child: Stack(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(
-                left: 10,
-              ),
-              width: 38,
-              decoration: BoxDecoration(
-                color: Colors.orangeAccent,
-                borderRadius: BorderRadius.circular(7),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(
-                right: 10,
-              ),
-              width: 38,
-              decoration: BoxDecoration(
-                color: Colors.deepPurpleAccent,
-                borderRadius: BorderRadius.circular(7),
-              ),
-            ),
-            Center(
-              child: Container(
-                height: double.infinity,
-                width: 38,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(7),
-                ),
-                child: Icon(
-                  icon,
-                  size: 20,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
   }
 }

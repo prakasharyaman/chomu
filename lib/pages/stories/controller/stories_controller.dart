@@ -1,5 +1,6 @@
 // 🎯 Dart imports:
 import 'dart:convert';
+import 'dart:developer';
 
 // 🐦 Flutter imports:
 import 'package:flutter/material.dart';
@@ -7,29 +8,37 @@ import 'package:flutter/material.dart';
 // 📦 Package imports:
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:video_player/video_player.dart';
 
 // 🌎 Project imports:
 import '../../../common/enum/status.dart';
 import '../../../models/meme_model.dart';
+import '../../../repository/data_repository.dart';
 import '../../../repository/meme_repository.dart';
-import '../../../repository/stories_repository.dart';
 
 class StoriesController extends GetxController {
-  StoriesRepository storiesRepository = StoriesRepository();
-  final String? tag;
   static StoriesController storiesController = Get.find();
+  int intialPageIndex = 0;
   Rx<Status> status = Status.loading.obs;
   MemeRepository memeRepository = MemeRepository();
+  DataRepository dataRepository = DataRepository();
   final getStorage = GetStorage();
-  PageController pageController =
-      PageController(viewportFraction: 1, keepPage: true);
+  late PageController pageController;
   String errorMessage = '';
+  // volume controls
+  var volume = 0;
   List<Meme> memes = [];
-
-  StoriesController({this.tag});
+  // keeping track of the current index
+  int focusedindex = 0;
+  // storing the list of video url
+  List<String> urls = [];
+  // controllers to access the video player controller for a particular video url
+  var controllers = {};
   @override
   void onInit() {
     super.onInit();
+    pageController = PageController(
+        viewportFraction: 1, keepPage: true, initialPage: intialPageIndex);
     getMemes();
   }
 
@@ -95,7 +104,18 @@ class StoriesController extends GetxController {
         }
         // debugPrint(nineList.length.toString());
         // debugPrint(memes.length.toString());
+        for (var mema in memes) {
+          urls.add(mema.videoUrl == null ? mema.image460! : mema.videoUrl!);
+        }
 
+        /// Initialize 1st video
+        await _initializeControllerAtIndex(0);
+
+        /// Play 1st video
+        _playControllerAtIndex(0);
+
+        /// Initialize 2nd video
+        await _initializeControllerAtIndex(1);
         status.value = Status.loaded;
       } else {
         throw Exception('No More Memes Found');
@@ -341,5 +361,111 @@ class StoriesController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+  }
+
+// video index changed
+  onvideoIndexChanged({required int index}) {
+    if (index > focusedindex) {
+// play next video
+      _playNext(index);
+    } else {
+// play previous video
+      _playPrevious(index);
+    }
+    focusedindex = index;
+    intialPageIndex = index;
+  }
+
+  void _playNext(int index) {
+    /// Stop [index - 1] controller
+    _stopControllerAtIndex(index - 1);
+
+    /// Dispose [index - 2] controller
+    _disposeControllerAtIndex(index - 2);
+
+    /// Play current video (already initialized)
+    _playControllerAtIndex(index);
+
+    /// Initialize [index + 1] controller
+    _initializeControllerAtIndex(index + 1);
+  }
+
+  void _playPrevious(int index) {
+    /// Stop [index + 1] controller
+    _stopControllerAtIndex(index + 1);
+
+    /// Dispose [index + 2] controller
+    _disposeControllerAtIndex(index + 2);
+
+    /// Play current video (already initialized)
+    _playControllerAtIndex(index);
+
+    /// Initialize [index - 1] controller
+    _initializeControllerAtIndex(index - 1);
+  }
+
+  Future _initializeControllerAtIndex(int index) async {
+    if (urls.length > index && index >= 0) {
+      /// Create new controller
+      final VideoPlayerController _controller = VideoPlayerController.network(
+        urls[index],
+      );
+
+      /// Add to [controllers] list
+      controllers[index] = _controller;
+
+      /// Initialize
+      await _controller.initialize();
+      _controller.setVolume(volume.toDouble());
+      log('🚀🚀🚀 INITIALIZED $index');
+    }
+  }
+
+  void _playControllerAtIndex(int index) {
+    if (urls.length > index && index >= 0) {
+      /// Get controller at [index]
+      final VideoPlayerController _controller = controllers[index]!;
+
+      /// Play controller
+      _controller.play();
+
+      log('🚀🚀🚀 PLAYING $index');
+    }
+  }
+
+  void _stopControllerAtIndex(int index) {
+    if (urls.length > index && index >= 0) {
+      /// Get controller at [index]
+      final VideoPlayerController _controller = controllers[index]!;
+
+      /// Pause
+      _controller.pause();
+
+      /// Reset postiton to beginning
+      _controller.seekTo(const Duration());
+
+      log('🚀🚀🚀 STOPPED $index');
+    }
+  }
+
+  void _disposeControllerAtIndex(int index) {
+    if (urls.length > index && index >= 0) {
+      /// Get controller at [index]
+      final VideoPlayerController? _controller = controllers[index];
+
+      /// Dispose controller
+      _controller?.dispose();
+
+      if (_controller != null) {
+        controllers.remove(_controller);
+      }
+
+      log('🚀🚀🚀 DISPOSED $index');
+    }
+  }
+
+  // change volume
+  setVolume({required int setVolume}) {
+    volume = setVolume;
   }
 }

@@ -13,6 +13,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -105,9 +106,34 @@ void main() async {
     runApp(GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Chomu",
-      theme: FlexThemeData.light(scheme: FlexScheme.deepPurple),
-      darkTheme: FlexThemeData.dark(scheme: FlexScheme.deepPurple),
-      themeMode: ThemeMode.system,
+      theme: FlexThemeData.light(
+        scheme: FlexScheme.materialBaseline,
+        surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
+        blendLevel: 20,
+        appBarOpacity: 0.95,
+        subThemesData: const FlexSubThemesData(
+          blendOnLevel: 20,
+          blendOnColors: false,
+        ),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        useMaterial3: true,
+        // To use the playground font, add GoogleFonts package and uncomment
+        fontFamily: GoogleFonts.openSans().fontFamily,
+      ),
+      darkTheme: FlexThemeData.dark(
+        scheme: FlexScheme.materialBaseline,
+        surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
+        blendLevel: 15,
+        appBarStyle: FlexAppBarStyle.background,
+        appBarOpacity: 0.90,
+        subThemesData: const FlexSubThemesData(
+          blendOnLevel: 30,
+        ),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        useMaterial3: true,
+        // To use the playground font, add GoogleFonts package and uncomment
+        fontFamily: GoogleFonts.openSans().fontFamily,
+      ),
       navigatorObservers: [firebaseAnalyticsObserver],
       home: const App(),
     ));

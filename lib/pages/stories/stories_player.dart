@@ -26,44 +26,9 @@ class StoryPlayerPage extends StatefulWidget {
 }
 
 class _StoryPlayerPageState extends State<StoryPlayerPage> {
-  // COMPLETE: Add _bannerAd
-  late BannerAd _bannerAd;
-
-  // COMPLETE: Add _isBannerAdReady
-  bool _isBannerAdReady = false;
-  bool _isBannerAdFailed = false;
-  // loading ad
-  setUpAds() {
-    // COMPLETE: Initialize _bannerAd
-    _bannerAd = BannerAd(
-      adUnitId: AdHelper.bannerAdUnitId,
-      request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (_) {
-          setState(() {
-            _isBannerAdReady = true;
-          });
-        },
-        onAdFailedToLoad: (ad, err) {
-          debugPrint('Failed to load a banner ad: ${err.message}');
-          _isBannerAdReady = false;
-          _isBannerAdFailed = true;
-          ad.dispose();
-        },
-      ),
-    );
-
-    _bannerAd.load();
-  }
-
   @override
   initState() {
     super.initState();
-    FirebaseController firebaseController = Get.find();
-    firebaseController.logCurrentScreen(
-        screenClass: 'Stories', screenName: 'Stories');
-    setUpAds();
   }
 
   @override
@@ -74,29 +39,7 @@ class _StoryPlayerPageState extends State<StoryPlayerPage> {
         homeController.changeCurrentPage(0);
         return Future.value(false);
       },
-      child: Scaffold(
-          backgroundColor: Colors.black,
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              // Ad Widget
-              SizedBox(
-                height: 55,
-                width: 320,
-                child: _isBannerAdReady
-                    ? Center(child: AdWidget(ad: _bannerAd))
-                    : !_isBannerAdFailed
-                        ? const LinearProgressIndicator(
-                            backgroundColor: Colors.deepPurple,
-                          )
-                        : Container(
-                            color: Colors.black,
-                          ),
-              ),
-              const Expanded(child: StoryPlayer()),
-            ],
-          )),
+      child: const StoryPlayer(),
     );
   }
 }
@@ -114,20 +57,20 @@ class StoryPlayer extends GetView<StoriesController> {
             return const Splash();
           case Status.loaded:
             var memes = controller.memes;
-            // scroller
+            // scroller stories
             return PageView.builder(
-              itemCount: memes.length + 1,
+              itemCount: memes.length,
               itemBuilder: (context, index) {
+                final bool _isLoading = (index == controller.urls.length - 1);
                 if (index == memes.length) {
                   return const StoriesFinished();
                 } else {
                   var post = memes[index];
                   if (post.type == 'Animated') {
                     return VideoStoryPage(
-                      currentPage: index,
                       meme: memes[index],
-                      tag: null,
-                      pageController: controller.pageController,
+                      videoPlayerController: controller.controllers[index],
+                      isLoading: _isLoading,
                     );
                   } else if (post.type == 'Photo') {
                     return StoryPage(
@@ -144,6 +87,8 @@ class StoryPlayer extends GetView<StoriesController> {
               },
               scrollDirection: Axis.vertical,
               controller: controller.pageController,
+              onPageChanged: (index) =>
+                  controller.onvideoIndexChanged(index: index),
             );
           case Status.error:
             return ErrorScreen(

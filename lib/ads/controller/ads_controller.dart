@@ -21,7 +21,14 @@ class AdsController extends GetxController {
   }
 
   _initGoogleMobileAds() async {
+    // List<String> testDeviceIds = ['FEF741E573B047C77FD72C70E05CE419'];
     await MobileAds.instance.initialize();
+    // thing to add
+
+    // RequestConfiguration configuration =
+    //     RequestConfiguration(testDeviceIds: testDeviceIds);
+    // MobileAds.instance.updateRequestConfiguration(configuration);
+
     _buildAds();
   }
 

@@ -85,5 +85,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-perf'
+    implementation 'com.google.android.gms:play-services-ads:21.1.0'
 
 }

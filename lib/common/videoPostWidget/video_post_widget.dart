@@ -64,7 +64,7 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
     meme = widget.post;
     height = widget.height;
     menuFunction = widget.menuFunction;
-    volume = volumeController.volume;
+    isMute = volumeController.isMute;
     volume > 0 ? isMute = false : isMute = true;
     FirebaseController firebaseController = Get.find();
     firebaseController.logFirebaseEvent(eventName: 'videopostview');
@@ -201,9 +201,9 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
                                           : _controller.setVolume(0);
                                       isMute
                                           ? volumeController.setVolume(
-                                              value: 100)
+                                              value: true)
                                           : volumeController.setVolume(
-                                              value: 0);
+                                              value: false);
                                       setState(() {
                                         isMute = !isMute;
                                       });
@@ -227,8 +227,9 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
                                       ? _controller.setVolume(100)
                                       : _controller.setVolume(0);
                                   isMute
-                                      ? volumeController.setVolume(value: 100)
-                                      : volumeController.setVolume(value: 0);
+                                      ? volumeController.setVolume(value: true)
+                                      : volumeController.setVolume(
+                                          value: false);
                                   setState(() {
                                     isMute = !isMute;
                                   });
