@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
-import 'package:chomu/ads/widgets/small_banner_ad.dart';
 import 'package:chomu/pages/home/controller/home_controller.dart';
-import 'package:chomu/pages/stories/controller/stories_controller.dart';
 
 class StoriesFinished extends StatefulWidget {
   const StoriesFinished({Key? key}) : super(key: key);
@@ -18,18 +16,7 @@ class StoriesFinished extends StatefulWidget {
 
 class _StoriesFinishedState extends State<StoriesFinished> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    StoriesController _controller = Get.find();
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -113,7 +100,8 @@ class _StoriesFinishedState extends State<StoriesFinished> {
                       // shape: RoundedRectangleBorder(
                       //     borderRadius: BorderRadius.circular(40)),
                       onPressed: () {
-                        _controller.getMemes();
+                        HomeController homeController = Get.find();
+                        homeController.changeCurrentPage(0);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -173,9 +161,9 @@ class _StoriesFinishedState extends State<StoriesFinished> {
                       ),
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: SmallBannerAd(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Container(),
                   ),
                 ],
               ),

@@ -1,31 +1,31 @@
 // 🐦 Flutter imports:
+import 'package:chomu/pages/stories/widget/story_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // 🌎 Project imports:
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
-import 'package:chomu/services/download_service.dart';
-import '../../../app/app.dart';
 import '../../../app/controllers/firebase_controller.dart';
-import '../../../models/meme_model.dart';
+
+import '../../../models/nine_post.dart';
 import '../../../services/share_service.dart';
 
 class StoryPage extends StatefulWidget {
-  const StoryPage({Key? key, required this.meme, required this.pageController})
+  const StoryPage(
+      {Key? key, required this.ninePost, required this.pageController})
       : super(key: key);
-  final Meme meme;
+  final NinePost ninePost;
   final PageController pageController;
   @override
   State<StoryPage> createState() => _StoryPageState();
 }
 
 class _StoryPageState extends State<StoryPage> {
-  late Meme meme;
+  late NinePost ninePost;
   bool watched = false;
   bool isPostLiked = false;
 
@@ -35,9 +35,7 @@ class _StoryPageState extends State<StoryPage> {
   @override
   void initState() {
     pageController = widget.pageController;
-    meme = widget.meme;
-
-    super.initState();
+    ninePost = widget.ninePost;
     FirebaseController firebaseController = Get.find();
     firebaseController.logFirebaseEvent(eventName: 'StoryView');
     super.initState();
@@ -49,11 +47,12 @@ class _StoryPageState extends State<StoryPage> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return VisibilityDetector(
-      key: Key(meme.url),
+      key: Key(ninePost.images.image460.url.toString()),
       onVisibilityChanged: (VisibilityInfo info) {
         if (info.visibleFraction > 0.9) {
           if (watched != true) {
-            storiesController.saveMemeAsWatched(url: meme.url);
+            storiesController.savePostAsWatched(
+                url: ninePost.images.image460.url.toString());
             watched = true;
           }
         }
@@ -63,9 +62,9 @@ class _StoryPageState extends State<StoryPage> {
           // Image
           Align(
             child: Container(
+              color: Colors.black,
               height: height,
               width: width,
-              color: Get.isDarkMode ? Colors.black38 : Colors.grey.shade100,
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: RepaintBoundary(
@@ -74,14 +73,14 @@ class _StoryPageState extends State<StoryPage> {
                     onDoubleTap: () {
                       setState(() {
                         isPostLiked = !isPostLiked;
-                        meme.ups += isPostLiked ? 1 : -1;
                       });
                     },
                     child: Image(
                       filterQuality: FilterQuality.none,
                       fit: BoxFit.contain,
                       width: double.infinity,
-                      image: NetworkImage(meme.url),
+                      image:
+                          NetworkImage(ninePost.images.image460.url.toString()),
                       loadingBuilder: (BuildContext context, Widget child,
                           ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) {
@@ -120,8 +119,8 @@ class _StoryPageState extends State<StoryPage> {
           // // title and author
           Positioned(
               bottom: 10,
-              right: 10,
-              left: 0,
+              right: 50,
+              left: 5,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
@@ -129,353 +128,100 @@ class _StoryPageState extends State<StoryPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      meme.title,
-                      style: TextStyle(
-                        fontSize: 15,
+                      ninePost.title,
+                      style: const TextStyle(
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Get.isDarkMode ? Colors.white : Colors.black,
+                        color: Colors.white,
                       ),
                       maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Text(meme.author,
-                        style: TextStyle(
+                    Text(ninePost.tags[0].key.toString(),
+                        style: const TextStyle(
                           fontSize: 10,
-                          color: Get.isDarkMode ? Colors.white : Colors.black,
+                          color: Colors.white,
                         )),
                   ],
                 ),
               )),
           // floating buttons
           Positioned(
-              bottom: 10,
-              right: 0,
-              left: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
+            top: Get.height * 0.7,
+            right: 5,
+            bottom: 5,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 15.0),
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    //next page
-                    GestureDetector(
-                      onTap: () {
-                        pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? Colors.white38.withOpacity(0.3)
-                                : Colors.grey.shade500.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(
-                              Icons.arrow_upward_rounded,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // share button
-                    GestureDetector(
-                      onTap: () {
-                        Future.delayed(
-                            const Duration(milliseconds: 200),
-                            () => downloadAndSharePost(
-                                name: meme.title, url: meme.url));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? Colors.white38.withOpacity(0.3)
-                                : Colors.grey.shade500.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(
-                              FontAwesomeIcons.share,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    //book mark
-                    GestureDetector(
-                      onTap: () {
-                        if (!isPostBookMarked) {
-                          storiesController.bookmarkMeme(meme: meme);
-                        } else {
-                          storiesController.removeBookmarkMeme(meme: meme);
-                        }
-                        setState(() {
-                          isPostBookMarked = !isPostBookMarked;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? Colors.white38.withOpacity(0.3)
-                                : Colors.grey.shade500.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(
-                              isPostBookMarked
-                                  ? Icons.bookmark
-                                  : Icons.bookmark_add_outlined,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    //like button
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isPostLiked = !isPostLiked;
-                          meme.ups += isPostLiked ? 1 : -1;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? Colors.white38.withOpacity(0.3)
-                                : Colors.grey.shade500.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 15.0, right: 15.0),
-                            child: Icon(
-                                isPostLiked
-                                    ? FontAwesomeIcons.solidHeart
-                                    : FontAwesomeIcons.heart,
-                                color: isPostLiked ? Colors.red : Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                    //more
-                    DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                        customButton: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Get.isDarkMode
-                                  ? Colors.white38.withOpacity(0.3)
-                                  : Colors.grey.shade500.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.only(
-                                  top: 8.0,
-                                  bottom: 8.0,
-                                  left: 15.0,
-                                  right: 15.0),
-                              child: Icon(
-                                Icons.more_vert_rounded,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        openWithLongPress: true,
-                        customItemsIndexes: const [4],
-                        customItemsHeight: 8,
-                        items: [
-                          ...MenuItems.firstItems.map(
-                            (item) => DropdownMenuItem<MenuItem>(
-                              value: item,
-                              child: MenuItems.buildItem(item),
-                            ),
-                          ),
-                          const DropdownMenuItem<Divider>(
-                              enabled: false, child: Divider()),
-                          ...MenuItems.secondItems.map(
-                            (item) => DropdownMenuItem<MenuItem>(
-                              value: item,
-                              child: MenuItems.buildItem(item),
-                            ),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          switch (value) {
-                            case MenuItems.remove:
-                              //Do something
-                              storiesController.saveMemeAsWatched(
-                                  url: meme.url);
-                              Get.snackbar(
-                                'Refresh ',
-                                'We have removed this meme',
-                                snackPosition: SnackPosition.BOTTOM,
-                              );
-
-                              break;
-                            case MenuItems.block:
-                              // block user
-                              if (meme.url != '') {
-                                Get.defaultDialog(
-                                    title: "Block User ${meme.author}",
-                                    middleText:
-                                        "Are You Sure You Want To Block ${meme.author} \n This will block all posts from this user \n and will not show them in your feed",
-                                    radius: 30,
-                                    onConfirm: () {
-                                      storiesController.blockUser(
-                                          userName: meme.author);
-                                      Future.delayed(const Duration(
-                                              milliseconds: 2100))
-                                          .then((_) => Get.offAll(const App()));
-                                    },
-                                    onCancel: () {
-                                      Get.back();
-                                    });
-                              } else {
-                                Get.snackbar('Oops',
-                                    'We were not able to block the user \n  Please try again later',
-                                    snackPosition: SnackPosition.BOTTOM);
-                              }
-                              break;
-                            case MenuItems.report:
-                              storiesController.reportMeme(meme: meme);
-                              break;
-                            case MenuItems.download:
-                              FileDownloadService fileDownloadService =
-                                  Get.find();
-                              if (meme.type == 'Animated') {
-                                fileDownloadService.requestDownload(
-                                  url: meme.videoUrl!,
-                                  name: 'Chomu Video',
-                                );
-                              } else {
-                                fileDownloadService.requestDownload(
-                                  url: meme.url,
-                                  name: meme.title,
-                                );
-                              }
-
-                              break;
-                            case MenuItems.cancel:
-                              //Do something
-                              break;
-                          }
+                    //like
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isPostLiked = !isPostLiked;
+                          });
                         },
-                        itemHeight: 48,
-                        itemPadding: const EdgeInsets.only(left: 16, right: 16),
-                        dropdownWidth: 160,
-                        dropdownPadding:
-                            const EdgeInsets.symmetric(vertical: 6),
-                        dropdownDecoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        dropdownElevation: 8,
-                        offset: const Offset(40, -4),
-                      ),
+                        icon: Icon(
+                          isPostLiked
+                              ? FontAwesomeIcons.solidHeart
+                              : FontAwesomeIcons.heart,
+                          color: isPostLiked ? Colors.red : Colors.white,
+                        )),
+                    //share
+                    IconButton(
+                        onPressed: () {
+                          Future.delayed(
+                              const Duration(milliseconds: 200),
+                              () => downloadAndSharePost(
+                                  name: ninePost.title,
+                                  url: ninePost.images.image460sv!.url));
+                        },
+                        icon: const Icon(
+                          FontAwesomeIcons.shareNodes,
+                          color: Colors.white,
+                        )),
+                    //more options
+                    IconButton(
+                        onPressed: () {
+                          //show more options
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (_) {
+                                return StoryBottomSheet(
+                                  ninePost: ninePost,
+                                );
+                              },
+                              isScrollControlled: true,
+                              constraints: BoxConstraints(
+                                  maxHeight: Get.height * 0.4,
+                                  maxWidth: Get.width));
+                        },
+                        icon: const Icon(
+                          FontAwesomeIcons.ellipsis,
+                          color: Colors.white,
+                        )),
+                  ]),
+            ),
+          ),
+          //back button
+          Positioned(
+              child: SafeArea(
+                child: IconButton(
+                    icon: const Icon(
+                      FontAwesomeIcons.angleLeft,
+                      color: Colors.white,
                     ),
-                  ],
-                ),
-              )),
+                    onPressed: () {
+                      Get.back();
+                    }),
+              ),
+              top: 5,
+              left: 5),
         ],
       ),
     );
-  }
-}
-
-// menu item
-class MenuItem {
-  final String text;
-  final IconData icon;
-  final Color? color;
-  const MenuItem({
-    required this.text,
-    required this.icon,
-    this.color,
-  });
-}
-
-class MenuItems {
-  final Meme meme;
-  static const List<MenuItem> firstItems = [report, block, download, remove];
-  static const List<MenuItem> secondItems = [cancel];
-
-  static const block =
-      MenuItem(text: 'Block', icon: Icons.block, color: Colors.red);
-  static const report = MenuItem(
-      text: 'Report',
-      icon: Icons.report_gmailerrorred_rounded,
-      color: Colors.red);
-  static const remove = MenuItem(
-    text: 'Remove',
-    icon: Icons.delete,
-  );
-  static const download = MenuItem(
-    text: 'Download',
-    icon: Icons.download,
-  );
-  static const cancel = MenuItem(
-    text: 'Cancel',
-    icon: Icons.cancel,
-  );
-
-  MenuItems({required this.meme});
-
-  static Widget buildItem(MenuItem item) {
-    return Row(
-      children: [
-        Icon(
-          item.icon,
-          color: item.color ?? (Get.isDarkMode ? Colors.white : Colors.black),
-          size: 22,
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        Text(
-          item.text,
-          style: TextStyle(
-            color: item.color ?? (Get.isDarkMode ? Colors.white : Colors.black),
-          ),
-        ),
-      ],
-    );
-  }
-
-  static onChanged(BuildContext context, MenuItem item) {
-    switch (item) {
-      case MenuItems.remove:
-        //Do something
-        break;
-      case MenuItems.report:
-        //Do something
-        break;
-      case MenuItems.download:
-        //Do something
-        break;
-      case MenuItems.cancel:
-        //Do something
-        break;
-    }
   }
 }

@@ -27,7 +27,7 @@ class DataRepository {
     await database
         .collection('ninePosts')
         .doc(getDate())
-        .collection('ninePosts')
+        .collection('nineposts')
         .get()
         .then((event) {
       for (var doc in event.docs) {

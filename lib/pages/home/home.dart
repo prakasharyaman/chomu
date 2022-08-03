@@ -1,26 +1,20 @@
 // 🐦 Flutter imports:
 import 'package:chomu/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
-
 // 📦 Package imports:
-import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:hidable/hidable.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // 🌎 Project imports:
 import 'package:chomu/pages/feedback/feedback_screen.dart';
 import '../feedback/controller/feedback_controller_bindings.dart';
-import '../profile/bindings/profile_bindings.dart';
-import '../profile/profile.dart';
 import '../settings/page/settingsPage.dart';
 import '../stories/stories_player.dart';
 import 'controller/home_controller.dart';
 import 'games/games_page.dart';
-import 'tabs/hot/hot.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -33,7 +27,7 @@ class _HomeState extends State<Home> {
   var showBadge = true;
   final List<Widget> _widgetOptions = [
     const HomePage(),
-    const StoryPlayerPage(),
+    const StoryPlayer(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -116,13 +110,7 @@ class _HomeState extends State<Home> {
             title: const Text('Games'),
           ),
           //profile
-          ListTile(
-            onTap: () {
-              Get.to(const Profile(), binding: ProfileBindings());
-            },
-            leading: const Icon(Icons.person_rounded),
-            title: const Text('Account'),
-          ),
+
           //settings
           ListTile(
             onTap: () {

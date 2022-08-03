@@ -1,8 +1,8 @@
 // 🎯 Dart imports:
-import 'dart:convert';
 import 'dart:developer';
 
 // 🐦 Flutter imports:
+import 'package:chomu/models/nine_post.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -12,22 +12,18 @@ import 'package:video_player/video_player.dart';
 
 // 🌎 Project imports:
 import '../../../common/enum/status.dart';
-import '../../../models/meme_model.dart';
 import '../../../repository/data_repository.dart';
-import '../../../repository/meme_repository.dart';
 
 class StoriesController extends GetxController {
   static StoriesController storiesController = Get.find();
-  int intialPageIndex = 0;
-  Rx<Status> status = Status.loading.obs;
-  MemeRepository memeRepository = MemeRepository();
+  Rx<Status> storiesStatus = Status.loading.obs;
   DataRepository dataRepository = DataRepository();
   final getStorage = GetStorage();
   late PageController pageController;
   String errorMessage = '';
   // volume controls
   var volume = 0;
-  List<Meme> memes = [];
+  List<NinePost> ninePosts = [];
   // keeping track of the current index
   int focusedindex = 0;
   // storing the list of video url
@@ -37,112 +33,90 @@ class StoriesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    pageController = PageController(
-        viewportFraction: 1, keepPage: true, initialPage: intialPageIndex);
-    getMemes();
+    pageController =
+        PageController(viewportFraction: 1, keepPage: true, initialPage: 0);
+    getNinePosts();
   }
 
-// get Memes
-  getMemes() async {
+// get nine posts
+  getNinePosts() async {
     try {
-      status.value = Status.loading;
-      memes = await memeRepository.getMemes();
-      var watchedmemesList = [];
-      List<Meme> nineList = [];
-      List<Meme> watchednineList = [];
-      List<Meme> animatedNineList = [];
-      List<Meme> nonAnimatedNineList = [];
-      nineList = await memeRepository.getNinePosts();
-
-      if (memes.length > 2) {
-        // check if the meme has been watched
-        for (var meme in memes) {
-          if (await checkMemesIfWatched(url: meme.url)) {
-            watchedmemesList.add(meme);
-          }
+      storiesStatus.value = Status.loading;
+      update();
+      ninePosts.clear();
+      ninePosts = await dataRepository.getNinePosts();
+      // watched list
+      List<NinePost> watchedNinePosts = [];
+      // animated list
+      List<NinePost> animatedNinePosts = [];
+      // non animated list
+      List<NinePost> nonAnimatedPosts = [];
+      // check if the post is watched and if they are animated or not
+      for (var ninePost in ninePosts) {
+        if (await checkPostIfWatched(url: ninePost.images.image460.url)) {
+          watchedNinePosts.add(ninePost);
         }
-        // check if the user has been blocked
-        for (var meme in memes) {
-          if (await checkifUserBlocked(username: meme.subReddit)) {
-            watchedmemesList.add(meme);
-          }
-        }
-        // check if the nine post has been watched
-        for (var ninePost in nineList) {
-          if (await checkMemesIfWatched(url: ninePost.url)) {
-            watchednineList.add(ninePost);
-          }
-        }
-        memes.removeWhere((element) => watchedmemesList.contains(element));
-        //clearing watched nine posts
-        nineList.removeWhere((element) => watchednineList.contains(element));
-      }
-      // putting animated memes in the temp list
-      for (var ninePost in nineList) {
         if (ninePost.type == 'Animated') {
-          animatedNineList.add(ninePost);
-        }
-      }
-      // putting non animated memes in the temp list
-      for (var ninePost in nineList) {
-        if (ninePost.type != 'Animated') {
-          nonAnimatedNineList.add(ninePost);
-        }
-      }
-      if (nineList.length > 3 && memes.length > 3) {
-        List<Meme> tempList = animatedNineList;
-        tempList.addAll(nonAnimatedNineList);
-        nineList = tempList;
-        if (memes.length > 30) {
-          memes = memes.sublist(0, 30);
-        }
-        if (nineList.length < 40) {
-          memes.addAll(nineList);
-          memes.shuffle();
+          animatedNinePosts.add(ninePost);
         } else {
-          memes = nineList;
+          nonAnimatedPosts.add(ninePost);
         }
-        // debugPrint(nineList.length.toString());
-        // debugPrint(memes.length.toString());
-        for (var mema in memes) {
-          urls.add(mema.videoUrl == null ? mema.image460! : mema.videoUrl!);
+      }
+      // sorting by time
+      animatedNinePosts.sort((a, b) => b.creationTs.compareTo(a.creationTs));
+      nonAnimatedPosts.sort((a, b) => b.creationTs.compareTo(a.creationTs));
+      // empying the ninePosts list
+      ninePosts.clear();
+      // adding the watched and animated posts to the list
+      ninePosts = animatedNinePosts;
+      ninePosts.addAll(nonAnimatedPosts);
+      // remove nine posts that are watched
+      ninePosts.removeWhere((element) => watchedNinePosts.contains(element));
+      // add urls to list
+      for (var ninePost in ninePosts) {
+        if (ninePost.type == 'Animated') {
+          urls.add(ninePost.images.image460sv!.url);
         }
+      }
 
-        /// Initialize 1st video
-        await _initializeControllerAtIndex(0);
+      /// Initialize 1st video
+      await _initializeControllerAtIndex(0);
 
-        /// Play 1st video
-        _playControllerAtIndex(0);
+      /// Play 1st video
+      _playControllerAtIndex(0);
 
-        /// Initialize 2nd video
-        await _initializeControllerAtIndex(1);
-        status.value = Status.loaded;
+      /// Initialize 2nd video
+      await _initializeControllerAtIndex(1);
+      if (ninePosts.length > 2) {
+        storiesStatus.value = Status.loaded;
+        update();
       } else {
-        throw Exception('No More Memes Found');
+        throw Exception('No Stories Found !');
       }
     } catch (e) {
-      status.value == Status.error;
-      errorMessage = e.toString();
+      storiesStatus.value = Status.error;
+      update();
       Get.snackbar(
         'Uh Oh!',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
+      debugPrint(e.toString());
     }
   }
 
 // check memes if they are watched then remove them
-  Future<bool> checkMemesIfWatched({required String url}) async {
-    var watchedMemeList = await getStorage.read('watchedMemesList');
-    if (watchedMemeList == null) {
-      watchedMemeList = [];
+  Future<bool> checkPostIfWatched({required String url}) async {
+    var watchedNinePostsList = await getStorage.read('watchedNinePostsList');
+    if (watchedNinePostsList == null) {
+      watchedNinePostsList = [];
     } else {
-      watchedMemeList = watchedMemeList as List<dynamic>;
+      watchedNinePostsList = watchedNinePostsList as List<dynamic>;
     }
 
     // check if the meme is watched
     try {
-      if (watchedMemeList.contains(url)) {
+      if (watchedNinePostsList.contains(url)) {
         return true;
       } else {
         return false;
@@ -240,19 +214,19 @@ class StoriesController extends GetxController {
   }
 
 // storage
-  saveMemeAsWatched({required String url}) async {
-    var watchedMemeList = await getStorage.read('watchedMemesList');
-    if (watchedMemeList == null) {
-      watchedMemeList = [];
+  savePostAsWatched({required String url}) async {
+    var watchedNinePostsList = await getStorage.read('watchedNinePostsList');
+    if (watchedNinePostsList == null) {
+      watchedNinePostsList = [];
     } else {
-      watchedMemeList = watchedMemeList as List<dynamic>;
+      watchedNinePostsList = watchedNinePostsList as List<dynamic>;
     }
     // trying to add a meme that is watched
     try {
       // check to see if it already exists
-      if (!watchedMemeList.contains(url)) {
-        watchedMemeList.add(url);
-        await getStorage.write('watchedMemesList', watchedMemeList);
+      if (!watchedNinePostsList.contains(url)) {
+        watchedNinePostsList.add(url);
+        await getStorage.write('watchedNinePostsList', watchedNinePostsList);
       }
     } catch (e) {
       debugPrint('Error Saving Meme');
@@ -279,9 +253,9 @@ class StoriesController extends GetxController {
   }
 
   // report meme
-  reportMeme({required Meme meme}) async {
+  reportPost({required NinePost ninePost}) async {
     try {
-      await memeRepository.reportMeme(id: meme.id, meme: meme);
+      await savePostAsWatched(url: ninePost.images.image460.url);
       Get.snackbar(
         'Meme Reported',
         'Thank you for reporting this meme',
@@ -291,72 +265,6 @@ class StoriesController extends GetxController {
       errorMessage = e.toString();
       Get.snackbar(
         'Uh Oh!',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
-// same meme as bookmark
-  bookmarkMeme({required Meme meme}) async {
-    var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
-
-    if (bookMarkMemesList == null) {
-      bookMarkMemesList = [];
-    } else {
-      bookMarkMemesList = bookMarkMemesList as List<dynamic>;
-    }
-    // trying to add a meme that is watched
-    try {
-      String json = jsonEncode(meme,
-          toEncodable: (meme) => meme is Meme
-              ? Meme.toJson(meme)
-              : throw UnsupportedError('Cannot save the meme'));
-      bookMarkMemesList.add(json);
-      await getStorage.write('bookMarkMemesList', bookMarkMemesList);
-      Get.snackbar(
-        'Post Bookmarked',
-        'You can view your bookmarks in the Profiles tab',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } catch (e) {
-      errorMessage = e.toString();
-      Get.snackbar(
-        'Error Saving Meme!',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
-// remove meme as bookmark
-  removeBookmarkMeme({required Meme meme}) async {
-    var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
-
-    if (bookMarkMemesList == null) {
-      bookMarkMemesList = [];
-    } else {
-      bookMarkMemesList = bookMarkMemesList as List<dynamic>;
-    }
-    // trying to add a meme that is watched
-    try {
-      String json = jsonEncode(meme,
-          toEncodable: (meme) => meme is Meme
-              ? Meme.toJson(meme)
-              : throw UnsupportedError('Cannot remove the post'));
-      if (bookMarkMemesList.contains(json)) {
-        bookMarkMemesList.remove(json);
-        await getStorage.write('bookMarkMemesList', bookMarkMemesList);
-        Get.snackbar(
-          'Post Bookmarked Removed',
-          'We have removed the post from your bookmarks',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      }
-    } catch (e) {
-      errorMessage = e.toString();
-      Get.snackbar(
-        'Error Removing Meme!',
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -373,7 +281,6 @@ class StoriesController extends GetxController {
       _playPrevious(index);
     }
     focusedindex = index;
-    intialPageIndex = index;
   }
 
   void _playNext(int index) {
@@ -416,7 +323,7 @@ class StoriesController extends GetxController {
 
       /// Initialize
       await _controller.initialize();
-      _controller.setVolume(volume.toDouble());
+      _controller.setVolume(0);
       log('🚀🚀🚀 INITIALIZED $index');
     }
   }
@@ -430,6 +337,18 @@ class StoriesController extends GetxController {
       _controller.play();
 
       log('🚀🚀🚀 PLAYING $index');
+    }
+  }
+
+  void pauseControllerAtIndex(int index) {
+    if (urls.length > index && index >= 0) {
+      /// Get controller at [index]
+      final VideoPlayerController _controller = controllers[index]!;
+
+      /// Play controller
+      _controller.pause();
+
+      log('🚀🚀🚀 pausing $index');
     }
   }
 
@@ -469,3 +388,68 @@ class StoriesController extends GetxController {
     volume = setVolume;
   }
 }
+// // same meme as bookmark
+//   bookmarkMeme({required Meme meme}) async {
+//     var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
+
+//     if (bookMarkMemesList == null) {
+//       bookMarkMemesList = [];
+//     } else {
+//       bookMarkMemesList = bookMarkMemesList as List<dynamic>;
+//     }
+//     // trying to add a meme that is watched
+//     try {
+//       String json = jsonEncode(meme,
+//           toEncodable: (meme) => meme is Meme
+//               ? Meme.toJson(meme)
+//               : throw UnsupportedError('Cannot save the meme'));
+//       bookMarkMemesList.add(json);
+//       await getStorage.write('bookMarkMemesList', bookMarkMemesList);
+//       Get.snackbar(
+//         'Post Bookmarked',
+//         'You can view your bookmarks in the Profiles tab',
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//     } catch (e) {
+//       errorMessage = e.toString();
+//       Get.snackbar(
+//         'Error Saving Meme!',
+//         e.toString(),
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//     }
+//   }
+
+// // remove meme as bookmark
+//   removeBookmarkMeme({required Meme meme}) async {
+//     var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
+
+//     if (bookMarkMemesList == null) {
+//       bookMarkMemesList = [];
+//     } else {
+//       bookMarkMemesList = bookMarkMemesList as List<dynamic>;
+//     }
+//     // trying to add a meme that is watched
+//     try {
+//       String json = jsonEncode(meme,
+//           toEncodable: (meme) => meme is Meme
+//               ? Meme.toJson(meme)
+//               : throw UnsupportedError('Cannot remove the post'));
+//       if (bookMarkMemesList.contains(json)) {
+//         bookMarkMemesList.remove(json);
+//         await getStorage.write('bookMarkMemesList', bookMarkMemesList);
+//         Get.snackbar(
+//           'Post Bookmarked Removed',
+//           'We have removed the post from your bookmarks',
+//           snackPosition: SnackPosition.BOTTOM,
+//         );
+//       }
+//     } catch (e) {
+//       errorMessage = e.toString();
+//       Get.snackbar(
+//         'Error Removing Meme!',
+//         e.toString(),
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//     }
+//   }

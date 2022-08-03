@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // 🐦 Flutter imports:
+import 'package:chomu/repository/data_repository.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -11,7 +12,6 @@ import 'package:get/get.dart';
 
 // 🌎 Project imports:
 import 'package:chomu/app/controllers/firebase_controller.dart';
-import '../../../repository/meme_repository.dart';
 
 class FeedbackController extends GetxController {
   static FeedbackController feedbackController = Get.find();
@@ -33,7 +33,7 @@ class FeedbackController extends GetxController {
     submitButton.value = Text('Submitting....');
     try {
       FirebaseController firebaseController = Get.find();
-      var date = MemeRepository().getDate();
+      var date = DataRepository().getDate();
       var id = await firebaseController.getUid();
       if (feedbackFormKey.currentState!.validate()) {
         if (file != null) {

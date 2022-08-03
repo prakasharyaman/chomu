@@ -1,4 +1,5 @@
 import 'package:chomu/models/index.dart';
+import 'package:chomu/pages/home/controller/home_page_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,7 @@ class _RedditWidgetState extends State<RedditWidget> {
   late Function showMenu;
   bool isPostBookMarked = false;
   bool watched = false;
+  HomePageController homePageController = Get.find();
   @override
   void initState() {
     super.initState();
@@ -49,7 +51,7 @@ class _RedditWidgetState extends State<RedditWidget> {
             if (info.visibleFraction > 0.8) {
               if (watched == false) {
                 watched = true;
-                // TODO: save as watched
+                homePageController.saveRedditPostAsWatched(url: redditPost.url);
               }
             }
           },

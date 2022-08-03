@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:math';
 
 // 🐦 Flutter imports:
+import 'package:chomu/app/app_bindings.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -18,15 +19,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:wakelock/wakelock.dart';
 
 // 🌎 Project imports:
-import 'package:chomu/ads/controller/ads_controller.dart';
-import 'package:chomu/app/controllers/theme_controller.dart';
-import 'package:chomu/app/controllers/version_controller.dart';
-import 'package:chomu/app/controllers/volume_controller.dart';
 import 'package:chomu/firebase_options.dart';
-import 'package:chomu/pages/home/controller/home_controller.dart';
-import 'package:chomu/services/download_service.dart';
 import 'app/app.dart';
-import 'app/controllers/firebase_controller.dart';
 
 void main() async {
   runZonedGuarded<Future<void>>(() async {
@@ -86,22 +80,6 @@ void main() async {
     // firebase messaging
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    // put controllers
-    // firebase controller to handle login ,analytics ,etc
-    Get.put<FirebaseController>(
-        FirebaseController(firebaseAnalytics: firebaseAnalytics));
-    // home controller
-    Get.put<HomeController>(HomeController());
-    // theme control
-    Get.put<ThemeController>(ThemeController());
-    // video volumen control
-    Get.put<VolumeController>(VolumeController());
-    // check for latest version
-    Get.put<VersionController>(VersionController());
-    // download services
-    Get.put<FileDownloadService>(FileDownloadService());
-    // ads services
-    Get.put<AdsController>(AdsController());
     Wakelock.enable();
     runApp(GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -135,6 +113,7 @@ void main() async {
         fontFamily: GoogleFonts.openSans().fontFamily,
       ),
       navigatorObservers: [firebaseAnalyticsObserver],
+      initialBinding: AppBindings(),
       home: const App(),
     ));
   },

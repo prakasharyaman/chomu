@@ -2,14 +2,13 @@
 import 'dart:math';
 
 // 🐦 Flutter imports:
+import 'package:chomu/pages/stories/controller/stories_controller.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:get/get.dart';
 
-// 🌎 Project imports:
-import 'package:chomu/pages/profile/bindings/profile_bindings.dart';
-import 'package:chomu/pages/profile/profile.dart';
+// 🌎 Project imports
 
 class HomeController extends GetxController {
   static HomeController homeController = Get.find();
@@ -24,14 +23,14 @@ class HomeController extends GetxController {
   void changeCurrentPage(int index) {
     if (index == 1) {
       showBadge.value = false;
-      // Get.to(const StoryPlayer());
+      StoriesController storiesController = Get.find();
+      storiesController.getNinePosts();
       currentPage = index;
       update();
     } else if (index == 2) {
       currentPage = index;
       update();
     } else if (index == 3) {
-      Get.to(const Profile(), binding: ProfileBindings());
     } else {
       currentPage = index;
       showBadge.value = false;

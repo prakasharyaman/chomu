@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:chomu/pages/home/controller/home_controller.dart';
-import 'package:chomu/pages/home/home.dart';
 import 'package:chomu/repository/data_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../common/enum/status.dart';
-import '../../../models/meme_model.dart';
 import '../../../models/reddit_post.dart';
 
 class HomePageController extends GetxController {
@@ -78,16 +74,16 @@ class HomePageController extends GetxController {
 
 // check memes if they are watched then remove them
   Future<bool> checkMemesIfWatched({required String url}) async {
-    var watchedMemeList = await getStorage.read('watchedMemesList');
-    if (watchedMemeList == null) {
-      watchedMemeList = [];
+    var watchedRedditPostList = await getStorage.read('watchedRedditPostList');
+    if (watchedRedditPostList == null) {
+      watchedRedditPostList = [];
     } else {
-      watchedMemeList = watchedMemeList as List<dynamic>;
+      watchedRedditPostList = watchedRedditPostList as List<dynamic>;
     }
 
     // check if the meme is watched
     try {
-      if (watchedMemeList.contains(url)) {
+      if (watchedRedditPostList.contains(url)) {
         return true;
       } else {
         return false;
@@ -159,112 +155,113 @@ class HomePageController extends GetxController {
   }
 
 // storage
-  saveMemeAsWatched({required String url}) async {
-    var watchedMemeList = await getStorage.read('watchedMemesList');
-    if (watchedMemeList == null) {
-      watchedMemeList = [];
+  saveRedditPostAsWatched({required String url}) async {
+    var watchedRedditPostList = await getStorage.read('watchedRedditPostList');
+    if (watchedRedditPostList == null) {
+      watchedRedditPostList = [];
     } else {
-      watchedMemeList = watchedMemeList as List<dynamic>;
+      watchedRedditPostList = watchedRedditPostList as List<dynamic>;
     }
     // trying to add a meme that is watched
     try {
       // check to see if it already exists
-      if (!watchedMemeList.contains(url)) {
-        watchedMemeList.add(url);
-        await getStorage.write('watchedMemesList', watchedMemeList);
+      if (!watchedRedditPostList.contains(url)) {
+        watchedRedditPostList.add(url);
+        await getStorage.write('watchedMemesList', watchedRedditPostList);
       }
     } catch (e) {
       // throw Exception('Error Saving Meme');
     }
   }
 
-  // // report meme
-  // reportMeme({required Meme meme, bool hideSnack = false}) async {
-  //   try {
-  //     await memeRepository.reportMeme(id: meme.id, meme: meme);
-  //     if (!hideSnack) {
-  //       Get.snackbar(
-  //         'Meme Reported',
-  //         'Thank you for reporting this meme',
-  //         snackPosition: SnackPosition.BOTTOM,
-  //       );
-  //     }
-  //   } catch (e) {
-  //     errorMessage = e.toString();
-  //     if (!hideSnack) {
-  //       Get.snackbar(
-  //         'Uh Oh!',
-  //         e.toString(),
-  //         snackPosition: SnackPosition.BOTTOM,
-  //       );
-  //     }
-  //     debugPrint(e.toString());
-  //   }
-  // }
-
-// same meme as bookmark
-  bookmarkMeme({required Meme meme}) async {
-    var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
-
-    if (bookMarkMemesList == null) {
-      bookMarkMemesList = [];
-    } else {
-      bookMarkMemesList = bookMarkMemesList as List<dynamic>;
-    }
-    // trying to add a meme that is watched
+  // report meme
+  reportMeme({required RedditPost redditPost, bool hideSnack = false}) async {
     try {
-      String json = jsonEncode(meme,
-          toEncodable: (meme) => meme is Meme
-              ? Meme.toJson(meme)
-              : throw UnsupportedError('Cannot save the meme'));
-      bookMarkMemesList.add(json);
-      await getStorage.write('bookMarkMemesList', bookMarkMemesList);
-      Get.snackbar(
-        'Post Bookmarked',
-        'You can view your bookmarks in the Profiles tab',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } catch (e) {
-      errorMessage = e.toString();
-      Get.snackbar(
-        'Error Saving Meme!',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
-// remove meme as bookmark
-  removeBookmarkMeme({required Meme meme}) async {
-    var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
-
-    if (bookMarkMemesList == null) {
-      bookMarkMemesList = [];
-    } else {
-      bookMarkMemesList = bookMarkMemesList as List<dynamic>;
-    }
-    // trying to add a meme that is watched
-    try {
-      String json = jsonEncode(meme,
-          toEncodable: (meme) => meme is Meme
-              ? Meme.toJson(meme)
-              : throw UnsupportedError('Cannot remove the post'));
-      if (bookMarkMemesList.contains(json)) {
-        bookMarkMemesList.remove(json);
-        await getStorage.write('bookMarkMemesList', bookMarkMemesList);
+      await saveRedditPostAsWatched(url: redditPost.url);
+      if (!hideSnack) {
         Get.snackbar(
-          'Post Bookmarked Removed',
-          'We have removed the post from your bookmarks',
+          'Meme Reported',
+          'Thank you for reporting this meme',
           snackPosition: SnackPosition.BOTTOM,
         );
       }
     } catch (e) {
       errorMessage = e.toString();
-      Get.snackbar(
-        'Error Removing Meme!',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (!hideSnack) {
+        Get.snackbar(
+          'Uh Oh!',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+      debugPrint(e.toString());
     }
   }
+
+// // same meme as bookmark
+//   bookmarkMeme({required Meme meme}) async {
+//     var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
+
+//     if (bookMarkMemesList == null) {
+//       bookMarkMemesList = [];
+//     } else {
+//       bookMarkMemesList = bookMarkMemesList as List<dynamic>;
+//     }
+//     // trying to add a meme that is watched
+//     try {
+//       String json = jsonEncode(meme,
+//           toEncodable: (meme) => meme is Meme
+//               ? Meme.toJson(meme)
+//               : throw UnsupportedError('Cannot save the meme'));
+//       bookMarkMemesList.add(json);
+//       await getStorage.write('bookMarkMemesList', bookMarkMemesList);
+//       Get.snackbar(
+//         'Post Bookmarked',
+//         'You can view your bookmarks in the Profiles tab',
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//     } catch (e) {
+//       errorMessage = e.toString();
+//       Get.snackbar(
+//         'Error Saving Meme!',
+//         e.toString(),
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//     }
+//   }
+
+// // remove meme as bookmark
+//   removeBookmarkMeme({required Meme meme}) async {
+//     var bookMarkMemesList = await getStorage.read('bookMarkMemesList');
+
+//     if (bookMarkMemesList == null) {
+//       bookMarkMemesList = [];
+//     } else {
+//       bookMarkMemesList = bookMarkMemesList as List<dynamic>;
+//     }
+//     // trying to add a meme that is watched
+//     try {
+//       String json = jsonEncode(meme,
+//           toEncodable: (meme) => meme is Meme
+//               ? Meme.toJson(meme)
+//               : throw UnsupportedError('Cannot remove the post'));
+//       if (bookMarkMemesList.contains(json)) {
+//         bookMarkMemesList.remove(json);
+//         await getStorage.write('bookMarkMemesList', bookMarkMemesList);
+//         Get.snackbar(
+//           'Post Bookmarked Removed',
+//           'We have removed the post from your bookmarks',
+//           snackPosition: SnackPosition.BOTTOM,
+//         );
+//       }
+//     } catch (e) {
+//       errorMessage = e.toString();
+//       Get.snackbar(
+//         'Error Removing Meme!',
+//         e.toString(),
+//         snackPosition: SnackPosition.BOTTOM,
+//       );
+//     }
+//   }
+
 }

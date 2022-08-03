@@ -3,6 +3,7 @@
 // 🐦 Flutter imports:
 import 'package:chomu/pages/home/controller/home_page_controller.dart';
 import 'package:chomu/pages/stories/controller/stories_controller.dart';
+import 'package:chomu/repository/data_repository.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
@@ -20,13 +21,12 @@ import 'package:url_launcher/url_launcher.dart';
 // 🌎 Project imports:
 import 'package:chomu/pages/home/games/controller/games_page_controller.dart';
 import 'package:chomu/pages/introduction/introduction_screen.dart';
-import 'package:chomu/repository/meme_repository.dart';
 import '../../models/user_model.dart';
 
 class FirebaseController extends GetxController {
   //analytics variables
-  final FirebaseAnalytics firebaseAnalytics;
-  FirebaseController({required this.firebaseAnalytics});
+  final FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
+
   //login variables
   static FirebaseController firebaseController = Get.find();
   final storage = GetStorage();
@@ -125,7 +125,7 @@ class FirebaseController extends GetxController {
 //log user as active today
   logUserActiveTodayOnCloud() async {
     try {
-      var date = MemeRepository().getDate();
+      var date = DataRepository().getDate();
       await FirebaseFirestore.instance
           .collection('users')
           .doc('active_users')

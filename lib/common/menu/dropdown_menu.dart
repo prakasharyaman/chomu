@@ -2,13 +2,13 @@
 
 // 🐦 Flutter imports:
 import 'package:chomu/models/index.dart';
+import 'package:chomu/pages/home/controller/home_page_controller.dart';
 import 'package:flutter/material.dart';
 
 // 📦 Package imports:
 import 'package:get/get.dart';
 
 // 🌎 Project imports:
-import 'package:chomu/pages/home/tabs/hot/controller/hot_controller.dart';
 import 'package:chomu/services/download_service.dart';
 import 'package:chomu/services/share_service.dart';
 
@@ -18,6 +18,7 @@ class DropDownMenu extends StatelessWidget {
   final RedditPost redditPost;
   @override
   Widget build(BuildContext context) {
+    HomePageController homePageController = Get.find();
     return SizedBox(
       height: 400,
       child: Padding(
@@ -40,7 +41,8 @@ class DropDownMenu extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  //TODO: report post
+                  homePageController.saveRedditPostAsWatched(
+                      url: redditPost.url);
                   Get.back();
                 },
                 child: const Padding(
@@ -67,7 +69,8 @@ class DropDownMenu extends StatelessWidget {
                       onConfirm: () {
                         Get.back();
 
-                        //TODO: block user
+                        homePageController.blockUser(
+                            userName: redditPost.author);
                       },
                       onCancel: () {
                         Get.back();
