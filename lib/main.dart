@@ -17,7 +17,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:wakelock/wakelock.dart';
-
 // 🌎 Project imports:
 import 'package:chomu/firebase_options.dart';
 import 'app/app.dart';
@@ -26,12 +25,9 @@ void main() async {
   runZonedGuarded<Future<void>>(() async {
     // zoned method of running
     WidgetsFlutterBinding.ensureInitialized();
-
     //Get Storage init
     await GetStorage.init();
-
     //firebase init
-
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );

@@ -33,8 +33,7 @@ class StoriesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    pageController =
-        PageController(viewportFraction: 1, keepPage: true, initialPage: 0);
+    pageController = PageController(viewportFraction: 1, initialPage: 0);
     getNinePosts();
   }
 
@@ -323,7 +322,6 @@ class StoriesController extends GetxController {
 
       /// Initialize
       await _controller.initialize();
-      _controller.setVolume(0);
       log('🚀🚀🚀 INITIALIZED $index');
     }
   }
@@ -332,6 +330,10 @@ class StoriesController extends GetxController {
     if (urls.length > index && index >= 0) {
       /// Get controller at [index]
       final VideoPlayerController _controller = controllers[index]!;
+      // set volume
+      _controller.setVolume(volume.toDouble());
+      // set looping
+      _controller.setLooping(true);
 
       /// Play controller
       _controller.play();

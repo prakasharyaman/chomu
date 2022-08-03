@@ -39,11 +39,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
     ninePost = widget.ninePost;
     isMute = storiesController.volume.toDouble() > 0 ? false : true;
     _controller = widget.videoPlayerController;
-    _blurVideoController = _controller;
-    _controller.setLooping(true);
-    _blurVideoController.setLooping(true);
-    _blurVideoController.setVolume(0);
-    _controller.setVolume(storiesController.volume.toDouble());
+    _blurVideoController = widget.videoPlayerController;
     storiesController.savePostAsWatched(url: ninePost.images.image460.url);
   }
 
