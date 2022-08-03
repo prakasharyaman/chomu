@@ -18,7 +18,7 @@ class StoriesController extends GetxController {
   static StoriesController storiesController = Get.find();
   Rx<Status> storiesStatus = Status.loading.obs;
   DataRepository dataRepository = DataRepository();
-  final getStorage = GetStorage();
+  GetStorage getStorage = GetStorage();
   late PageController pageController;
   String errorMessage = '';
   // volume controls

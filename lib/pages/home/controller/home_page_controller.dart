@@ -33,31 +33,30 @@ class HomePageController extends GetxController {
     try {
       homePageStatus.value = Status.loading;
       redditPosts = await dataRepository.getRedditPosts();
-      var watchedmemesList = [];
+      var watchedRedditPosts = [];
 
-      if (redditPosts.length > 2) {
-        // check if the meme has been watched
-        for (var redditPost in redditPosts) {
-          if (await checkMemesIfWatched(url: redditPost.url)) {
-            watchedmemesList.add(redditPost);
-          }
+      // check if the meme has been watched
+      for (var redditPost in redditPosts) {
+        if (await checkRedditPostIfWatched(url: redditPost.url)) {
+          watchedRedditPosts.add(redditPost);
         }
-        // check if the user has been blocked
-        for (var redditPost in redditPosts) {
-          if (await checkifUserBlocked(username: redditPost.author)) {
-            watchedmemesList.add(redditPost);
-          }
-        }
-        // clearing watched memes
-        redditPosts
-            .removeWhere((element) => watchedmemesList.contains(element));
       }
+      // check if the user has been blocked
+      for (var redditPost in redditPosts) {
+        if (await checkifUserBlocked(username: redditPost.author)) {
+          watchedRedditPosts.add(redditPost);
+        }
+      }
+      // clearing watched memes
+      redditPosts
+          .removeWhere((element) => watchedRedditPosts.contains(element));
 
       if (redditPosts.length > 3) {
         if (redditPosts.length > 55) {
           redditPosts = redditPosts.sublist(0, 55);
         }
         homePageStatus.value = Status.loaded;
+        update();
       } else {
         throw Exception('No More Memes Found');
       }
@@ -73,7 +72,7 @@ class HomePageController extends GetxController {
   }
 
 // check memes if they are watched then remove them
-  Future<bool> checkMemesIfWatched({required String url}) async {
+  Future<bool> checkRedditPostIfWatched({required String url}) async {
     var watchedRedditPostList = await getStorage.read('watchedRedditPostList');
     if (watchedRedditPostList == null) {
       watchedRedditPostList = [];
@@ -167,7 +166,7 @@ class HomePageController extends GetxController {
       // check to see if it already exists
       if (!watchedRedditPostList.contains(url)) {
         watchedRedditPostList.add(url);
-        await getStorage.write('watchedMemesList', watchedRedditPostList);
+        await getStorage.write('watchedRedditPostList', watchedRedditPostList);
       }
     } catch (e) {
       // throw Exception('Error Saving Meme');
