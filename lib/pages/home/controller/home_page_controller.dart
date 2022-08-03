@@ -174,13 +174,14 @@ class HomePageController extends GetxController {
   }
 
   // report meme
-  reportMeme({required RedditPost redditPost, bool hideSnack = false}) async {
+  reportRedditPost(
+      {required RedditPost redditPost, bool hideSnack = false}) async {
     try {
       await saveRedditPostAsWatched(url: redditPost.url);
       if (!hideSnack) {
         Get.snackbar(
-          'Meme Reported',
-          'Thank you for reporting this meme',
+          'Reported',
+          'Thank you for reporting this post \n we will take a look at it',
           snackPosition: SnackPosition.BOTTOM,
         );
       }

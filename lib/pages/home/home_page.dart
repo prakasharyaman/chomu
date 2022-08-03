@@ -91,6 +91,8 @@ class HomePageBuilder extends GetView<HomePageController> {
         },
         body: ListView.builder(
             physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
+            cacheExtent: 10,
             scrollDirection: Axis.vertical,
             itemCount: controller.redditPosts.length + 1,
             itemBuilder: (BuildContext context, int index) {

@@ -41,9 +41,8 @@ class DropDownMenu extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  homePageController.saveRedditPostAsWatched(
-                      url: redditPost.url);
                   Get.back();
+                  homePageController.reportRedditPost(redditPost: redditPost);
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(8.0),
@@ -61,8 +60,9 @@ class DropDownMenu extends StatelessWidget {
               // block
               GestureDetector(
                 onTap: () {
+                  Get.back();
                   Get.defaultDialog(
-                      title: "Block User ${redditPost.author}",
+                      title: "Block User ${redditPost.author} ?",
                       middleText:
                           "Are You Sure You Want To Block ${redditPost.author} . This will block all posts from this user . And will not show them in your feed",
                       radius: 20,
@@ -75,8 +75,6 @@ class DropDownMenu extends StatelessWidget {
                       onCancel: () {
                         Get.back();
                       });
-
-                  Get.back();
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(8.0),
