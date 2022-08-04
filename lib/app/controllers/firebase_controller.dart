@@ -54,16 +54,16 @@ class FirebaseController extends GetxController {
     return user.value?.uid;
   }
 
-  handleAuthChanged(_firebaseUser) async {
+  handleAuthChanged(firebaseUser) async {
     //get user data from firestore
-    if (_firebaseUser?.uid != null) {
+    if (firebaseUser?.uid != null) {
       Get.put<StoriesController>(StoriesController());
       Get.put<HomePageController>(HomePageController());
       Get.put<GamesPageController>(GamesPageController());
-      userModel.value = UserModel(id: _firebaseUser.uid);
-      FirebaseCrashlytics.instance.setUserIdentifier(_firebaseUser.uid);
+      userModel.value = UserModel(id: firebaseUser.uid);
+      FirebaseCrashlytics.instance.setUserIdentifier(firebaseUser.uid);
       await firebaseAnalytics.logLogin();
-      await firebaseAnalytics.setUserId(id: _firebaseUser.uid);
+      await firebaseAnalytics.setUserId(id: firebaseUser.uid);
       //log user on cloud
       logUserActiveTodayOnCloud();
       // check for introduction
@@ -71,7 +71,7 @@ class FirebaseController extends GetxController {
       //check for update
       checkForLatestVersion();
       print(userModel.value.id);
-    } else if (_firebaseUser == null) {
+    } else if (firebaseUser == null) {
       await signIn();
     }
   }
@@ -199,12 +199,12 @@ class FirebaseController extends GetxController {
                   textConfirm: 'Update',
                   textCancel: 'Later',
                   onConfirm: () async {
-                    var _url = Uri.parse(
+                    var url = Uri.parse(
                         'https://play.google.com/store/apps/details?id=com.otft.chomu');
 
-                    if (!await launchUrl(_url,
+                    if (!await launchUrl(url,
                         mode: LaunchMode.externalApplication)) {
-                      debugPrint('Could not launch $_url');
+                      debugPrint('Could not launch $url');
                     }
                   },
                 );

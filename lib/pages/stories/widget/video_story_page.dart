@@ -17,8 +17,10 @@ class VideoStoryPage extends StatefulWidget {
     Key? key,
     required this.ninePost,
     required this.videoPlayerController,
+    required this.index,
   }) : super(key: key);
   final NinePost ninePost;
+  final int index;
   final VideoPlayerController videoPlayerController;
 
   @override
@@ -54,16 +56,30 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
         children: [
           //blurred background video
           _backgroundBlurredVideo(),
-          // video controls
+          // video
           Align(
             alignment: Alignment.center,
-            child: 1 == 1
-                ? AspectRatio(
+            child: Obx(() => AnimatedCrossFade(
+                  firstCurve: Curves.easeInOut,
+                  secondCurve: Curves.easeInOut,
+                  firstChild: AspectRatio(
                     aspectRatio: _controller.value.aspectRatio,
                     child: VideoPlayer(_controller),
-                  )
-                : const Center(child: CircularProgressIndicator()),
+                  ),
+                  secondChild: const Center(child: CircularProgressIndicator()),
+                  crossFadeState:
+                      storiesController.videoReadyStatus[widget.index].value
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond,
+                  duration: const Duration(milliseconds: 100),
+                )),
           ),
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: 1 == 1
+          //       ?
+          //       : const Center(child: CircularProgressIndicator()),
+          // ),
           // gesture detector to mute video
           Align(
             alignment: Alignment.center,
@@ -112,7 +128,7 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
                       maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Text('#' + ninePost.tags[0].key.toString().toLowerCase(),
+                    Text(ninePost.tags[0].key.toString().toLowerCase(),
                         style: const TextStyle(
                           fontSize: 8,
                           color: Colors.white,
@@ -223,13 +239,11 @@ class _VideoStoryPageState extends State<VideoStoryPage> {
   Stack _backgroundBlurredVideo() {
     return Stack(
       children: [
-        1 == 1
-            ? SizedBox(
-                height: Get.height,
-                width: Get.width,
-                child: VideoPlayer(_blurVideoController),
-              )
-            : Container(),
+        SizedBox(
+          height: Get.height,
+          width: Get.width,
+          child: VideoPlayer(_blurVideoController),
+        ),
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),

@@ -103,17 +103,17 @@ class FeedbackScreen extends GetView<FeedbackController> {
                           // User canceled the picker
                         }
                       },
-                      child: Row(
-                        children: const [
-                          Icon(Icons.file_present_rounded),
-                          Text('Select Files'),
-                        ],
-                      ),
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all(Colors.deepPurple),
                         shadowColor:
                             MaterialStateProperty.all(Colors.deepPurpleAccent),
+                      ),
+                      child: Row(
+                        children: const [
+                          Icon(Icons.file_present_rounded),
+                          Text('Select Files'),
+                        ],
                       ),
                     ),
                   ],
@@ -166,15 +166,15 @@ class FeedbackScreen extends GetView<FeedbackController> {
                   onPressed: () {
                     controller.submitFeedback();
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Obx(() => controller.submitButton.value),
-                  ),
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all(Colors.deepPurple),
                     shadowColor:
                         MaterialStateProperty.all(Colors.deepPurpleAccent),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Obx(() => controller.submitButton.value),
                   ),
                 ),
               ),

@@ -2,7 +2,7 @@ name: chomu
 description: Meme Factory.
 
 publish_to: 'none' 
-version: 0.2.0+20
+version: 0.2.1+21
 
 
 environment:        

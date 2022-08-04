@@ -45,7 +45,7 @@ class _GamePlayViewState extends State<GamePlayView> {
   addLastPlayedOn() async {
     try {
       await storage.write(
-          game.name + '_' + 'lastGamePlayed', DateTime.now().toString());
+          '${game.name}_lastGamePlayed', DateTime.now().toString());
     } catch (e) {
       debugPrint(e.toString());
     }

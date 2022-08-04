@@ -30,6 +30,7 @@ class StoriesController extends GetxController {
   List<String> urls = [];
   // controllers to access the video player controller for a particular video url
   var controllers = {};
+  var videoReadyStatus = {};
   @override
   void onInit() {
     super.onInit();
@@ -312,16 +313,20 @@ class StoriesController extends GetxController {
 
   Future _initializeControllerAtIndex(int index) async {
     if (urls.length > index && index >= 0) {
+      videoReadyStatus[index] = false.obs;
+
       /// Create new controller
-      final VideoPlayerController _controller = VideoPlayerController.network(
+      final VideoPlayerController controller = VideoPlayerController.network(
         urls[index],
       );
 
       /// Add to [controllers] list
-      controllers[index] = _controller;
+      controllers[index] = controller;
 
       /// Initialize
-      await _controller.initialize();
+      await controller.initialize().then((value) {
+        videoReadyStatus[index].value = true;
+      });
       log('🚀🚀🚀 INITIALIZED $index');
     }
   }

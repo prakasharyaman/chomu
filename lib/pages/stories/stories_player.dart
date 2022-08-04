@@ -66,6 +66,7 @@ class StoryPlayerBuilder extends GetView<StoriesController> {
           if (ninePost.type == 'Animated') {
             return VideoStoryPage(
               ninePost: ninePosts[index],
+              index: index,
               videoPlayerController: controller.controllers[index],
             );
           } else {

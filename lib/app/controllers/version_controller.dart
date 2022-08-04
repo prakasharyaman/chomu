@@ -76,7 +76,7 @@ class VersionController extends GetxController {
 
 // review request
   reviewRequest() async {
-    final _dialog = RatingDialog(
+    final dialog = RatingDialog(
       initialRating: 5.0,
       //  app's name
       title: const Text(
@@ -130,6 +130,6 @@ class VersionController extends GetxController {
       },
     );
     // show the dialog
-    Get.dialog(_dialog);
+    Get.dialog(dialog);
   }
 }
